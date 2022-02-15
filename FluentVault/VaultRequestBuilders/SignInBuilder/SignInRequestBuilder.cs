@@ -1,10 +1,9 @@
 ﻿using System.Text;
+using System.Xml.Linq;
 
 namespace FluentVault;
 
-internal class SignInRequestBuilder : 
-    ISignInRequestBuilder,
-    IWithCredentials
+internal class SignInRequestBuilder : ISignInRequestBuilder, IWithCredentials
 {
     private string _server = string.Empty;
     private string _database = string.Empty;
@@ -22,13 +21,13 @@ internal class SignInRequestBuilder :
     {
         ValidateCredentials(username, password);
 
-        var body = GetSignInRequestBody(_server, _database, username, password);
-        var uri = new Uri($"http://{_server}/AutodeskDM/Services/Filestore/v26/AuthService.svc");
-        var soapAction = @"""http://AutodeskDM/Filestore/Auth/1/7/2020/AuthService/SignIn""";
+        string body = GetSignInRequestBody(_server, _database, username, password);
+        Uri uri = new($"http://{_server}/AutodeskDM/Services/Filestore/v26/AuthService.svc");
+        string soapAction = @"""http://AutodeskDM/Filestore/Auth/1/7/2020/AuthService/SignIn""";
 
-        var document = await VaultHttpClient.SendRequestAsync(uri, body, soapAction);
+        XDocument document = await VaultHttpClient.SendRequestAsync(uri, body, soapAction);
 
-        (string? t, string? u) = document.GetElementValues("Ticket", "UserId");
+        (string t, string u) = document.GetElementValues("Ticket", "UserId");
 
         ValidateOutput(t, u, out Guid ticket, out long userId);
 
@@ -57,7 +56,7 @@ internal class SignInRequestBuilder :
         // password can be empty string
     }
 
-    private static void ValidateOutput(string? t, string? u, out Guid ticket, out long userId)
+    private static void ValidateOutput(string t, string u, out Guid ticket, out long userId)
     {
         if (Guid.TryParse(t, out ticket) == false)
             throw new ArgumentException("Failed to parse ticket.", nameof(ticket));
@@ -77,12 +76,12 @@ internal class SignInRequestBuilder :
     private static string GetSignInInnerBody(string server, string database, string username, string password)
     {
         StringBuilder bodyBuilder = new();
-        bodyBuilder.AppendLine(@"       <SignIn xmlns=""http://AutodeskDM/Filestore/Auth/1/7/2020/"">");
-        bodyBuilder.AppendLine($"           <dataServer>http://{server}</dataServer>");
-        bodyBuilder.AppendLine($"           <knowledgeVault>{database}</knowledgeVault>");
-        bodyBuilder.AppendLine($"           <userName>{username}</userName>");
-        bodyBuilder.AppendLine($"           <userPassword>{password}</userPassword>");
-        bodyBuilder.AppendLine("        </SignIn>");
+        bodyBuilder.AppendLine(@"<SignIn xmlns=""http://AutodeskDM/Filestore/Auth/1/7/2020/"">");
+        bodyBuilder.AppendLine($"<dataServer>http://{server}</dataServer>");
+        bodyBuilder.AppendLine($"<knowledgeVault>{database}</knowledgeVault>");
+        bodyBuilder.AppendLine($"<userName>{username}</userName>");
+        bodyBuilder.AppendLine($"<userPassword>{password}</userPassword>");
+        bodyBuilder.AppendLine("</SignIn>");
 
         return bodyBuilder.ToString();
     }

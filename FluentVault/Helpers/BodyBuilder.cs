@@ -4,12 +4,12 @@ namespace FluentVault;
 
 internal static class BodyBuilder
 {
-    internal static string GetRequestBody(string innerBody, Guid? ticket = null, long? userId = null)
+    internal static string GetRequestBody(string innerBody, Guid ticket = new(), long userId = -1)
     {
         StringBuilder bodyBuilder = new();
         bodyBuilder.AppendLine(@"<s:Envelope xmlns:s=""http://schemas.xmlsoap.org/soap/envelope/"">");
 
-        if (ticket is not null && userId is not null)
+        if (ticket != Guid.Empty && userId >= 0)
         {
             bodyBuilder.Append(GetHeaderBody(ticket, userId));
         }
@@ -22,7 +22,7 @@ internal static class BodyBuilder
         return bodyBuilder.ToString();
     }
 
-    private static string GetHeaderBody(Guid? ticket, long? userId)
+    private static string GetHeaderBody(Guid ticket, long userId)
     {
         StringBuilder bodyBuilder = new();
         bodyBuilder.AppendLine("<s:Header>");

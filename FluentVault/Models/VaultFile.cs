@@ -28,6 +28,6 @@ public record VaultFile(
     bool IsOnSite,
     bool IsControlledByChangeOrder,
     string DesignVisualAttachmentStatus,
-    VaultFileRevision? Revision,
-    VaultFileLifecycle? Lifecycle,
-    VaultCategory? Category);
+    VaultFileRevision Revision,
+    VaultFileLifecycle Lifecycle,
+    VaultCategory Category);

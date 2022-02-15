@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using System.Xml.Linq;
 
 namespace FluentVault;
 
@@ -66,12 +67,12 @@ internal class SearchFilesRequestBuilder : ISearchFilesRequestBuilder, ISearchFi
     public async Task<VaultFile> SearchAsync()
     {
         AddSearchCondition();
-        var uri = new Uri($"http://{_session.Server}/AutodeskDM/Services/v26/DocumentService.svc?op=FindFilesBySearchConditions&uid=8&vaultName={_session.Database}&sessID=382454514&app=VP");
-        var body = GetSearchFilesByFilenameRequestBody(_session.Ticket, _session.UserId);
-        var soapAction = @"""http://AutodeskDM/Services/Document/1/7/2020/DocumentService/FindFilesBySearchConditions""";
+        Uri uri = new($"http://{_session.Server}/AutodeskDM/Services/v26/DocumentService.svc?op=FindFilesBySearchConditions&uid=8&vaultName={_session.Database}&sessID=382454514&app=VP");
+        string body = GetSearchFilesByFilenameRequestBody(_session.Ticket, _session.UserId);
+        string soapAction = @"""http://AutodeskDM/Services/Document/1/7/2020/DocumentService/FindFilesBySearchConditions""";
 
-        var document = await VaultHttpClient.SendRequestAsync(uri, body, soapAction);
-        var file = document.ParseVaultFile();
+        XDocument document = await VaultHttpClient.SendRequestAsync(uri, body, soapAction);
+        VaultFile file = document.ParseVaultFile();
 
         return file;
     }
@@ -86,14 +87,14 @@ internal class SearchFilesRequestBuilder : ISearchFilesRequestBuilder, ISearchFi
             _ => string.Empty
         };
 
-        var condition = GetSearchCondition(value, _property, _operator, _propertyType, SearchRule.Must);
+        string condition = GetSearchCondition(value, _property, _operator, _propertyType, SearchRule.Must);
         _searchConditionBuilder.AppendLine(condition);
     }
 
-    private string GetSearchFilesByFilenameRequestBody(Guid ticket, long? userId)
+    private string GetSearchFilesByFilenameRequestBody(Guid ticket, long userId)
     {
-        var innerBody = GetSearchInnerBody(_searchConditionBuilder.ToString());
-        var requestBody = BodyBuilder.GetRequestBody(innerBody, ticket, userId);
+        string innerBody = GetSearchInnerBody(_searchConditionBuilder.ToString());
+        string requestBody = BodyBuilder.GetRequestBody(innerBody, ticket, userId);
 
         return requestBody;
     }
@@ -101,29 +102,29 @@ internal class SearchFilesRequestBuilder : ISearchFilesRequestBuilder, ISearchFi
     private static string GetSearchInnerBody(string searchConditions, string? sortConditions = null, string? folderIds = null, bool recurseFolders = true, bool latestOnly = true)
     {
         StringBuilder bodyBuilder = new();
-        bodyBuilder.AppendLine(@"       <FindFilesBySearchConditions xmlns=""http://AutodeskDM/Services/Document/1/7/2020/"">");
-        bodyBuilder.AppendLine("            <conditions>");
+        bodyBuilder.AppendLine(@"<FindFilesBySearchConditions xmlns=""http://AutodeskDM/Services/Document/1/7/2020/"">");
+        bodyBuilder.AppendLine("<conditions>");
         bodyBuilder.Append(searchConditions);
-        bodyBuilder.AppendLine("            </conditions>");
+        bodyBuilder.AppendLine("</conditions>");
 
-        bodyBuilder.AppendLine("            <sortConditions>");
+        bodyBuilder.AppendLine("<sortConditions>");
         if (string.IsNullOrWhiteSpace(sortConditions) is false)
             bodyBuilder.Append(sortConditions);
-        bodyBuilder.AppendLine("            </sortConditions>");
+        bodyBuilder.AppendLine("</sortConditions>");
 
-        bodyBuilder.AppendLine("            <folderIds>");
+        bodyBuilder.AppendLine("<folderIds>");
         if (string.IsNullOrWhiteSpace(folderIds) is false)
             bodyBuilder.Append(folderIds);
-        bodyBuilder.AppendLine("            </folderIds>");
+        bodyBuilder.AppendLine("</folderIds>");
 
-        bodyBuilder.AppendLine($"            <recurseFolders>{recurseFolders.ToString().ToLower()}</recurseFolders>");
-        bodyBuilder.AppendLine($"            <latestOnly>{latestOnly.ToString().ToLower()}</latestOnly>");
-        bodyBuilder.AppendLine("            <bookmark/>");
-        bodyBuilder.AppendLine("        </FindFilesBySearchConditions>");
+        bodyBuilder.AppendLine($"<recurseFolders>{recurseFolders.ToString().ToLower()}</recurseFolders>");
+        bodyBuilder.AppendLine($"<latestOnly>{latestOnly.ToString().ToLower()}</latestOnly>");
+        bodyBuilder.AppendLine("<bookmark/>");
+        bodyBuilder.AppendLine("</FindFilesBySearchConditions>");
 
         return bodyBuilder.ToString();
     }
 
     private static string GetSearchCondition(string searchText, int propertyId, SearchOperator searchOperator, SearchPropertyType propertyType, SearchRule searchRule)
-        => $@"              <SrchCond PropDefId=""{propertyId}"" SrchOper=""{searchOperator}"" SrchTxt=""{searchText}"" PropTyp=""{propertyType}"" SrchRule=""{searchRule}""/>";
+        => $@"<SrchCond PropDefId=""{propertyId}"" SrchOper=""{searchOperator}"" SrchTxt=""{searchText}"" PropTyp=""{propertyType}"" SrchRule=""{searchRule}""/>";
 }

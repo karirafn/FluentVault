@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Xml.Linq;
 
 using AutoFixture;
@@ -37,7 +38,7 @@ public class ExtensionTests
         // Act
 
         // Assert
-        Assert.Throws<Exception>(() => document.GetElementValue(elementToGet));
+        Assert.Throws<KeyNotFoundException>(() => document.GetElementValue(elementToGet));
     }
 
     [Fact]
