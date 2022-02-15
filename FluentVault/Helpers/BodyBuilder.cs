@@ -6,6 +6,9 @@ internal static class BodyBuilder
 {
     internal static string GetRequestBody(string innerBody, Guid? ticket = null, long? userId = null)
     {
+        if (string.IsNullOrWhiteSpace(innerBody))
+            throw new ArgumentNullException(nameof(innerBody));
+
         StringBuilder bodyBuilder = new();
         bodyBuilder.AppendLine(@"<s:Envelope xmlns:s=""http://schemas.xmlsoap.org/soap/envelope/"">");
 
@@ -24,6 +27,9 @@ internal static class BodyBuilder
 
     private static string GetHeaderBody(Guid? ticket, long? userId)
     {
+        ArgumentNullException.ThrowIfNull(ticket, nameof(ticket));
+        ArgumentNullException.ThrowIfNull(userId, nameof(userId));
+
         StringBuilder bodyBuilder = new();
         bodyBuilder.AppendLine("    <s:Header>");
         bodyBuilder.AppendLine(@"       <SecurityHeader xmlns=""http://AutodeskDM/Services"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"" xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"">");
