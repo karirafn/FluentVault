@@ -25,7 +25,7 @@ internal class SearchFilesRequestBuilder : ISearchFilesRequestBuilder
 
     private static string GetSearchFilesByFilenameRequestBody(string filename, Guid ticket, long? userId)
     {
-        var filenameSearchCondition = GetSearchCondition(filename, VaultSearchProperty.Filename, VaultSearchOperator.Contains, VaultSearchPropertyType.SingleProperty, VaultSearchRule.Must);
+        var filenameSearchCondition = GetSearchCondition(filename, VaultProperty.Filename, SearchOperator.Contains, SearchPropertyType.SingleProperty, SearchRule.Must);
         var innerBody = GetSearchInnerBody(filenameSearchCondition);
         var requestBody = BodyBuilder.GetRequestBody(innerBody, ticket, userId);
 
@@ -58,6 +58,6 @@ internal class SearchFilesRequestBuilder : ISearchFilesRequestBuilder
         return bodyBuilder.ToString();
     }
 
-    private static string GetSearchCondition(string searchText, VaultSearchProperty property, VaultSearchOperator searchOperator, VaultSearchPropertyType propertyType, VaultSearchRule searchRule)
+    private static string GetSearchCondition(string searchText, VaultProperty property, SearchOperator searchOperator, SearchPropertyType propertyType, SearchRule searchRule)
         => $@"              <SrchCond PropDefId=""{property}"" SrchOper=""{searchOperator}"" SrchTxt=""{searchText}"" PropTyp=""{propertyType}"" SrchRule=""{searchRule}""/>";
 }
