@@ -71,7 +71,7 @@ internal class SearchFilesRequestBuilder : ISearchFilesRequestBuilder, ISearchFi
         var soapAction = @"""http://AutodeskDM/Services/Document/1/7/2020/DocumentService/FindFilesBySearchConditions""";
 
         var document = await VaultHttpClient.SendRequestAsync(uri, body, soapAction);
-        var file = document.ParseFirstFileSearchResult();
+        var file = document.ParseVaultFile();
 
         return file;
     }

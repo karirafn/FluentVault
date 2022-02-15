@@ -20,7 +20,7 @@ internal static class ExtensionMethods
             .Where(x => x.Name.LocalName.Equals("File"))
             .Select(x => ParseVaultFile(x));
 
-    internal static VaultFile ParseFirstFileSearchResult(this XDocument document)
+    internal static VaultFile ParseVaultFile(this XDocument document)
         => ParseVaultFile(document?.Descendants()
             .FirstOrDefault(x => x.Name.LocalName.Equals("File")));
 

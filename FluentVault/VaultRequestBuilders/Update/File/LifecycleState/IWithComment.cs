@@ -2,6 +2,6 @@
 
 public interface IWithComment
 {
-    public Task WithComment(string comment);
-    public Task WithoutComment();
+    public Task<VaultFile> WithComment(string comment);
+    public Task<VaultFile> WithoutComment();
 }
