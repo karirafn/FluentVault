@@ -26,7 +26,10 @@ public class SearchFilesByFilenameTests : BaseTest
             .WithCredentials(username, password);
 
         // Act
-        var file = await vault.Search.Files.ByFilename(filename);
+        var file = await vault.Search.Files
+            .ForValueContaining(filename)
+            .InProperty(SearchStringProperty.Filename)
+            .SearchAsync();
 
         // Assert
         file.MasterId.Should().Be(masterId);

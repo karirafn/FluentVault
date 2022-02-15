@@ -2,5 +2,6 @@
 
 public interface ISearchFilesRequestBuilder
 {
-    public Task<VaultFile> ByFilename(string filename);
+    public ISearchFilesStringProperty ForValueContaining(string value);
+    public ISearchFilesStringProperty ForValueNotContaining(string value);
 }

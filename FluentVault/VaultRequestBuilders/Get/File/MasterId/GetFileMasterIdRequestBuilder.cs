@@ -11,7 +11,11 @@ internal class GetFileMasterIdRequestBuilder : IGetFileMasterIdRequestBuilder
 
     public async Task<long> ByFilename(string filename)
     {
-        var file = await new SearchFilesRequestBuilder(_session).ByFilename(filename);
+        var file = await new SearchFilesRequestBuilder(_session)
+            .ForValueContaining(filename)
+            .InProperty(SearchStringProperty.Filename)
+            .SearchAsync();
+
         return file.MasterId;
     }
 }
