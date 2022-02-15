@@ -8,4 +8,6 @@ public class VaultOptions
     public string Password { get; set; } = string.Empty;
     public string TestPartFilename { get; set; } = string.Empty;
     public long TestPartMasterId { get; set; }
+    public long DefaultLifecycleStateId { get; set; }
+    public long TestingLifecycleStateId { get; set; }
 }

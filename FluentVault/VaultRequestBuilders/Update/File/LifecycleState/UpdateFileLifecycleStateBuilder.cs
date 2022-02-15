@@ -30,7 +30,7 @@ internal class UpdateFileLifecycleStateBuilder :
 
     public async Task<VaultFile> WithComment(string comment)
     {
-        var uri = new Uri($"http://{_session.Server}/AutodeskDM/v26/DocumentServiceExtensions.svc?objCount=1&op=UpdateFileLifeCycleStates&uid=8&currentCommand=Connectivity.Explorer.DocumentPS.ChangeLifecycleStateCommand&vaultName={_session.Database}&app=VP");
+        var uri = new Uri($"http://{_session.Server}/AutodeskDM/Services/v26/DocumentServiceExtensions.svc?objCount=1&op=UpdateFileLifeCycleStates&uid=8&currentCommand=Connectivity.Explorer.DocumentPS.ChangeLifecycleStateCommand&vaultName={_session.Database}&app=VP");
         var body = GetUpdateFileLifecycleStateRequestBody(_masterId, _stateId, comment, _session.Ticket, _session.UserId);
         var soapAction = @"""http://AutodeskDM/Services/DocumentExtensions/1/7/2020/DocumentServiceExtensions/UpdateFileLifeCycleStates""";
 
