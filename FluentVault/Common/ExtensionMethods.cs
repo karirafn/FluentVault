@@ -10,7 +10,7 @@ internal static class ExtensionMethods
     internal static string? GetElementValue(this XDocument? document, string name)
         => document?.Descendants()
             .FirstOrDefault(x => x.Name.LocalName.Equals(name))?
-            .Value;
+            .Value ?? throw new Exception($"Element {name} was not found");
 
     internal static (string?, string?) GetElementValues(this XDocument? document, string a, string b)
         => (document?.GetElementValue(a), document?.GetElementValue(b));
@@ -24,7 +24,7 @@ internal static class ExtensionMethods
         => ParseVaultFile(document?.Descendants()
             .FirstOrDefault(x => x.Name.LocalName.Equals("File")));
 
-    internal static VaultFile ParseVaultFile(this XElement? element)
+    private static VaultFile ParseVaultFile(this XElement? element)
     {
         long id = element.ParseAttributeAsLong("Id");
         long masterId = element.ParseAttributeAsLong("MasterId");
