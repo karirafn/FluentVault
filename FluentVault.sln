@@ -7,9 +7,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{32BB7374-D6C
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{8E49F24A-A6AB-476D-815F-40BC8683442E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FluentVault", "FluentVault\FluentVault.csproj", "{013158F9-9190-4EEF-A168-0BD130518E0C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FluentVault", "FluentVault\FluentVault.csproj", "{013158F9-9190-4EEF-A168-0BD130518E0C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FluentVault.UnitTests", "FluentVault.UnitTests\FluentVault.UnitTests.csproj", "{67F79700-EF6E-490C-B46F-E925C4EE9EFC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FluentVault.IntegrationTests", "FluentVault.IntegrationTests\FluentVault.IntegrationTests.csproj", "{67F79700-EF6E-490C-B46F-E925C4EE9EFC}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{45241443-DEB2-41BE-BE54-2B2EBC671416}"
 	ProjectSection(SolutionItems) = preProject
