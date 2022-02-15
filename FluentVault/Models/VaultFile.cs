@@ -22,7 +22,7 @@ public record VaultFile(
     long CheckedOutUserId,
     string FileClass,
     string FileStatus,
-    bool IsLocket,
+    bool IsLocked,
     bool IsHidden,
     bool IsCloaked,
     bool IsOnSite,
