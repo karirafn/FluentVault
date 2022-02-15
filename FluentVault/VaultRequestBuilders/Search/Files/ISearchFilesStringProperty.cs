@@ -2,7 +2,7 @@
 
 public interface ISearchFilesStringProperty
 {
-    public IAddSearchFilesCondition InProperty(SearchStringProperty property);
-    public IAddSearchFilesCondition InAllProperties { get; }
-    public IAddSearchFilesCondition InAllPropertiesAndContent { get; }
+    public ISearchFilesAddSearchCondition InProperty(SearchStringProperty property);
+    public ISearchFilesAddSearchCondition InAllProperties { get; }
+    public ISearchFilesAddSearchCondition InAllPropertiesAndContent { get; }
 }

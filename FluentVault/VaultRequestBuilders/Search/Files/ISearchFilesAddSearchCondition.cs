@@ -1,6 +1,6 @@
 ﻿namespace FluentVault;
 
-public interface IAddSearchFilesCondition
+public interface ISearchFilesAddSearchCondition
 {
     public ISearchFilesRequestBuilder And { get; }
     public Task<VaultFile> SearchAsync();

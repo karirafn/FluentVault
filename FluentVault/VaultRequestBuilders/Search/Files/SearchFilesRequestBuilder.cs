@@ -2,7 +2,7 @@
 
 namespace FluentVault;
 
-internal class SearchFilesRequestBuilder : ISearchFilesRequestBuilder, ISearchFilesStringProperty, IAddSearchFilesCondition
+internal class SearchFilesRequestBuilder : ISearchFilesRequestBuilder, ISearchFilesStringProperty, ISearchFilesAddSearchCondition
 {
     private readonly VaultSessionInfo _session;
     private readonly StringBuilder _searchConditionBuilder = new();
@@ -30,13 +30,13 @@ internal class SearchFilesRequestBuilder : ISearchFilesRequestBuilder, ISearchFi
         return this;
     }
 
-    public IAddSearchFilesCondition InProperty(SearchStringProperty property)
+    public ISearchFilesAddSearchCondition InProperty(SearchStringProperty property)
     {
         _property = property.Id;
         return this;
     }
 
-    public IAddSearchFilesCondition InAllProperties
+    public ISearchFilesAddSearchCondition InAllProperties
     {
         get
         {
@@ -45,7 +45,7 @@ internal class SearchFilesRequestBuilder : ISearchFilesRequestBuilder, ISearchFi
         }
     }
 
-    public IAddSearchFilesCondition InAllPropertiesAndContent
+    public ISearchFilesAddSearchCondition InAllPropertiesAndContent
     {
         get
         {
