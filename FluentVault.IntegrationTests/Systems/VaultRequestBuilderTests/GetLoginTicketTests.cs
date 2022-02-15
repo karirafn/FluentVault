@@ -3,26 +3,24 @@ using System.Threading.Tasks;
 
 using FluentAssertions;
 
-using Microsoft.Extensions.Configuration;
+using FluentVault.IntegrationTests.Helpers;
 
 using Xunit;
 
 namespace FluentVault.UnitTests.VaultRequestBuilderTests;
 
-public class GetLoginTicketTests : BaseTest
+public class GetLoginTicketTests
 {
     [Fact]
     public async Task GetLoginTicketBuilder_ShouldReturnValidTicketAndGuid_WhenInputIsValid()
     {
-        // Act
-        var server = Configuration.GetValue<string>(nameof(VaultOptions.Server));
-        var database = Configuration.GetValue<string>(nameof(VaultOptions.Database));
-        var username = Configuration.GetValue<string>(nameof(VaultOptions.Username));
-        var password = Configuration.GetValue<string>(nameof(VaultOptions.Password));
+        // Arrange
+        var v = ConfigurationHelper.GetVaultOptions();
 
+        // Act
         using var vault = await Vault.SignIn
-            .ToVault(server, database)
-            .WithCredentials(username, password);
+            .ToVault(v.Server, v.Database)
+            .WithCredentials(v.Username, v.Password);
 
         // Assert
         vault.Ticket.Should().NotBeEmpty();
