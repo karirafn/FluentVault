@@ -33,6 +33,6 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore
     - name: Build
-      run: dotnet build -c $BUILD_CONFIG --no-restore
+      run: dotnet build -c $env:BUILD_CONFIG --no-restore
     - name: Test
-      run: dotnet test '"$Name.UnitTests"' -c $BUILD_CONFIG --no-build --verbosity normal
+      run: dotnet test "$env:$Name.UnitTests" -c $env:BUILD_CONFIG --no-build --verbosity normal
