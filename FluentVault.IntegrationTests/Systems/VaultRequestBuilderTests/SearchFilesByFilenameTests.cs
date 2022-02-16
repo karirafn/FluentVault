@@ -24,9 +24,9 @@ public class SearchFilesByFilenameTests
         var file = await vault.Search.Files
             .ForValueContaining(v.TestPartFilename)
             .InProperty(SearchStringProperty.Filename)
-            .SearchAsync();
+            .SearchSingleAsync();
 
         // Assert
-        file.MasterId.Should().Be(v.TestPartMasterId);
+        file?.MasterId.Should().Be(v.TestPartMasterId);
     }
 }

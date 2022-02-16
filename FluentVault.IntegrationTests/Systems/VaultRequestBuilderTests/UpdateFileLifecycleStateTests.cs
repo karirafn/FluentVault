@@ -25,9 +25,9 @@ public class UpdateFileLifecycleStateTests
         var oldFile = await vault.Search.Files
             .ForValueContaining(v.TestPartFilename)
             .InProperty(SearchStringProperty.Filename)
-            .SearchAsync();
+            .SearchSingleAsync();
 
-        if (oldFile.Lifecycle?.StateId.Equals(v.DefaultLifecycleStateId) is false)
+        if (oldFile?.Lifecycle?.StateId.Equals(v.DefaultLifecycleStateId) is false)
             oldFile = await vault.Update.File.LifecycleState
             .WithMasterId(v.TestPartMasterId)
             .ToStateWithId(v.DefaultLifecycleStateId)
@@ -40,7 +40,7 @@ public class UpdateFileLifecycleStateTests
             .WithComment(comment);
 
         // Assert
-        oldFile.Lifecycle?.StateId.Should().NotBe(newFile.Lifecycle?.StateId);
+        oldFile?.Lifecycle?.StateId.Should().NotBe(newFile.Lifecycle?.StateId);
         newFile.Lifecycle?.StateId.Should().Be(v.TestingLifecycleStateId);
         newFile.Comment.Should().Be(comment);
     }

@@ -64,7 +64,7 @@ internal class SearchFilesRequestBuilder : ISearchFilesRequestBuilder, ISearchFi
         }
     }
 
-    public async Task<VaultFile> SearchAsync()
+    public async Task<IEnumerable<VaultFile>> SearchAllAsync()
     {
         AddSearchCondition();
         Uri uri = new($"http://{_session.Server}/AutodeskDM/Services/v26/DocumentService.svc?op=FindFilesBySearchConditions&uid=8&vaultName={_session.Database}&sessID=382454514&app=VP");
@@ -72,9 +72,16 @@ internal class SearchFilesRequestBuilder : ISearchFilesRequestBuilder, ISearchFi
         string soapAction = @"""http://AutodeskDM/Services/Document/1/7/2020/DocumentService/FindFilesBySearchConditions""";
 
         XDocument document = await VaultHttpClient.SendRequestAsync(uri, body, soapAction);
-        VaultFile file = document.ParseVaultFile();
+        var files = document.ParseAllVaultFiles();
 
-        return file;
+        return files;
+    }
+
+    public async Task<VaultFile?> SearchSingleAsync()
+    {
+        var files = await SearchAllAsync();
+
+        return files.FirstOrDefault();
     }
 
     private void AddSearchCondition()
