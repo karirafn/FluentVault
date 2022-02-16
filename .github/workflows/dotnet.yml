@@ -1,6 +1,9 @@
 name: .NET
 
 on:
+  create:
+    branches:
+      - release/**
   push:
     branches: [ master ]
   pull_request:
@@ -8,13 +11,14 @@ on:
 
 jobs:
   build:
-
-    runs-on: ubuntu-latest
     
     env:
       BUILD_CONFIG: 'Release'
-      NAME: 'FluentVault'
+      SOLUTION: 'FluentVault.sln'
+      TEST: 'FluentVault.UnitTests'
 
+    runs-on: ubuntu-latest
+    
     steps:
     - uses: actions/checkout@v2
     - name: Get Build Version
@@ -33,6 +37,6 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore
     - name: Build
-      run: dotnet build -c $env:BUILD_CONFIG --no-restore
+      run: dotnet build $SOLUTION -c $BUILD_CONFIG -p:Version=$BUILD_VERSION --no-restore
     - name: Test
-      run: dotnet test "$env:$Name.UnitTests" -c $env:BUILD_CONFIG --no-build --verbosity normal
+      run: dotnet test $TEST -c $BUILD_CONFIG --no-restore --no-build --verbosity normal
