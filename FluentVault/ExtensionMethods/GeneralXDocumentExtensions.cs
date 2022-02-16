@@ -4,20 +4,17 @@ namespace FluentVault;
 
 internal static class GeneralXDocumentExtensions
 {
-    internal static string GetElementValue(this XDocument document, string name)
-        => document.GetElementByName(name).Value;
-
     internal static XElement GetElementByName(this XDocument document, string name)
         => document.Descendants().FirstOrDefault(x => x.Name.LocalName.Equals(name))
-        ?? throw new KeyNotFoundException($@"Element ""{name}"" was not found.");
+        ?? throw new KeyNotFoundException($@"Element ""{name}"" was not found in document.");
 
     internal static XElement GetElementByName(this XElement element, string name)
         => element.Descendants().FirstOrDefault(x => x.Name.LocalName.Equals(name))
-        ?? throw new KeyNotFoundException($@"Nested element ""{name}"" was not found in element {element.Name}");
+        ?? throw new KeyNotFoundException($@"Nested element ""{name}"" was not found in element ""{element.Name}"".");
 
     internal static string GetAttributeValue(this XElement element, string name)
         => element.Attribute(name)?.Value
-        ?? throw new KeyNotFoundException($@"Attribute ""{name}"" was not found.");
+        ?? throw new KeyNotFoundException($@"Attribute ""{name}"" was not found in element ""{element.Name}"".");
 
     internal static long ParseAttributeAsLong(this XElement element, string name)
         => long.TryParse(element.GetAttributeValue(name), out long value)

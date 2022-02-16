@@ -10,46 +10,32 @@ namespace FluentVault.UnitTests.Systems;
 public class GeneralXmlExtensionsTests
 {
     [Fact]
-    public void GetElementValue_ShouldReturnValue_WhenDocumentContainsElement()
+    public void GetElementByName_ShouldReturnElement_WhenDocumentContainsElement()
     {
         // Arrange
-        var expectation = "someValue";
-        var elementName = "SomeElement";
-        var document = XDocument.Parse($"<{elementName}>{expectation}</{elementName}>");
+        var name = "Inner";
+        var value = "Value";
+        var expectation = new XElement(name, value);
+        var outerElement = new XElement("Outer", expectation);
 
         // Act
-        var result = document.GetElementValue(elementName);
+        var result = outerElement.GetElementByName(name);
 
         // Assert
-        result.Should().Be(expectation);
+        result.Should().NotBeNull();
+        result.Should().BeEquivalentTo(expectation);
     }
 
     [Fact]
-    public void GetElementValue_ShouldThrowException_WhenDocumentDoesNotContainElement()
+    public void GetElementByName_ShouldThrowException_WhenDocumentDoesNotContainElement()
     {
         // Arrange
-        var elementToGet = "Something";
-        var document = XDocument.Parse("<Root><Element>Value</Element></Root>");
+        var name = "NotThere";
+        var outerElement = new XElement("Outer", new XElement("Inner", "Value"));
 
         // Act
 
         // Assert
-        Assert.Throws<KeyNotFoundException>(() => document.GetElementValue(elementToGet));
-    }
-
-    [Fact]
-    public void GetElementValues_ShouldReturnValues_WhenDocumentContainsElements()
-    {
-        // Arrange
-        var expectation = ("someValue", "someOtherValue");
-        var firstElement = "FirstElement";
-        var secondElement = "SecondElement";
-        var document = XDocument.Parse($"<Root><{firstElement}>{expectation.Item1}</{firstElement}><{secondElement}>{expectation.Item2}</{secondElement}></Root>");
-
-        // Act
-        var result = document.GetElementValues(firstElement, secondElement);
-
-        // Assert
-        result.Should().Be(expectation);
+        Assert.Throws<KeyNotFoundException>(() => outerElement.GetElementByName(name));
     }
 }
