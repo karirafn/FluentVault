@@ -4,13 +4,15 @@ namespace FluentVault;
 
 internal static class VaultFileParsingExtensions
 {
+    private const string FileElementName = "File";
+
     internal static VaultFile ParseVaultFile(this XDocument document)
-        => document.GetElementByName("File")
+        => document.GetElementByName(FileElementName)
             .ParseVaultFile();
 
     internal static IEnumerable<VaultFile> ParseAllVaultFiles(this XDocument document)
         => document.Descendants()
-            .Where(x => x.Name.LocalName.Equals("File"))
+            .Where(x => x.Name.LocalName.Equals(FileElementName))
             .Select(x => ParseVaultFile(x));
 
     private static VaultFile ParseVaultFile(this XElement element)
