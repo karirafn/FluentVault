@@ -16,14 +16,14 @@ internal static class ExtensionMethods
     internal static (string, string) GetElementValues(this XDocument document, string a, string b)
         => (document.GetElementValue(a), document.GetElementValue(b));
 
-    internal static IEnumerable<VaultFile> ParseAllFileSearchResults(this XDocument document)
-        => document.Descendants()
-            .Where(x => x.Name.LocalName.Equals("File"))
-            .Select(x => ParseVaultFile(x));
-
     internal static VaultFile ParseVaultFile(this XDocument document)
         => document.GetElementByName("File")
             .ParseVaultFile();
+
+    internal static IEnumerable<VaultFile> ParseAllVaultFiles(this XDocument document)
+        => document.Descendants()
+            .Where(x => x.Name.LocalName.Equals("File"))
+            .Select(x => ParseVaultFile(x));
 
     private static XElement GetElementByName(this XDocument document, string name)
         => document.Descendants()
@@ -112,73 +112,45 @@ internal static class ExtensionMethods
     }
 
     private static VaultFileRevision ParseRevision(this XElement element)
-    {
-        long id = element.ParseAttributeAsLong("RevId");
-        long maximumConsumeFileId = element.ParseAttributeAsLong("MaxConsumeFileId");
-        long maximumFileId = element.ParseAttributeAsLong("MaxFileId");
-        long definitionId = element.ParseAttributeAsLong("RevDefId");
-        long maximumRevisionId = element.ParseAttributeAsLong("MaxRevId");
-        long order = element.ParseAttributeAsLong("Order");
-
-        string label = element.GetAttributeValue("Label");
-
-        return new(id, definitionId, label, maximumConsumeFileId, maximumFileId, maximumRevisionId, order);
-    }
+        => new(element.ParseAttributeAsLong("RevId"),
+            element.ParseAttributeAsLong("RevDefId"),
+            element.GetAttributeValue("Label"),
+            element.ParseAttributeAsLong("MaxConsumeFileId"),
+            element.ParseAttributeAsLong("MaxFileId"),
+            element.ParseAttributeAsLong("MaxRevId"),
+            element.ParseAttributeAsLong("Order"));
 
     private static VaultFileLifecycle ParseLifecycle(this XElement element)
-    {
-        long stateId = element.ParseAttributeAsLong("LfCycStateId");
-        long definitonId = element.ParseAttributeAsLong("LfCycDefId");
-
-        bool isConsume = element.ParseAttributeAsBool("Consume");
-        bool isObsolete = element.ParseAttributeAsBool("Obsolete");
-
-        string stateName = element.GetAttributeValue("LfCycStateName");
-
-        return new(stateId, definitonId, stateName, isConsume, isObsolete);
-    }
+        => new(element.ParseAttributeAsLong("LfCycStateId"),
+            element.ParseAttributeAsLong("LfCycDefId"),
+            element.GetAttributeValue("LfCycStateName"),
+            element.ParseAttributeAsBool("Consume"),
+            element.ParseAttributeAsBool("Obsolete"));
 
     private static VaultCategory ParseCategory(this XElement element)
-    {
-        long id = element.ParseAttributeAsLong("CatId");
+        => new(element.ParseAttributeAsLong("CatId"),
+            element.GetAttributeValue("CatName"));
 
-        string name = element.GetAttributeValue("CatName");
-
-        return new(id, name);
-    }
+    private static string GetAttributeValue(this XElement element, string name)
+        => element.Attribute(name)?.Value
+        ?? throw new KeyNotFoundException($"Attribute {name} was not found.");
 
     private static XElement GetElementByName(this XElement element, string name)
         => element.Descendants().FirstOrDefault(x => x.Name.LocalName.Equals(name))
         ?? throw new KeyNotFoundException($"Nested element {name} was not found in element {element.Name}");
 
     private static long ParseAttributeAsLong(this XElement element, string name)
-    {
-        var stringValue = element.GetAttributeValue(name);
-        if (long.TryParse(stringValue, out long value) is false)
-            throw new ArgumentException($@"Failed to parse attribute ""{name}"" with value ""{stringValue}"" as type long");
-
-        return value;
-    }
+        => long.TryParse(element.GetAttributeValue(name), out long value)
+        ? value
+        : throw new ArgumentException($@"Failed to parse attribute ""{name}"" as type long");
 
     private static bool ParseAttributeAsBool(this XElement element, string name)
-    {
-        var stringValue = element.GetAttributeValue(name);
-        if (bool.TryParse(stringValue, out bool value) is false)
-            throw new ArgumentException($@"Failed to parse attribute ""{name}"" with value ""{stringValue}"" as type bool");
-
-        return value;
-    }
+        => bool.TryParse(element.GetAttributeValue(name), out bool value)
+        ? value
+        : throw new ArgumentException($@"Failed to parse attribute ""{name}"" as type bool");
 
     private static DateTime ParseAttributeAsDateTime(this XElement element, string name)
-    {
-        var stringValue = element.GetAttributeValue(name);
-        if (DateTime.TryParse(stringValue, out DateTime value) is false)
-            throw new ArgumentException($@"Failed to parse attribute ""{name}"" with value ""{stringValue}"" as type DateTime");
-
-        return value;
-    }
-
-    private static string GetAttributeValue(this XElement element, string name)
-        => element.Attribute(name)?.Value
-        ?? throw new KeyNotFoundException($"Attribute {name} was not found.");
+        => DateTime.TryParse(element.GetAttributeValue(name), out DateTime value)
+        ? value
+        : throw new ArgumentException($@"Failed to parse attribute ""{name}"" as type DateTime");
 }
