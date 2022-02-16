@@ -5,7 +5,7 @@ using AutoFixture;
 
 namespace FluentVault.UnitTests.Fixtures;
 
-internal static class BodyFixtures
+internal static partial class BodyFixtures
 {
     public static (string Body, IEnumerable<VaultFile> Files) GetVaultFileFixtures(int count)
     {
