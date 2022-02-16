@@ -11,7 +11,7 @@ namespace FluentVault.UnitTests.Systems;
 public class GeneralXmlExtensionsTests
 {
     [Fact]
-    public void GetElementByNameFromDocument_ShouldReturnElement_WhenDocumentContainsElement()
+    public void GetElementByName_ShouldReturnElement_WhenDocumentContainsElement()
     {
         // Arrange
         var name = "Nested";
@@ -32,7 +32,7 @@ public class GeneralXmlExtensionsTests
     }
 
     [Fact]
-    public void GetElementByNameFromDocument_ShouldThrowException_WhenDocumentDoesNotContainElement()
+    public void GetElementByName_ShouldThrowException_WhenDocumentDoesNotContainElement()
     {
         // Arrange
         var name = "NotThere";
@@ -47,37 +47,6 @@ public class GeneralXmlExtensionsTests
 
         // Assert
         Assert.Throws<KeyNotFoundException>(() => document.GetElementByName(name));
-    }
-
-    [Fact]
-    public void GetElementByNameFromElement_ShouldReturnElement_WhenDocumentContainsElement()
-    {
-        // Arrange
-        var name = "Nested";
-        var value = "Value";
-        var expectation = new XElement(name, value);
-        var root = new XElement("Root", expectation);
-
-        // Act
-        var result = root.GetElementByName(name);
-
-        // Assert
-        result.Should().NotBeNull();
-        result.Should().BeEquivalentTo(expectation);
-    }
-
-    [Fact]
-    public void GetElementByNameFromElement_ShouldThrowException_WhenDocumentDoesNotContainElement()
-    {
-        // Arrange
-        var name = "NotThere";
-        var nestedElement = new XElement("Nested", "Value");
-        var root = new XElement("Root", nestedElement);
-
-        // Act
-
-        // Assert
-        Assert.Throws<KeyNotFoundException>(() => root.GetElementByName(name));
     }
 
     [Fact]
@@ -205,4 +174,66 @@ public class GeneralXmlExtensionsTests
         // Assert
         Assert.Throws<ArgumentException>(() => root.ParseAttributeAsBool(name));
     }
+
+    [Fact]
+    public void ParseSingleElement_ShouldReturnValue_WhenAttributeCanBeParsed()
+    {
+        // Arrange
+        string attributeName = "Name";
+        string attributeValue = "SomeValue";
+        string elementName = "NestedElement";
+        string elementValue = "NestedElement";
+
+        TestRecord expectation = new(attributeValue);
+
+        XAttribute attribute = new(attributeName, attributeValue);
+        XElement nestedElement = new(elementName, elementValue);
+        nestedElement.Add(attribute);
+
+        XElement root = new("Root");
+        root.Add(nestedElement);
+
+        XDocument document = new();
+        document.Add(root);
+
+        // Act
+        TestRecord result = document.ParseSingleElement(elementName,
+            element => new TestRecord(element.GetAttributeValue(attributeName)));
+
+        // Assert
+        result.Should().BeEquivalentTo(expectation);
+    }
+
+    [Fact]
+    public void ParseAllElements_ShouldReturnValue_WhenAttributesCanBeParsed()
+    {
+        // Arrange
+        var attributeValues = new string[] { "ValueA", "ValueB" };
+        string attributeName = "Name";
+        string elementName = "ElementName";
+        string elementValue = "ElementValue";
+
+        XElement root = new("Root");
+        List<TestRecord> expectation = new();
+        foreach (var value in attributeValues)
+        {
+            XAttribute attribute = new(attributeName, value);
+            XElement element = new(elementName, elementValue);
+            element.Add(attribute);
+            root.Add(element);
+            expectation.Add(new(value));
+        }
+
+        XDocument document = new();
+        document.Add(root);
+
+        // Act
+        IEnumerable<TestRecord> result = document.ParseAllElements(elementName,
+            element => new TestRecord(element.GetAttributeValue(attributeName)));
+
+        // Assert
+        result.Should().BeEquivalentTo(expectation);
+    }
 }
+
+internal record TestRecord(string Name);

@@ -4,13 +4,9 @@ namespace FluentVault;
 
 internal static class GeneralXDocumentExtensions
 {
-    internal static XElement GetElementByName(this XDocument document, string name)
-        => document.Descendants().FirstOrDefault(x => x.Name.LocalName.Equals(name))
-        ?? throw new KeyNotFoundException($@"Element ""{name}"" was not found in document.");
-
-    internal static XElement GetElementByName(this XElement element, string name)
-        => element.Descendants().FirstOrDefault(x => x.Name.LocalName.Equals(name))
-        ?? throw new KeyNotFoundException($@"Nested element ""{name}"" was not found in element ""{element.Name}"".");
+    internal static XElement GetElementByName(this XContainer container, string name)
+        => container.Descendants().FirstOrDefault(x => x.Name.LocalName.Equals(name))
+        ?? throw new KeyNotFoundException($@"Element ""{name}"" was not found");
 
     internal static string GetAttributeValue(this XElement element, string name)
         => element.Attribute(name)?.Value
@@ -30,4 +26,12 @@ internal static class GeneralXDocumentExtensions
         => DateTime.TryParse(element.GetAttributeValue(name), out DateTime value)
         ? value
         : throw new ArgumentException($@"Failed to parse attribute ""{name}"" as type DateTime");
+
+    internal static T ParseSingleElement<T>(this XContainer container, string name, Func<XElement, T> parse)
+        => parse(container.GetElementByName(name));
+
+    internal static IEnumerable<T> ParseAllElements<T>(this XContainer container, string name, Func<XElement, T> parse)
+        => container.Descendants()
+            .Where(x => x.Name.LocalName.Equals(name))
+            .Select(x => parse(x));
 }

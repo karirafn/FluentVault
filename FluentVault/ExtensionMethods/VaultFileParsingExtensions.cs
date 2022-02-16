@@ -7,13 +7,10 @@ internal static class VaultFileParsingExtensions
     private const string FileElementName = "File";
 
     internal static VaultFile ParseVaultFile(this XDocument document)
-        => document.GetElementByName(FileElementName)
-            .ParseVaultFile();
+        => document.ParseSingleElement(FileElementName, ParseVaultFile);
 
     internal static IEnumerable<VaultFile> ParseAllVaultFiles(this XDocument document)
-        => document.Descendants()
-            .Where(x => x.Name.LocalName.Equals(FileElementName))
-            .Select(x => ParseVaultFile(x));
+        => document.ParseAllElements(FileElementName, ParseVaultFile);
 
     private static VaultFile ParseVaultFile(this XElement element)
     {
@@ -48,20 +45,9 @@ internal static class VaultFileParsingExtensions
         string fileStatus = element.GetAttributeValue("FileStatus");
         string designVisualAttachmentStatus = element.GetAttributeValue("DesignVisAttmtStatus");
 
-        VaultFileRevision revision = element
-            .GetElementByName("FileRev")?
-            .ParseRevision()
-            ?? throw new Exception("Failed to parse revision");
-
-        VaultFileLifecycle lifecycle = element
-            .GetElementByName("FileLfCyc")?
-            .ParseLifecycle()
-            ?? throw new Exception("Failed to parse lifecycle");
-
-        VaultCategory category = element
-            .GetElementByName("Cat")?
-            .ParseCategory()
-            ?? throw new Exception("Failed to parse category");
+        VaultFileRevision revision = element.ParseSingleElement("FileRev", ParseRevision);
+        VaultFileLifecycle lifecycle = element.ParseSingleElement("FileLfCyc", ParseLifecycle);
+        VaultCategory category = element.ParseSingleElement("Cat", ParseCategory);
 
         return new VaultFile(
             id,
@@ -96,7 +82,7 @@ internal static class VaultFileParsingExtensions
             category);
     }
 
-    private static VaultFileRevision ParseRevision(this XElement element)
+    private static VaultFileRevision ParseRevision(XElement element)
         => new(element.ParseAttributeAsLong("RevId"),
             element.ParseAttributeAsLong("RevDefId"),
             element.GetAttributeValue("Label"),
@@ -105,14 +91,14 @@ internal static class VaultFileParsingExtensions
             element.ParseAttributeAsLong("MaxRevId"),
             element.ParseAttributeAsLong("Order"));
 
-    private static VaultFileLifecycle ParseLifecycle(this XElement element)
+    private static VaultFileLifecycle ParseLifecycle(XElement element)
         => new(element.ParseAttributeAsLong("LfCycStateId"),
             element.ParseAttributeAsLong("LfCycDefId"),
             element.GetAttributeValue("LfCycStateName"),
             element.ParseAttributeAsBool("Consume"),
             element.ParseAttributeAsBool("Obsolete"));
 
-    private static VaultCategory ParseCategory(this XElement element)
+    private static VaultCategory ParseCategory(XElement element)
         => new(element.ParseAttributeAsLong("CatId"),
             element.GetAttributeValue("CatName"));
 }
