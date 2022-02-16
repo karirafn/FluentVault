@@ -27,7 +27,8 @@ internal class SignInRequestBuilder : ISignInRequestBuilder, IWithCredentials
 
         XDocument document = await VaultHttpClient.SendRequestAsync(uri, body, soapAction);
 
-        (string t, string u) = document.GetElementValues("Ticket", "UserId");
+        string t = document.GetElementValue("Ticket");
+        string u = document.GetElementValue("UserId");
 
         ValidateOutput(t, u, out Guid ticket, out long userId);
 
