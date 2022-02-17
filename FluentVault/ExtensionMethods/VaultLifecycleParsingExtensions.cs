@@ -1,6 +1,6 @@
 ﻿using System.Xml.Linq;
 
-namespace FluentVault.ExtensionMethods;
+namespace FluentVault;
 
 internal static class VaultLifecycleParsingExtensions
 {
@@ -18,7 +18,7 @@ internal static class VaultLifecycleParsingExtensions
             element.ParseAllElements("Trans", ParseTransition));
 
     private static VaultLifecycleState ParseState(this XElement element)
-        => new(element.ParseAttribute("Id", long.Parse),
+        => new(element.ParseAttribute("ID", long.Parse),
             element.GetAttributeValue("Name"),
             element.GetAttributeValue("DispName"),
             element.GetAttributeValue("Descr"),
