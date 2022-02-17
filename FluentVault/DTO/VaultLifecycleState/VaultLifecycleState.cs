@@ -11,7 +11,7 @@ public record VaultLifecycleState(
     bool IsReleasedState,
     bool IsObsoleteState,
     long DisplayOrder,
-    string RestrictPurgeOption,
-    string ItemFileSecurityMode,
-    string FolderFileSecurityMode,
-    IEnumerable<string> CommentArray);
+    RestrictPurgeOption RestrictPurgeOption,
+    ItemToFileSecurityMode ItemFileSecurityMode,
+    FolderFileSecurityMode FolderFileSecurityMode,
+    IEnumerable<string> Comments);
