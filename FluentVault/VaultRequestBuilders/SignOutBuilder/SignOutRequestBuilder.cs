@@ -18,8 +18,6 @@ public class SignOutRequestBuilder :
 
     public async Task WithSessionCredentials(Guid ticket, long userId)
     {
-        ValidateSessionCredentials(ticket, userId);
-
         var body = GetSignOutRequestBody(ticket, userId);
         var uri = new Uri($"http://{_server}/AutodeskDM/Services/Filestore/v26_2/AuthService.svc?op=SignOut&uid=8&currentCommand=Connectivity.Application.VaultBase.SignOutCommand&vaultName={_database}&app=VP");
         var soapAction = @"""http://AutodeskDM/Filestore/Auth/1/8/2021/AuthService/SignOut""";
@@ -37,15 +35,6 @@ public class SignOutRequestBuilder :
 
         if (string.IsNullOrWhiteSpace(database))
             throw new ArgumentException("Invalid database name.", nameof(database));
-    }
-
-    private static void ValidateSessionCredentials(Guid ticket, long userId)
-    {
-        ArgumentNullException.ThrowIfNull(ticket, nameof(ticket));
-        ArgumentNullException.ThrowIfNull(userId, nameof(userId));
-
-        if (userId < 1)
-            throw new ArgumentOutOfRangeException(nameof(userId), "User id must be greater than zero.");
     }
 
     private static string GetSignOutRequestBody(Guid ticket, long userId)
