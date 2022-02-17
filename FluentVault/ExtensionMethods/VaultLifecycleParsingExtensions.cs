@@ -8,7 +8,7 @@ internal static class VaultLifecycleParsingExtensions
         => document.ParseAllElements("LfCycDef", ParseLifecycle);
 
     private static VaultLifecycle ParseLifecycle(XElement element)
-        => new(element.ParseAttributeAsLong("Id"),
+        => new(element.ParseAttribute("Id", long.Parse),
             element.GetAttributeValue("Name"),
             element.GetAttributeValue("SysName"),
             element.GetAttributeValue("DispName"),
@@ -18,33 +18,33 @@ internal static class VaultLifecycleParsingExtensions
             element.ParseAllElements("Trans", ParseTransition));
 
     private static VaultLifecycleState ParseState(this XElement element)
-        => new(element.ParseAttributeAsLong("Id"),
+        => new(element.ParseAttribute("Id", long.Parse),
             element.GetAttributeValue("Name"),
             element.GetAttributeValue("DispName"),
             element.GetAttributeValue("Descr"),
-            element.ParseAttributeAsBool("IsDflt"),
-            element.ParseAttributeAsLong("LfCycDefId"),
-            element.ParseAttributeAsBool("StateBasedSec"),
-            element.ParseAttributeAsBool("ReleasedState"),
-            element.ParseAttributeAsBool("ObsoleteState"),
-            element.ParseAttributeAsLong("DispOrder"),
-            element.GetAttributeValue("RestrictPurgeOption"),
-            element.GetAttributeValue("ItemFileSecMode"),
-            element.GetAttributeValue("FolderFileSecMode"),
+            element.ParseAttribute("IsDflt", bool.Parse),
+            element.ParseAttribute("LfCycDefId", long.Parse),
+            element.ParseAttribute("StateBasedSec", bool.Parse),
+            element.ParseAttribute("ReleasedState", bool.Parse),
+            element.ParseAttribute("ObsoleteState", bool.Parse),
+            element.ParseAttribute("DispOrder", long.Parse),
+            element.ParseAttribute("RestrictPurgeOption", RestrictPurgeOption.Parse),
+            element.ParseAttribute("ItemFileSecMode", ItemToFileSecurityMode.Parse),
+            element.ParseAttribute("FolderFileSecMode", FolderFileSecurityMode.Parse),
             element.ParseAllElements("Comm", x => x.Value));
 
-    private static VaultLifecycleStateTransition ParseTransition(this XElement element)
-        => new(element.ParseAttributeAsLong("Id"),
-            element.ParseAttributeAsLong("FromId"),
-            element.ParseAttributeAsLong("ToId"),
-            element.ParseAttributeValueAsType("Bump", BumpRevisionState.Parse),
-            element.ParseAttributeValueAsType("SyncPropOption", SynchronizePropertiesState.Parse),
-            element.ParseAttributeValueAsType("CldState", EnforceChildState.Parse),
-            element.ParseAttributeValueAsType("CtntState", EnforceContentState.Parse),
-            element.ParseAttributeValueAsType("ItemFileLnkUptodate", FileLinkTypeState.Parse),
-            element.ParseAttributeValueAsType("ItemFileLnkState", FileLinkTypeState.Parse),
-            element.ParseAttributeAsBool("CldObsState"),
-            element.ParseAttributeAsBool("TransBasedSec"),
-            element.ParseAttributeAsBool("UpdateItems"));
+    private static VaultLifecycleTransition ParseTransition(this XElement element)
+        => new(element.ParseAttribute("Id", long.Parse),
+            element.ParseAttribute("FromId", long.Parse),
+            element.ParseAttribute("ToId", long.Parse),
+            element.ParseAttribute("Bump", BumpRevisionState.Parse),
+            element.ParseAttribute("SyncPropOption", SynchronizePropertiesState.Parse),
+            element.ParseAttribute("CldState", EnforceChildState.Parse),
+            element.ParseAttribute("CtntState", EnforceContentState.Parse),
+            element.ParseAttribute("ItemFileLnkUptodate", FileLinkTypeState.Parse),
+            element.ParseAttribute("ItemFileLnkState", FileLinkTypeState.Parse),
+            element.ParseAttribute("CldObsState", bool.Parse),
+            element.ParseAttribute("TransBasedSec", bool.Parse),
+            element.ParseAttribute("UpdateItems", bool.Parse));
 
 }

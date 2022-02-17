@@ -13,54 +13,54 @@ internal static class VaultFileParsingExtensions
         => document.ParseAllElements(FileElementName, ParseVaultFile);
 
     private static VaultFile ParseVaultFile(this XElement element)
-        => new(element.ParseAttributeAsLong("Id"),
+        => new(element.ParseAttribute("Id", long.Parse),
             element.GetAttributeValue("Name"),
-            element.ParseAttributeAsLong("MasterId"),
+            element.ParseAttribute("MasterId", long.Parse),
             element.GetAttributeValue("VerName"),
-            element.ParseAttributeAsLong("VerNum"),
-            element.ParseAttributeAsLong("MaxCkInVerNum"),
+            element.ParseAttribute("VerNum", long.Parse),
+            element.ParseAttribute("MaxCkInVerNum", long.Parse),
             element.GetAttributeValue("Comm"),
-            element.ParseAttributeAsDateTime("CkInDate"),
-            element.ParseAttributeAsDateTime("CreateDate"),
-            element.ParseAttributeAsDateTime("ModDate"),
-            element.ParseAttributeAsLong("CreateUserId"),
+            element.ParseAttribute("CkInDate", DateTime.Parse),
+            element.ParseAttribute("CreateDate", DateTime.Parse),
+            element.ParseAttribute("ModDate", DateTime.Parse),
+            element.ParseAttribute("CreateUserId", long.Parse),
             element.GetAttributeValue("CreateUserName"),
-            element.ParseAttributeAsLong("Cksum"),
-            element.ParseAttributeAsLong("FileSize"),
-            element.ParseAttributeAsBool("CheckedOut"),
-            element.ParseAttributeAsLong("FolderId"),
+            element.ParseAttribute("Cksum", long.Parse),
+            element.ParseAttribute("FileSize", long.Parse),
+            element.ParseAttribute("CheckedOut", bool.Parse),
+            element.ParseAttribute("FolderId", long.Parse),
             element.GetAttributeValue("CkOutSpec"),
             element.GetAttributeValue("CkOutMach"),
-            element.ParseAttributeAsLong("CkOutUserId"),
+            element.ParseAttribute("CkOutUserId", long.Parse),
             element.GetAttributeValue("FileClass"),
-            element.ParseAttributeValueAsType("FileStatus", FileStatus.Parse),
-            element.ParseAttributeAsBool("Locked"),
-            element.ParseAttributeAsBool("Hidden"),
-            element.ParseAttributeAsBool("Cloaked"),
-            element.ParseAttributeAsBool("IsOnSite"),
-            element.ParseAttributeAsBool("ControlledByChangeOrder"),
+            element.ParseAttribute("FileStatus", FileStatus.Parse),
+            element.ParseAttribute("Locked", bool.Parse),
+            element.ParseAttribute("Hidden", bool.Parse),
+            element.ParseAttribute("Cloaked", bool.Parse),
+            element.ParseAttribute("IsOnSite", bool.Parse),
+            element.ParseAttribute("ControlledByChangeOrder", bool.Parse),
             element.GetAttributeValue("DesignVisAttmtStatus"),
             element.ParseSingleElement("FileRev", ParseRevision),
             element.ParseSingleElement("FileLfCyc", ParseLifecycle),
             element.ParseSingleElement("Cat", ParseCategory));
 
     private static VaultFileRevision ParseRevision(XElement element)
-        => new(element.ParseAttributeAsLong("RevId"),
-            element.ParseAttributeAsLong("RevDefId"),
+        => new(element.ParseAttribute("RevId", long.Parse),
+            element.ParseAttribute("RevDefId", long.Parse),
             element.GetAttributeValue("Label"),
-            element.ParseAttributeAsLong("MaxConsumeFileId"),
-            element.ParseAttributeAsLong("MaxFileId"),
-            element.ParseAttributeAsLong("MaxRevId"),
-            element.ParseAttributeAsLong("Order"));
+            element.ParseAttribute("MaxConsumeFileId", long.Parse),
+            element.ParseAttribute("MaxFileId", long.Parse),
+            element.ParseAttribute("MaxRevId", long.Parse),
+            element.ParseAttribute("Order", long.Parse));
 
     private static VaultFileLifecycle ParseLifecycle(XElement element)
-        => new(element.ParseAttributeAsLong("LfCycStateId"),
-            element.ParseAttributeAsLong("LfCycDefId"),
+        => new(element.ParseAttribute("LfCycStateId", long.Parse),
+            element.ParseAttribute("LfCycDefId", long.Parse),
             element.GetAttributeValue("LfCycStateName"),
-            element.ParseAttributeAsBool("Consume"),
-            element.ParseAttributeAsBool("Obsolete"));
+            element.ParseAttribute("Consume", bool.Parse),
+            element.ParseAttribute("Obsolete", bool.Parse));
 
     private static VaultCategory ParseCategory(XElement element)
-        => new(element.ParseAttributeAsLong("CatId"),
+        => new(element.ParseAttribute("CatId", long.Parse),
             element.GetAttributeValue("CatName"));
 }
