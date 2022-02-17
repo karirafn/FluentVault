@@ -11,7 +11,7 @@ using Xunit;
 
 namespace FluentVault.UnitTests.Systems;
 
-public class VaultFileParsinsExtensionsTests
+public class VaultFileParsingExtensionsTests
 {
     [Fact]
     public void ParseVaultFile_ShouldReturnFile_WhenParsingValidString()
