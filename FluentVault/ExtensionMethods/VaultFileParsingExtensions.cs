@@ -13,74 +13,36 @@ internal static class VaultFileParsingExtensions
         => document.ParseAllElements(FileElementName, ParseVaultFile);
 
     private static VaultFile ParseVaultFile(this XElement element)
-    {
-        long id = element.ParseAttributeAsLong("Id");
-        long masterId = element.ParseAttributeAsLong("MasterId");
-        long versionNumber = element.ParseAttributeAsLong("VerNum");
-        long maximumCheckInVersionNumber = element.ParseAttributeAsLong("MaxCkInVerNum");
-        long createUserId = element.ParseAttributeAsLong("CreateUserId");
-        long checksum = element.ParseAttributeAsLong("Cksum");
-        long filesize = element.ParseAttributeAsLong("FileSize");
-        long folderId = element.ParseAttributeAsLong("FolderId");
-        long checkedOutUserId = element.ParseAttributeAsLong("CkOutUserId");
-
-        bool isCheckedOut = element.ParseAttributeAsBool("CheckedOut");
-        bool isLocked = element.ParseAttributeAsBool("Locked");
-        bool isHidden = element.ParseAttributeAsBool("Hidden");
-        bool isCloaked = element.ParseAttributeAsBool("Cloaked");
-        bool isOnSite = element.ParseAttributeAsBool("IsOnSite");
-        bool isControlledByChangeOrder = element.ParseAttributeAsBool("ControlledByChangeOrder");
-
-        DateTime checkedInDate = element.ParseAttributeAsDateTime("CkInDate");
-        DateTime createDate = element.ParseAttributeAsDateTime("CreateDate");
-        DateTime modifiedDate = element.ParseAttributeAsDateTime("ModDate");
-
-        string filename = element.GetAttributeValue("Name");
-        string versionName = element.GetAttributeValue("VerName");
-        string comment = element.GetAttributeValue("Comm");
-        string createUsername = element.GetAttributeValue("CreateUserName");
-        string checkedOutPath = element.GetAttributeValue("CkOutSpec");
-        string checkedOutMachine = element.GetAttributeValue("CkOutMach");
-        string fileClass = element.GetAttributeValue("FileClass");
-        string fileStatus = element.GetAttributeValue("FileStatus");
-        string designVisualAttachmentStatus = element.GetAttributeValue("DesignVisAttmtStatus");
-
-        VaultFileRevision revision = element.ParseSingleElement("FileRev", ParseRevision);
-        VaultFileLifecycle lifecycle = element.ParseSingleElement("FileLfCyc", ParseLifecycle);
-        VaultCategory category = element.ParseSingleElement("Cat", ParseCategory);
-
-        return new VaultFile(
-            id,
-            filename,
-            masterId,
-            versionName,
-            versionNumber,
-            maximumCheckInVersionNumber,
-            comment,
-            checkedInDate,
-            createDate,
-            modifiedDate,
-            createUserId,
-            createUsername,
-            checksum,
-            filesize,
-            isCheckedOut,
-            folderId,
-            checkedOutPath,
-            checkedOutMachine,
-            checkedOutUserId,
-            fileClass,
-            fileStatus,
-            isLocked,
-            isHidden,
-            isCloaked,
-            isOnSite,
-            isControlledByChangeOrder,
-            designVisualAttachmentStatus,
-            revision,
-            lifecycle,
-            category);
-    }
+        => new(element.ParseAttributeAsLong("Id"),
+            element.GetAttributeValue("Name"),
+            element.ParseAttributeAsLong("MasterId"),
+            element.GetAttributeValue("VerName"),
+            element.ParseAttributeAsLong("VerNum"),
+            element.ParseAttributeAsLong("MaxCkInVerNum"),
+            element.GetAttributeValue("Comm"),
+            element.ParseAttributeAsDateTime("CkInDate"),
+            element.ParseAttributeAsDateTime("CreateDate"),
+            element.ParseAttributeAsDateTime("ModDate"),
+            element.ParseAttributeAsLong("CreateUserId"),
+            element.GetAttributeValue("CreateUserName"),
+            element.ParseAttributeAsLong("Cksum"),
+            element.ParseAttributeAsLong("FileSize"),
+            element.ParseAttributeAsBool("CheckedOut"),
+            element.ParseAttributeAsLong("FolderId"),
+            element.GetAttributeValue("CkOutSpec"),
+            element.GetAttributeValue("CkOutMach"),
+            element.ParseAttributeAsLong("CkOutUserId"),
+            element.GetAttributeValue("FileClass"),
+            element.GetAttributeValue("FileStatus"),
+            element.ParseAttributeAsBool("Locked"),
+            element.ParseAttributeAsBool("Hidden"),
+            element.ParseAttributeAsBool("Cloaked"),
+            element.ParseAttributeAsBool("IsOnSite"),
+            element.ParseAttributeAsBool("ControlledByChangeOrder"),
+            element.GetAttributeValue("DesignVisAttmtStatus"),
+            element.ParseSingleElement("FileRev", ParseRevision),
+            element.ParseSingleElement("FileLfCyc", ParseLifecycle),
+            element.ParseSingleElement("Cat", ParseCategory));
 
     private static VaultFileRevision ParseRevision(XElement element)
         => new(element.ParseAttributeAsLong("RevId"),
