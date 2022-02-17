@@ -10,6 +10,11 @@ public abstract class BaseType
     }
 
     protected static T Parse<T>(string value, IEnumerable<T> types) where T : BaseType
-        => types.FirstOrDefault(x => x.Value.Equals(value))
-        ?? throw new ArgumentException($@"Unable to parse ""{value}"" to type ""{typeof(T)}""", nameof(value));
+        => types.FirstOrDefault(type => type.Value.Equals(value))
+        ?? throw new ArgumentException($@"Unable to parse value ""{value}"" to type ""{typeof(T)}""", nameof(value));
+
+    public override string ToString()
+    {
+        return Value;
+    }
 }
