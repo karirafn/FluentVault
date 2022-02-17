@@ -22,7 +22,7 @@ internal static partial class VaultResponseFixtures
         return CreateBody<VaultLifecycle>(fixture, count, "GetAllLifeCycleDefinitions", "http://AutodeskDM/Services/LifeCycle/1/7/2020/", CreateLifecycleBody);
     }
 
-    private static string CreateLifecycleBody(VaultLifecycle lifecycle) => $@"<LfCycDef
+    private static string CreateLifecycleBody(VaultLifecycle lifecycle) => $@"<LfCycDef 
                 Id=""{lifecycle.Id}""
 				Name=""{lifecycle.Name}""
 				SysName=""{lifecycle.SystemName}""
@@ -34,9 +34,10 @@ internal static partial class VaultResponseFixtures
                 </StateArray>
                 <TransArray>
                     {CreateEntityBody(lifecycle.Transitions, CreateTransitionBody)}
-                </TransArray>";
+                </TransArray>
+            </LfCycDef>";
 
-    private static string CreateStateBody(VaultLifecycleState state) => $@"<State
+    private static string CreateStateBody(VaultLifecycleState state) => $@"<State 
 						ID=""{state.Id}""
 						Name=""{state.Name}""
 						DispName=""{state.DisplayName}""
@@ -52,9 +53,10 @@ internal static partial class VaultResponseFixtures
 						FolderFileSecMode=""{state.FolderFileSecurityMode}"">
                         <CommArray>
                             {CreateCommentArray(state.Comments)}
-                        </CommArray>";
+                        </CommArray>
+                    </State>";
 
-    private static string CreateTransitionBody(VaultLifecycleTransition transition) => $@"<Trans
+    private static string CreateTransitionBody(VaultLifecycleTransition transition) => $@"<Trans 
                         Id=""{transition.Id}""
 						FromId=""{transition.FromId}""
 						ToId=""{transition.ToId}""
