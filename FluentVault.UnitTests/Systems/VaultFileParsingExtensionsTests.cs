@@ -17,7 +17,7 @@ public class VaultFileParsingExtensionsTests
     public void ParseVaultFile_ShouldReturnFile_WhenParsingValidString()
     {
         // Arrange
-        var (body, expectation) = BodyFixtures.GetVaultFileFixtures(1);
+        var (body, expectation) = VaultResponseFixtures.GetVaultFileFixtures(1);
         var document = XDocument.Parse(body);
 
         // Act
@@ -34,7 +34,7 @@ public class VaultFileParsingExtensionsTests
     {
         // Arrange
         int fileCount = 3;
-        var (body, expectation) = BodyFixtures.GetVaultFileFixtures(fileCount);
+        var (body, expectation) = VaultResponseFixtures.GetVaultFileFixtures(fileCount);
         var document = XDocument.Parse(body);
 
         // Act
