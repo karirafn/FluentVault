@@ -1,29 +1,20 @@
 ﻿using System.Collections.Generic;
-using System.Text;
 
 using AutoFixture;
 
 namespace FluentVault.UnitTests.Fixtures;
 
-internal static partial class BodyFixtures
+internal static partial class VaultResponseFixtures
 {
     public static (string Body, IEnumerable<VaultFile> Files) GetVaultFileFixtures(int count)
     {
         Fixture fixture = new();
-        List<VaultFile> files = new();
-        StringBuilder bodybuilder = new();
+        fixture.Register(() => FileStatus.UpToDate);
 
-        bodybuilder.Append($@"
-<s:Envelope xmlns:s=""http://schemas.xmlsoap.org/soap/envelope/"">
-    <s:Body xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">
-        <FindFilesBySearchConditionsResponse xmlns=""http://AutodeskDM/Services/Document/1/7/2020/"">
-            <FindFilesBySearchConditionsResult>");
+        return CreateBody<VaultFile>(fixture, count, "FindFilesBySearchConditions", "http://AutodeskDM/Services/Document/1/7/2020/", CreateFileBody);
+    }
 
-        for (int i = 0; i < count; i++)
-        {
-            VaultFile file = fixture.Create<VaultFile>();
-            files.Add(file);
-            bodybuilder.Append($@"<File
+    private static string CreateFileBody(VaultFile file) => $@"<File
                     Id=""{file.Id}""
                     Name=""{file.Filename}""
                     VerName=""{file.VersionName}""
@@ -63,21 +54,10 @@ internal static partial class BodyFixtures
                         LfCycStateId=""{file.Lifecycle?.StateId}""
                         LfCycDefId=""{file.Lifecycle?.DefinitionId}""
                         LfCycStateName=""{file.Lifecycle?.StateName}""
-                        Consume=""{file.Lifecycle?.IsConsume}""
+                        Consume=""{file.Lifecycle?.IsReleased}""
                         Obsolete=""{file.Lifecycle?.IsObsolete}""/>
                     <Cat
                         CatId=""{file.Category?.Id}""
                         CatName=""{file.Category?.Name}""/>
-                </File>");
-        }
-
-        bodybuilder.Append(@"</FindFilesBySearchConditionsResult>
-            <bookmark/>
-            <searchstatus TotalHits=""1"" IndxStatus=""IndexingComplete""/>
-        </FindFilesBySearchConditionsResponse>
-    </s:Body>
-</s:Envelope>");
-
-        return (bodybuilder.ToString(), files);
-    }
+                </File>";
 }
