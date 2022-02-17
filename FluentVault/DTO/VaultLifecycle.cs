@@ -7,4 +7,5 @@ public record VaultLifecycle(
     string DisplayName,
     string Description,
     string SecurityDefinition,
-    IEnumerable<VaultLifecycleState> States);
+    IEnumerable<VaultLifecycleState> States,
+    IEnumerable<VaultLifecycleStateTransition> Transitions);
