@@ -23,7 +23,7 @@ internal class LifecycleService
 
     private string GetRequestBody()
     {
-        var innerBody = @"		<GetAllLifeCycleDefinitions xmlns=""http://AutodeskDM/Services/LifeCycle/1/7/2020/""/>";
+        var innerBody = @"<GetAllLifeCycleDefinitions xmlns=""http://AutodeskDM/Services/LifeCycle/1/7/2020/""/>";
         var requestBody = BodyBuilder.GetRequestBody(innerBody, _session.Ticket, _session.UserId);
 
         return requestBody;
