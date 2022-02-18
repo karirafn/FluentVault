@@ -35,8 +35,8 @@ internal partial class VaultResponseFixtures
             (builder, entity) => builder.Append(createBody(entity)))
         .ToString();
 
-    private static string CreateCommentArray(IEnumerable<string> comments)
+    private static string CreateElementArray(IEnumerable<string> comments, string name)
         => comments.Aggregate(new StringBuilder(),
-            (builder, comment) => builder.Append($@"<Comm>{comment}</Comm>"))
+            (builder, comment) => builder.Append($@"<{name}>{comment}</{name}>"))
         .ToString();
 }

@@ -8,47 +8,8 @@ using Xunit;
 
 namespace FluentVault.UnitTests.Systems;
 
-public class GeneralXmlExtensionsTests
+public class XDocumentExtensionsTests
 {
-    [Fact]
-    public void GetElementByName_ShouldReturnElement_WhenDocumentContainsElement()
-    {
-        // Arrange
-        var name = "Nested";
-        var value = "Value";
-        var root = new XElement("Root");
-        var expectation = new XElement(name, value);
-        root.Add(expectation);
-
-        var document = new XDocument();
-        document.Add(root);
-
-        // Act
-        var result = document.GetElementByName(name);
-
-        // Assert
-        result.Should().NotBeNull();
-        result.Should().BeEquivalentTo(expectation);
-    }
-
-    [Fact]
-    public void GetElementByName_ShouldThrowException_WhenDocumentDoesNotContainElement()
-    {
-        // Arrange
-        var name = "NotThere";
-        var root = new XElement("Root");
-        var nestedElement = new XElement("Nested", "Value");
-        root.Add(nestedElement);
-
-        var document = new XDocument();
-        document.Add(root);
-
-        // Act
-
-        // Assert
-        Assert.Throws<KeyNotFoundException>(() => document.GetElementByName(name));
-    }
-
     [Fact]
     public void GetAttributeValue_ShouldReturnValue_WhenElementContainsAttribute()
     {

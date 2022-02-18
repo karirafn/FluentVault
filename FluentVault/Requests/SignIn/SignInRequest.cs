@@ -29,8 +29,8 @@ internal class SignInRequest : BaseRequest, ISignInRequest, IWithCredentials
 
         XDocument document = await SendAsync(uri, requestBody);
 
-        string t = document.GetElementByName("Ticket").Value;
-        string u = document.GetElementByName("UserId").Value;
+        string t = document.GetElementValue("Ticket");
+        string u = document.GetElementValue("UserId");
 
         ValidateResults(t, u, out Guid ticket, out long userId);
 

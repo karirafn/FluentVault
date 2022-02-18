@@ -52,7 +52,7 @@ internal static partial class VaultResponseFixtures
 						ItemFileSecMode=""{state.ItemFileSecurityMode}""
 						FolderFileSecMode=""{state.FolderFileSecurityMode}"">
                         <CommArray>
-                            {CreateCommentArray(state.Comments)}
+                            {CreateElementArray(state.Comments, "Comm")}
                         </CommArray>
                     </State>";
 

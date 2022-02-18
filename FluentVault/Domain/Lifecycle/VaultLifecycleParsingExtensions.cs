@@ -8,7 +8,7 @@ internal static class VaultLifecycleParsingExtensions
         => document.ParseAllElements("LfCycDef", ParseLifecycle);
 
     private static VaultLifecycle ParseLifecycle(XElement element)
-        => new(element.ParseAttribute("Id", long.Parse),
+        => new(element.ParseAttributeValue("Id", long.Parse),
             element.GetAttributeValue("Name"),
             element.GetAttributeValue("SysName"),
             element.GetAttributeValue("DispName"),
@@ -18,33 +18,33 @@ internal static class VaultLifecycleParsingExtensions
             element.ParseAllElements("Trans", ParseTransition));
 
     private static VaultLifecycleState ParseState(this XElement element)
-        => new(element.ParseAttribute("ID", long.Parse),
+        => new(element.ParseAttributeValue("ID", long.Parse),
             element.GetAttributeValue("Name"),
             element.GetAttributeValue("DispName"),
             element.GetAttributeValue("Descr"),
-            element.ParseAttribute("IsDflt", bool.Parse),
-            element.ParseAttribute("LfCycDefId", long.Parse),
-            element.ParseAttribute("StateBasedSec", bool.Parse),
-            element.ParseAttribute("ReleasedState", bool.Parse),
-            element.ParseAttribute("ObsoleteState", bool.Parse),
-            element.ParseAttribute("DispOrder", long.Parse),
-            element.ParseAttribute("RestrictPurgeOption", RestrictPurgeOption.Parse),
-            element.ParseAttribute("ItemFileSecMode", ItemToFileSecurityMode.Parse),
-            element.ParseAttribute("FolderFileSecMode", FolderFileSecurityMode.Parse),
+            element.ParseAttributeValue("IsDflt", bool.Parse),
+            element.ParseAttributeValue("LfCycDefId", long.Parse),
+            element.ParseAttributeValue("StateBasedSec", bool.Parse),
+            element.ParseAttributeValue("ReleasedState", bool.Parse),
+            element.ParseAttributeValue("ObsoleteState", bool.Parse),
+            element.ParseAttributeValue("DispOrder", long.Parse),
+            element.ParseAttributeValue("RestrictPurgeOption", RestrictPurgeOption.Parse),
+            element.ParseAttributeValue("ItemFileSecMode", ItemToFileSecurityMode.Parse),
+            element.ParseAttributeValue("FolderFileSecMode", FolderFileSecurityMode.Parse),
             element.ParseAllElements("Comm", x => x.Value));
 
     private static VaultLifecycleTransition ParseTransition(this XElement element)
-        => new(element.ParseAttribute("Id", long.Parse),
-            element.ParseAttribute("FromId", long.Parse),
-            element.ParseAttribute("ToId", long.Parse),
-            element.ParseAttribute("Bump", BumpRevisionState.Parse),
-            element.ParseAttribute("SyncPropOption", SynchronizePropertiesState.Parse),
-            element.ParseAttribute("CldState", EnforceChildState.Parse),
-            element.ParseAttribute("CtntState", EnforceContentState.Parse),
-            element.ParseAttribute("ItemFileLnkUptodate", FileLinkTypeState.Parse),
-            element.ParseAttribute("ItemFileLnkState", FileLinkTypeState.Parse),
-            element.ParseAttribute("CldObsState", bool.Parse),
-            element.ParseAttribute("TransBasedSec", bool.Parse),
-            element.ParseAttribute("UpdateItems", bool.Parse));
+        => new(element.ParseAttributeValue("Id", long.Parse),
+            element.ParseAttributeValue("FromId", long.Parse),
+            element.ParseAttributeValue("ToId", long.Parse),
+            element.ParseAttributeValue("Bump", BumpRevisionState.Parse),
+            element.ParseAttributeValue("SyncPropOption", SynchronizePropertiesState.Parse),
+            element.ParseAttributeValue("CldState", EnforceChildState.Parse),
+            element.ParseAttributeValue("CtntState", EnforceContentState.Parse),
+            element.ParseAttributeValue("ItemFileLnkUptodate", FileLinkTypeState.Parse),
+            element.ParseAttributeValue("ItemFileLnkState", FileLinkTypeState.Parse),
+            element.ParseAttributeValue("CldObsState", bool.Parse),
+            element.ParseAttributeValue("TransBasedSec", bool.Parse),
+            element.ParseAttributeValue("UpdateItems", bool.Parse));
 
 }

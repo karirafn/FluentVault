@@ -13,8 +13,5 @@ public abstract class BaseType
         => types.FirstOrDefault(type => type.Value.Equals(value))
         ?? throw new ArgumentException($@"Unable to parse value ""{value}"" to type ""{typeof(T)}""", nameof(value));
 
-    public override string ToString()
-    {
-        return Value;
-    }
+    public override string ToString() => Value;
 }
