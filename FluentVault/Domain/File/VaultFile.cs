@@ -30,4 +30,4 @@ public record VaultFile(
     string DesignVisualAttachmentStatus,
     VaultFileRevision Revision,
     VaultFileLifecycle Lifecycle,
-    VaultCategory Category);
+    VaultFileCategory Category);

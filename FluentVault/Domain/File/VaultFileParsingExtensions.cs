@@ -60,7 +60,7 @@ internal static class VaultFileParsingExtensions
             element.ParseAttribute("Consume", bool.Parse),
             element.ParseAttribute("Obsolete", bool.Parse));
 
-    private static VaultCategory ParseCategory(XElement element)
+    private static VaultFileCategory ParseCategory(XElement element)
         => new(element.ParseAttribute("CatId", long.Parse),
             element.GetAttributeValue("CatName"));
 }
