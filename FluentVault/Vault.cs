@@ -21,6 +21,7 @@ public class Vault : IDisposable
     public static ISignInRequestBuilder SignIn => new SignInRequestBuilder();
     public static ISignOutRequestBuilder SignOut => new SignOutRequestBuilder();
 
+    public IGetRequestBuilder Get => new GetRequestBuilder(_session);
     public ISearchRequestBuilder Search => new SearchRequestBuilder(_session);
     public IUpdateRequestBuilder Update => new UpdateRequestBuilder(_session);
 
