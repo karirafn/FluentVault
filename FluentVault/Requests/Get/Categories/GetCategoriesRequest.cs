@@ -1,0 +1,20 @@
+﻿using System.Xml.Linq;
+
+namespace FluentVault.Requests.Get.Categories;
+
+internal class GetCategoriesRequest : SessionRequest
+{
+    public GetCategoriesRequest(VaultSession session)
+        : base(session, "GetCategoryConfigurationsByBehaviorNames") { }
+
+    public async Task<IEnumerable<VaultCategory>> SendAsync()
+    {
+        string innerBody = GetOpeningTag(isSelfClosing: true);
+        string requestBody = BodyBuilder.GetRequestBody(innerBody, Session.Ticket, Session.UserId);
+
+        XDocument document = await SendAsync(requestBody);
+        IEnumerable<VaultCategory> categories = document.ParseCategories();
+
+        return categories;
+    }
+}
