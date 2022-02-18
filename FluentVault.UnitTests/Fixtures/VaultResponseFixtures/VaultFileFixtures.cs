@@ -9,7 +9,7 @@ internal static partial class VaultResponseFixtures
     public static (string Body, IEnumerable<VaultFile> Files) GetVaultFileFixtures(int count)
     {
         Fixture fixture = new();
-        fixture.Register(() => FileStatus.UpToDate);
+        fixture.Register(() => VaultFileStatus.UpToDate);
 
         return CreateBody<VaultFile>(fixture, count, "FindFilesBySearchConditions", "http://AutodeskDM/Services/Document/1/7/2020/", CreateFileBody);
     }

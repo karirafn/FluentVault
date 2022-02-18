@@ -21,7 +21,7 @@ public record VaultFile(
     string CheckedOutMachine,
     long CheckedOutUserId,
     string FileClass,
-    FileStatus FileStatus,
+    VaultFileStatus FileStatus,
     bool IsLocked,
     bool IsHidden,
     bool IsCloaked,

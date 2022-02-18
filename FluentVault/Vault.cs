@@ -1,15 +1,10 @@
 ﻿namespace FluentVault;
 
-public class Vault : IDisposable
+public class Vault : IAsyncDisposable
 {
-    private readonly VaultSessionInfo _session;
+    private readonly VaultSession _session;
 
-    public string Server { get; set; } = string.Empty;
-    public string Database { get; set; } = string.Empty;
-    public Guid Ticket { get; set; }
-    public long UserId { get; set; }
-
-    public Vault(string server, string database, Guid ticket, long userId)
+    internal Vault(string server, string database, Guid ticket, long userId)
     {
         _session = new(server, database, ticket, userId);
         Server = server;
@@ -18,16 +13,21 @@ public class Vault : IDisposable
         UserId = userId;
     }
 
-    public static ISignInRequestBuilder SignIn => new SignInRequestBuilder();
-    public static ISignOutRequestBuilder SignOut => new SignOutRequestBuilder();
+    public string Server { get; }
+    public string Database { get; }
+    public Guid Ticket { get; }
+    public long UserId { get; }
 
-    public IGetRequestBuilder Get => new GetRequestBuilder(_session);
-    public ISearchRequestBuilder Search => new SearchRequestBuilder(_session);
-    public IUpdateRequestBuilder Update => new UpdateRequestBuilder(_session);
+    public static ISignInRequest SignIn => new SignInRequest();
+    public async Task SignOut() => await new SignOutRequest(_session).SendAsync();
 
-    public void Dispose()
+    public IGetRequest Get => new GetRequest(_session);
+    public ISearchRequest Search => new SearchRequest(_session);
+    public IUpdateRequest Update => new UpdateRequest(_session);
+
+    async ValueTask IAsyncDisposable.DisposeAsync()
     {
-        SignOut.FromVault(_session.Server, _session.Database).WithSessionCredentials(Ticket, UserId);
+        await SignOut();
         GC.SuppressFinalize(this);
     }
 }
