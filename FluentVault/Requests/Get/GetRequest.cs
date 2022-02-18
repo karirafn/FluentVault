@@ -1,19 +1,16 @@
-﻿using System.Xml.Linq;
+﻿
+using FluentVault.Requests.Get.Lifecycles;
 
 namespace FluentVault;
 
-internal class GetRequest : SessionRequest, IGetRequest
+internal class GetRequest : IGetRequest
 {
-    public GetRequest(VaultSession session) : base(session, "GetAllLifeCycleDefinitions") { }
+    private readonly VaultSession _session;
 
-    public async Task<IEnumerable<VaultLifecycle>> Lifecycles()
+    public GetRequest(VaultSession session)
     {
-        string innerBody = GetOpeningTag(isSelfClosing: true);
-        string requestBody = BodyBuilder.GetRequestBody(innerBody, Session.Ticket, Session.UserId);
-
-        XDocument document = await SendAsync(requestBody);
-        IEnumerable<VaultLifecycle> lifecycles = document.ParseLifecycles();
-
-        return lifecycles;
+        _session = session;
     }
+
+    public async Task<IEnumerable<VaultLifecycle>> Lifecycles() => await new GetLifecyclesRequest(_session).SendAsync();
 }
