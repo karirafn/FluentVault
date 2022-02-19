@@ -25,7 +25,7 @@ internal class SignInRequest : BaseRequest, ISignInRequest, IWithCredentials
 
         string innerBody = GetInnerBody(_server, _database, username, password);
         string requestBody = BodyBuilder.GetRequestBody(innerBody);
-        Uri uri = RequestData.GetRequestUri(RequestName, _server);
+        Uri uri = RequestData.GetUri(_server);
 
         XDocument document = await SendAsync(uri, requestBody);
 

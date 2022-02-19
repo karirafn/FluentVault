@@ -1,6 +1,6 @@
 ﻿namespace FluentVault;
 
-internal static class RequestData
+internal class RequestData
 {
     private const string GetAllLifeCycleDefinitions = nameof(GetAllLifeCycleDefinitions);
     private const string GetBehaviorConfigurationsByNames = nameof(GetBehaviorConfigurationsByNames);
@@ -11,79 +11,66 @@ internal static class RequestData
     private const string SignIn = nameof(SignIn);
     private const string SignOut = nameof(SignOut);
 
-    public static string GetSoapAction(string name)
-        => $@"""{GetNamespace(name)}{GetService(name)}/{name}""";
+    private const string AdminToolsCommand = "Connectivity.Explorer.Admin.AdminToolsCommand";
+    private const string ChangeLifecycleStateCommand = "Connectivity.Explorer.DocumentPS.ChangeLifecycleStateCommand";
+    private const string SignOutCommand = "Connectivity.Application.VaultBase.SignOutCommand";
 
-    public static Uri GetRequestUri(string name, string server)
-        => new($"http://{server}/AutodeskDM/Services/{GetVersion(name)}/{GetService(name)}.svc{GetCommand(name)}");
-
-    public static string GetNamespace(string name)
+    private static readonly IEnumerable<RequestData> _data = new RequestData[]
     {
-        string ns = name switch
-        {
-            GetAllLifeCycleDefinitions => "Services/LifeCycle/1/7/2020/",
-            GetBehaviorConfigurationsByNames => "Services/Behavior/1/7/2020/",
-            GetCategoryConfigurationsByBehaviorNames => "Services/Category/1/7/2020/",
-            GetPropertyDefinitionInfosByEntityClassId => "Services/Property/1/7/2020/",
-            FindFilesBySearchConditions => "Services/Document/1/7/2020/",
-            UpdateFileLifeCycleStates => "Services/DocumentExtensions/1/7/2020/",
-            SignIn => "Filestore/Auth/1/7/2020/",
-            SignOut => "Filestore/Auth/1/8/2021/",
-            _ => throw new KeyNotFoundException($@"Unable to find namespace for ""{name}""")
-        };
-
-        return $"http://AutodeskDM/{ns}";
-    }
-
-    private static string GetService(string name) => name switch
-    {
-        GetAllLifeCycleDefinitions => "LifeCycleService",
-        GetBehaviorConfigurationsByNames => "BehaviorService",
-        GetCategoryConfigurationsByBehaviorNames => "CategoryService",
-        GetPropertyDefinitionInfosByEntityClassId => "PropertyService",
-        FindFilesBySearchConditions => "DocumentService",
-        UpdateFileLifeCycleStates => "DocumentServiceExtensions",
-        SignIn or SignOut => "AuthService",
-        _ => throw new KeyNotFoundException($@"Unable to find service for ""{name}""")
+        new(GetAllLifeCycleDefinitions, "LifeCycle", AdminToolsCommand),
+        new(GetBehaviorConfigurationsByNames, "Behavior", AdminToolsCommand),
+        new(GetCategoryConfigurationsByBehaviorNames, "Category", AdminToolsCommand),
+        new(GetPropertyDefinitionInfosByEntityClassId, "Property", AdminToolsCommand),
+        new(FindFilesBySearchConditions, "Document", string.Empty),
+        new(UpdateFileLifeCycleStates, "v26", "DocumentServiceExtensions", ChangeLifecycleStateCommand, "Services/DocumentExtensions/1/7/2020/"),
+        new(SignIn, "Filestore/v26", "AuthService", string.Empty, "Filestore/Auth/1/7/2020/"),
+        new(SignOut, "Filestore/v26_2", "AuthService", SignOutCommand, "Filestore/Auth/1/8/2021/"),
     };
 
-    private static string GetVersion(string name)
-    {
-        string version = name switch
-        {
-            GetAllLifeCycleDefinitions => "v26",
-            GetBehaviorConfigurationsByNames => "v26",
-            GetCategoryConfigurationsByBehaviorNames => "v26",
-            GetPropertyDefinitionInfosByEntityClassId => "v26",
-            FindFilesBySearchConditions => "v26",
-            UpdateFileLifeCycleStates => "v26",
-            SignIn => "v26",
-            SignOut => "v26_2",
-            _ => throw new KeyNotFoundException($@"Unable to find service version for ""{name}""")
-        };
+    private readonly string _name;
+    private readonly string _version;
+    private readonly string _service;
+    private readonly string _ns;
+    private readonly string _command;
 
-        return new[] { SignIn, SignOut }.Contains(name)
-            ? $"Filestore/{version}"
-            : version;
+    private RequestData(string name, string version, string service, string command, string ns)
+    {
+        _name = name;
+        _version = version;
+        _service = service;
+        _ns = ns;
+        _command = GetCommand(name, command);
     }
 
-    private static string GetCommand(string name)
+    private RequestData(string name, string type, string command)
     {
-        string command = name switch
-        {
-            GetAllLifeCycleDefinitions => "Connectivity.Explorer.Admin.AdminToolsCommand",
-            GetBehaviorConfigurationsByNames => "Connectivity.Explorer.Admin.AdminToolsCommand",
-            GetCategoryConfigurationsByBehaviorNames => "Connectivity.Explorer.Admin.AdminToolsCommand",
-            GetPropertyDefinitionInfosByEntityClassId => "Connectivity.Explorer.Admin.AdminToolsCommand",
-            FindFilesBySearchConditions => string.Empty,
-            UpdateFileLifeCycleStates => "Connectivity.Explorer.DocumentPS.ChangeLifecycleStateCommand",
-            SignIn => string.Empty,
-            SignOut => "Connectivity.Application.VaultBase.SignOutCommand",
-            _ => throw new KeyNotFoundException($@"Unable to find command for ""{name}""")
-        };
-
-        return string.IsNullOrEmpty(command)
-            ? string.Empty
-            : $"?op={name}&currentCommand={command}";
+        _name = name;
+        _version = "v26";
+        _service = $"{type}Service";
+        _ns = $"Services/{type}/1/7/2020/";
+        _command = GetCommand(name, command);
     }
+
+    public RequestData(string name)
+    {
+        var data = _data.FirstOrDefault(x => x._name == name)
+            ?? throw new KeyNotFoundException($@"No data exists for ""{name}""");
+
+        _name = data._name;
+        _version = data._version;
+        _service= data._service;
+        _ns= data._ns;
+        _command = data._command;
+    }
+
+    public string Name => _name;
+    public string SoapAction => $@"""{Namespace}{_service}/{_name}""";
+    public string Namespace => $"http://AutodeskDM/{_ns}";
+    public Uri GetUri(string server)
+        => new($"http://{server}/AutodeskDM/Services/{_version}/{_service}.svc{_command}");
+
+    private static string GetCommand(string name, string command)
+        => string.IsNullOrEmpty(command)
+        ? string.Empty
+        : $"?op={name}&currentCommand={command}";
 }

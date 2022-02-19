@@ -5,30 +5,23 @@ namespace FluentVault;
 
 internal abstract class BaseRequest
 {
-    public BaseRequest(string name)
-    {
-        RequestName = name;
-    }
+    protected readonly RequestData RequestData;
 
-    public string RequestName { get; init; }
+    public BaseRequest(string name) => RequestData = new RequestData(name);
 
-    public string GetOpeningTag(bool isSelfClosing = false)
-        => isSelfClosing
-        ? $@"<{RequestName} xmlns=""{RequestData.GetNamespace(RequestName)}""/>"
-        : $@"<{RequestName} xmlns=""{RequestData.GetNamespace(RequestName)}"">";
+    protected string GetOpeningTag(bool isSelfClosing = false)
+        => $@"<{RequestData.Name} xmlns=""{RequestData.Namespace}""{(isSelfClosing ? "/>" : ">")}";
 
-    public string GetClosingTag() => $"</{RequestName}>";
+    protected string GetClosingTag() => $"</{RequestData.Name}>";
 
     public async Task<XDocument> SendAsync(Uri uri, string requestBody)
     {
-        string soapAction = RequestData.GetSoapAction(RequestName);
-
         StringContent content = new(requestBody);
         content.Headers.ContentType = MediaTypeHeaderValue.Parse("text/xml");
 
         HttpRequestMessage request = new(HttpMethod.Post, uri);
         request.Content = content;
-        request.Headers.Add("SOAPAction", soapAction);
+        request.Headers.Add("SOAPAction", RequestData.SoapAction);
 
         using HttpClient httpClient = new();
         HttpResponseMessage response = await httpClient.SendAsync(request);
