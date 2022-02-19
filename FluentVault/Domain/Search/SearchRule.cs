@@ -1,6 +1,6 @@
-﻿namespace FluentVault;
+﻿namespace FluentVault.Domain.Search;
 
-public class SearchRule
+internal class SearchRule
 {
     public static readonly SearchRule Must = new(nameof(Must));
     public static readonly SearchRule May = new(nameof(May));

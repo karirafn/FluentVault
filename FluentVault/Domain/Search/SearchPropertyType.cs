@@ -1,6 +1,6 @@
-﻿namespace FluentVault;
+﻿namespace FluentVault.Domain.Search;
 
-public sealed class SearchPropertyType
+internal sealed class SearchPropertyType
 {
     public static readonly SearchPropertyType SingleProperty = new(nameof(SingleProperty));
     public static readonly SearchPropertyType AllProperties = new(nameof(AllProperties));

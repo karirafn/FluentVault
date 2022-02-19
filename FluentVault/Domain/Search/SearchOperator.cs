@@ -1,6 +1,6 @@
-﻿namespace FluentVault;
+﻿namespace FluentVault.Domain.Search;
 
-public enum SearchOperator
+internal enum SearchOperator
 {
     Contains = 1,
     DoesNotContain = 2,
