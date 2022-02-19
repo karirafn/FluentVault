@@ -9,7 +9,7 @@ internal class SearchFilesRequest : SessionRequest, ISearchFilesRequestBuilder, 
     private object _searchValue = new();
     private SearchOperator _operator = SearchOperator.Contains;
     private SearchPropertyType _propertyType = SearchPropertyType.SingleProperty;
-    private int _property;
+    private long _property;
 
     public SearchFilesRequest(VaultSession session) : base(session, "FindFilesBySearchConditions") { }
 
@@ -29,7 +29,7 @@ internal class SearchFilesRequest : SessionRequest, ISearchFilesRequestBuilder, 
 
     public ISearchFilesAddSearchCondition InProperty(SearchStringProperty property)
     {
-        _property = property.Id;
+        _property = (long)property;
         return this;
     }
 
@@ -120,6 +120,6 @@ internal class SearchFilesRequest : SessionRequest, ISearchFilesRequestBuilder, 
         return bodyBuilder.ToString();
     }
 
-    private static string GetSearchCondition(string searchText, int propertyId, SearchOperator searchOperator, SearchPropertyType propertyType, SearchRule searchRule)
+    private static string GetSearchCondition(string searchText, long propertyId, SearchOperator searchOperator, SearchPropertyType propertyType, SearchRule searchRule)
         => $@"<SrchCond PropDefId=""{propertyId}"" SrchOper=""{searchOperator}"" SrchTxt=""{searchText}"" PropTyp=""{propertyType}"" SrchRule=""{searchRule}""/>";
 }
