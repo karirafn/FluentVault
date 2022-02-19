@@ -2,7 +2,7 @@
 
 public interface ISearchFilesAddSearchCondition
 {
-    public ISearchFilesRequestBuilder And { get; }
+    public ISearchFilesRequest And { get; }
     public Task<IEnumerable<VaultFile>> SearchAllAsync();
     public Task<VaultFile?> SearchSingleAsync();
 }
