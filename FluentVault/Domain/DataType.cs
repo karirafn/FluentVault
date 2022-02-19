@@ -1,4 +1,4 @@
-﻿namespace FluentVault.Domain.Properties;
+﻿namespace FluentVault;
 
 public class DataType : BaseType
 {

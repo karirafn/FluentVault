@@ -5,6 +5,7 @@ internal static class RequestData
     private const string GetAllLifeCycleDefinitions = nameof(GetAllLifeCycleDefinitions);
     private const string GetBehaviorConfigurationsByNames = nameof(GetBehaviorConfigurationsByNames);
     private const string GetCategoryConfigurationsByBehaviorNames = nameof(GetCategoryConfigurationsByBehaviorNames);
+    private const string GetPropertyDefinitionInfosByEntityClassId = nameof(GetPropertyDefinitionInfosByEntityClassId);
     private const string FindFilesBySearchConditions = nameof(FindFilesBySearchConditions);
     private const string UpdateFileLifeCycleStates = nameof(UpdateFileLifeCycleStates);
     private const string SignIn = nameof(SignIn);
@@ -23,6 +24,7 @@ internal static class RequestData
             GetAllLifeCycleDefinitions => "Services/LifeCycle/1/7/2020/",
             GetBehaviorConfigurationsByNames => "Services/Behavior/1/7/2020/",
             GetCategoryConfigurationsByBehaviorNames => "Services/Category/1/7/2020/",
+            GetPropertyDefinitionInfosByEntityClassId => "Services/Property/1/7/2020/",
             FindFilesBySearchConditions => "Services/Document/1/7/2020/",
             UpdateFileLifeCycleStates => "Services/DocumentExtensions/1/7/2020/",
             SignIn => "Filestore/Auth/1/7/2020/",
@@ -38,6 +40,7 @@ internal static class RequestData
         GetAllLifeCycleDefinitions => "LifeCycleService",
         GetBehaviorConfigurationsByNames => "BehaviorService",
         GetCategoryConfigurationsByBehaviorNames => "CategoryService",
+        GetPropertyDefinitionInfosByEntityClassId => "PropertyService",
         FindFilesBySearchConditions => "DocumentService",
         UpdateFileLifeCycleStates => "DocumentServiceExtensions",
         SignIn or SignOut => "AuthService",
@@ -51,6 +54,7 @@ internal static class RequestData
             GetAllLifeCycleDefinitions => "v26",
             GetBehaviorConfigurationsByNames => "v26",
             GetCategoryConfigurationsByBehaviorNames => "v26",
+            GetPropertyDefinitionInfosByEntityClassId => "v26",
             FindFilesBySearchConditions => "v26",
             UpdateFileLifeCycleStates => "v26",
             SignIn => "v26",
@@ -70,6 +74,7 @@ internal static class RequestData
             GetAllLifeCycleDefinitions => "Connectivity.Explorer.Admin.AdminToolsCommand",
             GetBehaviorConfigurationsByNames => "Connectivity.Explorer.Admin.AdminToolsCommand",
             GetCategoryConfigurationsByBehaviorNames => "Connectivity.Explorer.Admin.AdminToolsCommand",
+            GetPropertyDefinitionInfosByEntityClassId => "Connectivity.Explorer.Admin.AdminToolsCommand",
             FindFilesBySearchConditions => string.Empty,
             UpdateFileLifeCycleStates => "Connectivity.Explorer.DocumentPS.ChangeLifecycleStateCommand",
             SignIn => string.Empty,

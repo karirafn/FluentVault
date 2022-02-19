@@ -1,6 +1,6 @@
-﻿namespace FluentVault.Domain.Properties;
+﻿namespace FluentVault;
 
-public record VaultProperty(
+public record PropertyDefinition(
     long Id,
     DataType DataType,
     string DisplayName,
@@ -8,4 +8,5 @@ public record VaultProperty(
     bool IsActive,
     bool IsUsedInBasicSearch,
     bool IsSystemProperty,
-    long UsageCount);
+    long UsageCount,
+    IEnumerable<EntityClassAssociation> EntityClassAssociations);
