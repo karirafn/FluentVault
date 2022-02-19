@@ -1,4 +1,10 @@
-﻿namespace FluentVault;
+﻿using FluentVault.Requests.Get;
+using FluentVault.Requests.Search;
+using FluentVault.Requests.SignIn;
+using FluentVault.Requests.SignOut;
+using FluentVault.Requests.Update;
+
+namespace FluentVault;
 
 public class Vault : IAsyncDisposable
 {

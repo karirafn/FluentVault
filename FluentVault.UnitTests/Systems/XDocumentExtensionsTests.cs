@@ -4,6 +4,8 @@ using System.Xml.Linq;
 
 using FluentAssertions;
 
+using FluentVault.Common.Extensions;
+
 using Xunit;
 
 namespace FluentVault.UnitTests.Systems;

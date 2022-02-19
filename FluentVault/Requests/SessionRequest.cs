@@ -1,6 +1,8 @@
 ﻿using System.Xml.Linq;
 
-namespace FluentVault;
+using FluentVault.Common.Helpers;
+
+namespace FluentVault.Requests;
 
 internal abstract class SessionRequest : BaseRequest
 {

@@ -1,4 +1,6 @@
-﻿namespace FluentVault;
+﻿using FluentVault.Common.Helpers;
+
+namespace FluentVault.Requests.SignOut;
 
 internal class SignOutRequest : SessionRequest
 {

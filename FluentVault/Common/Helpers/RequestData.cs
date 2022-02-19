@@ -1,4 +1,4 @@
-﻿namespace FluentVault;
+﻿namespace FluentVault.Common.Helpers;
 
 internal class RequestData
 {

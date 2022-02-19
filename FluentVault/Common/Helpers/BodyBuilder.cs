@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace FluentVault;
+namespace FluentVault.Common.Helpers;
 
 internal static class BodyBuilder
 {

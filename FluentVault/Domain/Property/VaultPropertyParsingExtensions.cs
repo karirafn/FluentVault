@@ -1,6 +1,8 @@
 ﻿using System.Xml.Linq;
 
-namespace FluentVault;
+using FluentVault.Common.Extensions;
+
+namespace FluentVault.Domain.Property;
 
 internal static class VaultPropertyParsingExtensions
 {

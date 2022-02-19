@@ -1,7 +1,9 @@
 ﻿using System.Net.Http.Headers;
 using System.Xml.Linq;
 
-namespace FluentVault;
+using FluentVault.Common.Helpers;
+
+namespace FluentVault.Requests;
 
 internal abstract class BaseRequest
 {

@@ -2,6 +2,7 @@
 
 using FluentAssertions;
 
+using FluentVault.Domain.Property;
 using FluentVault.UnitTests.Fixtures;
 
 using Xunit;

@@ -1,4 +1,6 @@
-﻿namespace FluentVault;
+﻿using FluentVault.Requests.Search.Files;
+
+namespace FluentVault.Requests.Search;
 
 internal class SearchRequest : ISearchRequest
 {

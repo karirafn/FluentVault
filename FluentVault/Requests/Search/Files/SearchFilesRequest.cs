@@ -1,7 +1,10 @@
 ﻿using System.Text;
 using System.Xml.Linq;
 
-namespace FluentVault;
+using FluentVault.Common.Helpers;
+using FluentVault.Domain.File;
+
+namespace FluentVault.Requests.Search.Files;
 
 internal class SearchFilesRequest : SessionRequest, ISearchFilesRequestBuilder, ISearchFilesStringProperty, ISearchFilesAddSearchCondition
 {

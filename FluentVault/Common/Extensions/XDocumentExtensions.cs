@@ -1,6 +1,6 @@
 ﻿using System.Xml.Linq;
 
-namespace FluentVault;
+namespace FluentVault.Common.Extensions;
 
 internal static class XDocumentExtensions
 {

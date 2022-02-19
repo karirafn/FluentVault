@@ -1,4 +1,6 @@
-﻿namespace FluentVault;
+﻿using FluentVault.Common;
+
+namespace FluentVault;
 
 public class EntityClass : BaseType
 {

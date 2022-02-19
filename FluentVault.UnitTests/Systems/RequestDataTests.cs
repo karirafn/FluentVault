@@ -3,6 +3,8 @@ using System;
 
 using FluentAssertions;
 
+using FluentVault.Common.Helpers;
+
 using Xunit;
 
 namespace FluentVault.UnitTests.Systems;

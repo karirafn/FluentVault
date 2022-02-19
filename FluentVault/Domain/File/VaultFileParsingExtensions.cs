@@ -1,6 +1,8 @@
 ﻿using System.Xml.Linq;
 
-namespace FluentVault;
+using FluentVault.Common.Extensions;
+
+namespace FluentVault.Domain.File;
 
 internal static class VaultFileParsingExtensions
 {

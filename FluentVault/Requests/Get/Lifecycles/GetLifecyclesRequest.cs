@@ -1,5 +1,8 @@
 ﻿using System.Xml.Linq;
 
+using FluentVault.Common.Helpers;
+using FluentVault.Domain.Lifecycle;
+
 namespace FluentVault.Requests.Get.Lifecycles;
 
 internal class GetLifecyclesRequest : SessionRequest

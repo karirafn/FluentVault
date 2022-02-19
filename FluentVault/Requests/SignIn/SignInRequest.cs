@@ -1,7 +1,10 @@
 ﻿using System.Text;
 using System.Xml.Linq;
 
-namespace FluentVault;
+using FluentVault.Common.Extensions;
+using FluentVault.Common.Helpers;
+
+namespace FluentVault.Requests.SignIn;
 
 internal class SignInRequest : BaseRequest, ISignInRequest, IWithCredentials
 {

@@ -1,4 +1,6 @@
-﻿namespace FluentVault;
+﻿using FluentVault.Requests.Update.File.LifecycleState;
+
+namespace FluentVault.Requests.Update;
 
 internal class UpdateRequest : IUpdateRequest, IUpdateFileRequest
 {

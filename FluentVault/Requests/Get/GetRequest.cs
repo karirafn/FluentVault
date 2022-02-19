@@ -2,7 +2,7 @@
 using FluentVault.Requests.Get.Lifecycles;
 using FluentVault.Requests.Get.Properties;
 
-namespace FluentVault;
+namespace FluentVault.Requests.Get;
 
 internal class GetRequest : IGetRequest
 {
