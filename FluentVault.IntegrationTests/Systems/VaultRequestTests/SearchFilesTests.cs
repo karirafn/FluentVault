@@ -8,10 +8,10 @@ using Xunit;
 
 namespace FluentVault.IntegrationTests.Systems.VaultRequestTests;
 
-public class SearchFilesByFilenameTests
+public class SearchFilesTests
 {
     [Fact]
-    public async Task SearchFilesByFilename_ShouldReturnValidSearchResult_WhenInputsAreValid()
+    public async Task SearchFiles_ShouldReturnValidSearchResult_WhenInputsAreValid()
     {
         // Arrange
         var v = ConfigurationHelper.GetVaultOptions();
