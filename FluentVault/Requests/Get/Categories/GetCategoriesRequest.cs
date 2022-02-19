@@ -5,7 +5,7 @@ namespace FluentVault.Requests.Get.Categories;
 internal class GetCategoriesRequest : SessionRequest
 {
     public GetCategoriesRequest(VaultSession session)
-        : base(session, "GetCategoryConfigurationsByBehaviorNames") { }
+        : base(session, RequestData.GetCategoryConfigurationsByBehaviorNames) { }
 
     public async Task<IEnumerable<VaultCategory>> SendAsync()
     {

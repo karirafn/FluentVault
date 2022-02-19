@@ -11,7 +11,8 @@ internal class SearchFilesRequest : SessionRequest, ISearchFilesRequestBuilder, 
     private SearchPropertyType _propertyType = SearchPropertyType.SingleProperty;
     private long _property;
 
-    public SearchFilesRequest(VaultSession session) : base(session, "FindFilesBySearchConditions") { }
+    public SearchFilesRequest(VaultSession session)
+        : base(session, RequestData.FindFilesBySearchConditions) { }
 
     public ISearchFilesStringProperty ForValueContaining(string value)
     {

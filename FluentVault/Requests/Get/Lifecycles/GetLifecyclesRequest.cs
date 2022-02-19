@@ -4,7 +4,8 @@ namespace FluentVault.Requests.Get.Lifecycles;
 
 internal class GetLifecyclesRequest : SessionRequest
 {
-    public GetLifecyclesRequest(VaultSession session) : base(session, "GetAllLifeCycleDefinitions") { }
+    public GetLifecyclesRequest(VaultSession session)
+        : base(session, RequestData.GetAllLifeCycleDefinitions) { }
 
     public async Task<IEnumerable<VaultLifecycle>> SendAsync()
     {

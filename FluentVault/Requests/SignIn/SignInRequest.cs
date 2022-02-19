@@ -8,7 +8,7 @@ internal class SignInRequest : BaseRequest, ISignInRequest, IWithCredentials
     private string _server = string.Empty;
     private string _database = string.Empty;
 
-    public SignInRequest() : base("SignIn") { }
+    public SignInRequest() : base(RequestData.SignIn) { }
 
     public IWithCredentials ToVault(string server, string database)
     {

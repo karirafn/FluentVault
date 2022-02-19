@@ -2,7 +2,8 @@
 
 internal class SignOutRequest : SessionRequest
 {
-    public SignOutRequest(VaultSession session) : base(session, "SignOut") { }
+    public SignOutRequest(VaultSession session)
+        : base(session, RequestData.SignOut) { }
 
     public async Task SendAsync()
     {

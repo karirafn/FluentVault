@@ -4,7 +4,8 @@ namespace FluentVault.Requests.Get.Properties;
 
 internal class GetPropertiesRequest : SessionRequest
 {
-    public GetPropertiesRequest(VaultSession session) : base(session, "GetPropertyDefinitionInfosByEntityClassId") { }
+    public GetPropertiesRequest(VaultSession session)
+        : base(session, RequestData.GetPropertyDefinitionInfosByEntityClassId) { }
 
     public async Task<IEnumerable<VaultProperty>> SendAsync()
     {

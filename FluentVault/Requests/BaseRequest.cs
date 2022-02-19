@@ -7,7 +7,7 @@ internal abstract class BaseRequest
 {
     protected readonly RequestData RequestData;
 
-    public BaseRequest(string name) => RequestData = new RequestData(name);
+    public BaseRequest(RequestData requestData) => RequestData = requestData;
 
     protected string GetOpeningTag(bool isSelfClosing = false)
         => $@"<{RequestData.Name} xmlns=""{RequestData.Namespace}""{(isSelfClosing ? "/>" : ">")}";

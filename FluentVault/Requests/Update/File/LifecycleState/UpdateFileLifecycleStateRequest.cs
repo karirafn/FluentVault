@@ -8,7 +8,8 @@ internal class UpdateFileLifecycleStateRequest : SessionRequest, IUpdateFileLife
     private long _masterId;
     private long _stateId;
 
-    public UpdateFileLifecycleStateRequest(VaultSession session) : base(session, "UpdateFileLifeCycleStates") { }
+    public UpdateFileLifecycleStateRequest(VaultSession session)
+        : base(session, RequestData.UpdateFileLifeCycleStates) { }
 
     public IWithFileMasterId WithMasterId(long masterId)
     {

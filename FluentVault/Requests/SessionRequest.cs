@@ -4,7 +4,8 @@ namespace FluentVault;
 
 internal abstract class SessionRequest : BaseRequest
 {
-    protected SessionRequest(VaultSession session, string name) : base(name) => Session = session;
+    protected SessionRequest(VaultSession session, RequestData requestData)
+        : base(requestData) => Session = session;
 
     public VaultSession Session { get; }
 
