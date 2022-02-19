@@ -1,4 +1,4 @@
-﻿namespace FluentVault.Domain.Search;
+﻿namespace FluentVault;
 
 public enum SearchBooleanProperties
 {
