@@ -23,7 +23,7 @@ public class SearchFilesTests
         // Act
         var file = await vault.Search.Files
             .ForValueContaining(v.TestPartFilename)
-            .InProperty(SearchStringProperty.Filename)
+            .InProperty(SearchStringProperty.FileName)
             .SearchSingleAsync();
 
         // Assert

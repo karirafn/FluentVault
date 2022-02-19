@@ -24,7 +24,7 @@ public class UpdateFileLifecycleStateTests
 
         var oldFile = await vault.Search.Files
             .ForValueContaining(v.TestPartFilename)
-            .InProperty(SearchStringProperty.Filename)
+            .InProperty(SearchStringProperty.FileName)
             .SearchSingleAsync();
 
         if (oldFile?.Lifecycle?.StateId.Equals(v.DefaultLifecycleStateId) is false)
