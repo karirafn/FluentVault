@@ -11,5 +11,5 @@ internal class SearchRequest : ISearchRequest
         _session = session;
     }
 
-    public ISearchFilesRequestBuilder Files => new SearchFilesRequest(_session);
+    public ISearchFilesRequest Files => new SearchFilesRequest(_session);
 }

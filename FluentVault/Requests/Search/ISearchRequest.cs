@@ -2,5 +2,5 @@
 
 public interface ISearchRequest
 {
-    public ISearchFilesRequestBuilder Files { get; }
+    public ISearchFilesRequest Files { get; }
 }
