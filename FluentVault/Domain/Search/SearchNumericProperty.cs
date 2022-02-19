@@ -1,6 +1,6 @@
 ﻿namespace FluentVault;
 
-public enum SearchNumericProperty
+public enum SearchNumericProperty : long
 {
     Version = 2,
     NumberOfAttachments = 4,

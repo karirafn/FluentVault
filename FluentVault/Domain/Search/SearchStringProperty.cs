@@ -1,6 +1,6 @@
 ﻿namespace FluentVault;
 
-public enum SearchStringProperty
+public enum SearchStringProperty : long
 {
     Classification = 1,
     Comment = 3,

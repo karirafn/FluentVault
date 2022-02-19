@@ -1,6 +1,6 @@
 ﻿namespace FluentVault;
 
-public enum SearchDateTimeProperty
+public enum SearchDateTimeProperty : long
 {
     DateVersionCreated = 5,
     CreateDate = 7,

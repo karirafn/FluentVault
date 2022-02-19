@@ -1,6 +1,6 @@
 ﻿namespace FluentVault;
 
-public enum SearchBooleanProperties
+public enum SearchBooleanProperties : long
 {
     LinkedToItem = 13,
     ItemAssignable = 14,
