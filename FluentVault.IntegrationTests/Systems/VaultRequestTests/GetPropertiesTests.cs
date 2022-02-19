@@ -22,9 +22,9 @@ public class GetPropertiesTests
             .WithCredentials(v.Username, v.Password);
 
         // Act
-        IEnumerable<VaultProperty> lifecycles = await vault.Get.Properties();
+        IEnumerable<VaultProperty> properties = await vault.Get.Properties();
 
         // Assert
-        lifecycles.Should().NotBeEmpty();
+        properties.Should().NotBeEmpty();
     }
 }
