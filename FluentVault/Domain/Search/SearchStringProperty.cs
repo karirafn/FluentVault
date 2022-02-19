@@ -8,6 +8,7 @@ public enum SearchStringProperty
     CheckedOutBy = 18,
     CheckedOutLocalPath = 15,
     CheckedOutMachine = 16,
+    ClientName = 93,
     Comment = 3,
     Filename = 9,
     LifecycleState = 49,
