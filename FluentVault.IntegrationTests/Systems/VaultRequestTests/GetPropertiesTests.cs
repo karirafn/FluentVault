@@ -12,7 +12,7 @@ namespace FluentVault.IntegrationTests.Systems.VaultRequestTests;
 public class GetPropertiesTests
 {
     [Fact]
-    public async Task GetLifecycles_ShouldReturnLifecycles()
+    public async Task GetProperties_ShouldReturnLifecycles()
     {
         // Arrange
         var v = ConfigurationHelper.GetVaultOptions();
