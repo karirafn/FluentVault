@@ -12,18 +12,19 @@ namespace FluentVault.UnitTests.Systems;
 
 public class XDocumentExtensionsTests
 {
+    private record TestRecord(string Name);
+
     [Fact]
-    public void GetElementValue_ShouldReturnValue_WhenElementExists()
+    public void GetElementValue_ShouldReturnValue_WhenTargetIsElement()
     {
         // Arrange
-        string name = "Element";
         string expectation = "Value";
-        XElement element = new (name, expectation);
-        XElement root = new ("Root");
-        root.Add(element);
+        string name = "Element";
+        string xml = "<Root><Element>Value</Element></Root>";
+        XDocument document = XDocument.Parse(xml);
 
         // Act
-        string result = root.GetElementValue(name);
+        string result = document.GetElementValue(name);
 
         // Assert
         result.Should().Be(expectation);
@@ -33,28 +34,27 @@ public class XDocumentExtensionsTests
     public void GetElementValue_ShouldThrowException_WhenElementDoesNotExist()
     {
         // Arrange
-        string name = "NotThere";
-        XElement element = new ("Element", "Value");
-        XElement root = new ("Root");
-        root.Add(element);
+        string name = "Element";
+        string xml = "<Root><Invalid>Value</Invalid></Root>";
+        XDocument element = XDocument.Parse(xml);
 
         // Act
 
         // Assert
-        Assert.Throws<KeyNotFoundException>(() => root.GetElementValue(name));
+        Assert.Throws<KeyNotFoundException>(() => element.GetElementValue(name));
     }
 
     [Fact]
     public void GetAttributeValue_ShouldReturnValue_WhenElementContainsAttribute()
     {
         // Arrange
-        string name = "Attribute";
         string expectation = "Value";
-        XAttribute attribute = new (name, expectation);
-        XElement root = new ("Root", attribute);
+        string name = "Attribute";
+        string xml = @"<Element Attribute=""Value""/>";
+        XElement element = XElement.Parse(xml);
 
         // Act
-        string result = root.GetAttributeValue(name);
+        string result = element.GetAttributeValue(name);
 
         // Assert
         result.Should().Be(expectation);
@@ -64,28 +64,27 @@ public class XDocumentExtensionsTests
     public void GetAttributeValue_ShouldThrowException_WhenElementDoesNotContainAttribute()
     {
         // Arrange
-        string name = "NotThere";
-        XAttribute attribute = new ("Attribute", "Value");
-        XElement root = new ("Root", attribute);
+        string name = "Invalid";
+        string xml = $@"<Root><Element Attribute=""Value""/></Root>";
+        XElement element = XElement.Parse(xml);
 
         // Act
 
         // Assert
-        Assert.Throws<KeyNotFoundException>(() => root.GetAttributeValue(name));
+        Assert.Throws<KeyNotFoundException>(() => element.GetAttributeValue(name));
     }
 
     [Fact]
     public void ParseElementValue_ShouldReturnValue_WhenValueIsParsable()
     {
         // Arrange
-        string name = "Element";
         int expectation = 50;
-        XElement element = new (name, expectation);
-        XElement root = new ("Root");
-        root.Add(element);
+        string name = "Element";
+        string xml = "<Root><Element>50</Element></Root>";
+        XElement element = XElement.Parse(xml);
 
         // Act
-        int result = root.ParseElementValue(name, int.Parse);
+        int result = element.ParseElementValue(name, int.Parse);
 
         // Assert
         result.Should().Be(expectation);
@@ -96,57 +95,43 @@ public class XDocumentExtensionsTests
     {
         // Arrange
         string name = "Element";
-        XElement element = new (name, "NotANumber");
-        XElement root = new ("Root");
-        root.Add(element);
+        string xml = "<Root><Element>NotANumber</Element></Root>";
+        XElement element = XElement.Parse(xml);
 
         // Act
 
         // Assert
-        Assert.Throws<FormatException>(() => root.ParseElementValue(name, int.Parse));
+        Assert.Throws<FormatException>(() => element.ParseElementValue(name, int.Parse));
     }
 
     [Fact]
-    public void ParseSingleElement_ShouldReturnValue_WhenAttributeCanBeParsed()
+    public void ParseSingleElement_ShouldReturnValue_WhenElementIsParsable()
     {
         // Arrange
-        string attributeName = "Name";
-        string attributeValue = "SomeValue";
-        string elementName = "NestedElement";
-        string elementValue = "NestedElement";
-
-        TestRecord expectation = new(attributeValue);
-
-        XAttribute attribute = new(attributeName, attributeValue);
-        XElement nestedElement = new(elementName, elementValue);
-        nestedElement.Add(attribute);
-
-        XElement root = new("Root");
-        root.Add(nestedElement);
-
-        XDocument document = new();
-        document.Add(root);
+        TestRecord expectation = new("Value");
+        string name = "Element";
+        string xml = "<Root><Element>Value</Element></Root>";
+        XDocument document = XDocument.Parse(xml);
 
         // Act
-        TestRecord result = document.ParseSingleElement(elementName,
-            element => new TestRecord(element.GetAttributeValue(attributeName)));
+        TestRecord result = document.ParseSingleElement(name,
+            element => new TestRecord(element.Value));
 
         // Assert
         result.Should().BeEquivalentTo(expectation);
     }
 
     [Fact]
-    public void ParseAttributeValue_ShouldReturnValue_WhenValueIsValid()
+    public void ParseAttributeValue_ShouldReturnValue_WhenAttributeIsParsable()
     {
         // Arrange
-        string name = "Attribute";
         int expectation = 50;
-        XAttribute attribute = new(name, expectation);
-        XElement root = new("Root");
-        root.Add(attribute);
+        string name = "Attribute";
+        string xml = @"<Element Attribute=""50""/>";
+        XElement element = XElement.Parse(xml);
 
         // Act
-        int result = root.ParseAttributeValue(name, int.Parse);
+        int result = element.ParseAttributeValue(name, int.Parse);
 
         // Assert
         result.Should().Be(expectation);
@@ -157,38 +142,24 @@ public class XDocumentExtensionsTests
     {
         // Arrange
         string name = "Attribute";
-        XAttribute attribute = new(name, "NotAFileStatus");
-        XElement root = new("Root");
-        root.Add(attribute);
+        string xml = @"<Element Attribute=""Invalid""></Element>";
+        XElement element = XElement.Parse(xml);
 
         // Act
 
         // Assert
-        Assert.Throws<FormatException>(() => root.ParseAttributeValue(name, VaultFileStatus.Parse));
+        Assert.Throws<FormatException>(() => element.ParseAttributeValue(name, VaultFileStatus.Parse));
     }
 
     [Fact]
-    public void ParseAllElements_ShouldReturnValue_WhenElementsCanBeParsed()
+    public void ParseAllElements_ShouldReturnValue_WhenElementsIsParsable()
     {
         // Arrange
-        var attributeValues = new string[] { "ValueA", "ValueB" };
-        string attributeName = "Name";
-        string elementName = "ElementName";
-        string elementValue = "ElementValue";
-
-        XElement root = new("Root");
-        List<TestRecord> expectation = new();
-        foreach (var value in attributeValues)
-        {
-            XAttribute attribute = new(attributeName, value);
-            XElement element = new(elementName, elementValue);
-            element.Add(attribute);
-            root.Add(element);
-            expectation.Add(new(value));
-        }
-
-        XDocument document = new();
-        document.Add(root);
+        List<TestRecord> expectation = new() { new("A"), new("B") };
+        string elementName = "Element";
+        string attributeName = "Attribute";
+        string xml = @"<Root><Element Attribute=""A""/><Element Attribute=""B""/></Root>";
+        XDocument document = XDocument.Parse(xml);
 
         // Act
         IEnumerable<TestRecord> result = document.ParseAllElements(elementName,
@@ -199,21 +170,13 @@ public class XDocumentExtensionsTests
     }
 
     [Fact]
-    public void ParseAllElementValues_ShouldReturnValues_WhenValuesCanBeParsed()
+    public void ParseAllElementValues_ShouldReturnValues_WhenValuesIsParsable()
     {
         // Arrange
-        var expectation = new int[] { 1, 77 };
+        int[] expectation = new int[] { 1, 77 };
         string name = "Element";
-
-        XElement root = new("Root");
-        foreach (var value in expectation)
-        {
-            XElement element = new(name, value);
-            root.Add(element);
-        }
-
-        XDocument document = new();
-        document.Add(root);
+        string xml = "<Root><Element>1</Element><Element>77</Element></Root>";
+        XDocument document = XDocument.Parse(xml);
 
         // Act
         IEnumerable<int> result = document.ParseAllElementValues(name, int.Parse);
@@ -222,5 +185,3 @@ public class XDocumentExtensionsTests
         result.Should().BeEquivalentTo(expectation);
     }
 }
-
-internal record TestRecord(string Name);
