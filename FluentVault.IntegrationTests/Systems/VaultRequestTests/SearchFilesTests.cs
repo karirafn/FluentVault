@@ -55,7 +55,7 @@ public class SearchFilesTests : BaseRequestTest
         IEnumerable<VaultFile> result = await _vault.Search.Files
             .ForValueNotContaining(searchValue)
             .InSystemProperty(SearchStringProperty.FileName)
-            .SearchAllAsync();
+            .SearchWithPaging();
 
         // Assert
         result.FirstOrDefault(x => x.MasterId.Equals(_v.TestPartMasterId)).Should().BeNull();
@@ -99,7 +99,7 @@ public class SearchFilesTests : BaseRequestTest
         IEnumerable<VaultFile> result = await _vault.Search.Files
             .ForValueNotEqualTo(searchValue)
             .InSystemProperty(SearchDateTimeProperty.DateModified)
-            .SearchAllAsync();
+            .SearchWithPaging();
 
         // Assert
         result.FirstOrDefault(x => x.ModifiedDate.Equals(file.ModifiedDate)).Should().BeNull();
@@ -115,7 +115,7 @@ public class SearchFilesTests : BaseRequestTest
         IEnumerable<VaultFile> result = await _vault.Search.Files
             .ForValueLessThan(searchValue)
             .InSystemProperty(SearchDateTimeProperty.DateModified)
-            .SearchAllAsync();
+            .SearchWithPaging();
 
         // Assert
         result.Should().NotBeEmpty();
@@ -133,7 +133,7 @@ public class SearchFilesTests : BaseRequestTest
         IEnumerable<VaultFile> result = await _vault.Search.Files
             .ForValueLessThanOrEqualTo(searchValue)
             .InSystemProperty(SearchDateTimeProperty.DateModified)
-            .SearchAllAsync();
+            .SearchWithPaging();
 
         // Assert
         result.Should().NotBeEmpty();
@@ -151,7 +151,7 @@ public class SearchFilesTests : BaseRequestTest
         IEnumerable<VaultFile> result = await _vault.Search.Files
             .ForValueGreaterThan(searchValue)
             .InSystemProperty(SearchDateTimeProperty.DateModified)
-            .SearchAllAsync();
+            .SearchWithPaging();
 
         // Assert
         result.Should().NotBeEmpty();
@@ -169,11 +169,35 @@ public class SearchFilesTests : BaseRequestTest
         IEnumerable<VaultFile> result = await _vault.Search.Files
             .ForValueGreaterThanOrEqualTo(searchValue)
             .InSystemProperty(SearchDateTimeProperty.DateModified)
-            .SearchAllAsync();
+            .SearchWithPaging();
 
         // Assert
         result.Should().NotBeEmpty();
         result.Where(x => x.ModifiedDate >= searchValue).Should().NotBeEmpty();
         result.Where(x => x.ModifiedDate < searchValue).Should().BeEmpty();
+    }
+
+    [Fact]
+    public async Task SearchFilesWithoutPaging_ShouldReturnMoreResultsThanThePagingLimit_WhenInputsAreValid()
+    {
+        // This test will fail if the number of assemblies modified in the last month
+        // that are still in the "In Work" state is less than the paging limit (default is 200)
+
+        // Arrange
+        string searchValue = "in work iam";
+        DateTime datetime = DateTime.Now.AddMonths(-1);
+
+        // Act
+        IEnumerable<VaultFile> result = await _vault.Search.Files
+            .ForValueContaining(searchValue)
+            .InAllProperties
+            .And
+            .ForValueGreaterThan(datetime)
+            .InSystemProperty(SearchDateTimeProperty.DateModified)
+            .SearchWithoutPaging();
+
+        // Assert
+        result.Should().NotBeEmpty();
+        result.Should().HaveCountGreaterThan(200);
     }
 }

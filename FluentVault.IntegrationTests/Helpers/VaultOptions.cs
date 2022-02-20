@@ -2,13 +2,13 @@
 
 public class VaultOptions
 {
-    public string Server { get; set; } = string.Empty;
-    public string Database { get; set; } = string.Empty;
-    public string Username { get; set; } = string.Empty;
-    public string Password { get; set; } = string.Empty;
-    public string TestPartFilename { get; set; } = string.Empty;
-    public long TestPartMasterId { get; set; }
-    public string TestPartDescription { get; set; } = string.Empty;
-    public long DefaultLifecycleStateId { get; set; }
-    public long TestingLifecycleStateId { get; set; }
+    public string Server { get; init; } = string.Empty;
+    public string Database { get; init; } = string.Empty;
+    public string Username { get; init; } = string.Empty;
+    public string Password { get; init; } = string.Empty;
+    public string TestPartFilename { get; init; } = string.Empty;
+    public long TestPartMasterId { get; init; }
+    public string TestPartDescription { get; init; } = string.Empty;
+    public long DefaultLifecycleStateId { get; init; }
+    public long TestingLifecycleStateId { get; init; }
 }
