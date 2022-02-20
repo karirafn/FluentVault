@@ -13,7 +13,7 @@ public class UpdateFileLifecycleStateTests : BaseRequestTest
     public async Task UpdateFileLifecycleStateBuilder_Should()
     {
         // Arrange
-        string comment = new Guid().ToString();
+        string comment = Guid.NewGuid().ToString();
 
         var oldFile = await _vault.Search.Files
             .ForValueContaining(_v.TestPartFilename)
