@@ -19,6 +19,7 @@ public static class ConfigurationHelper
             Password = configuration.GetValue<string>(nameof(VaultOptions.Password)),
             TestPartFilename = configuration.GetValue<string>(nameof(VaultOptions.TestPartFilename)),
             TestPartMasterId = configuration.GetValue<long>(nameof(VaultOptions.TestPartMasterId)),
+            TestPartDescription = configuration.GetValue<string>(nameof(VaultOptions.TestPartDescription)),
             DefaultLifecycleStateId = configuration.GetValue<long>(nameof(VaultOptions.DefaultLifecycleStateId)),
             TestingLifecycleStateId = configuration.GetValue<long>(nameof(VaultOptions.TestingLifecycleStateId))
         };
