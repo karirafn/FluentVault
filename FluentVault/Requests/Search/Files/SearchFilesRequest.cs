@@ -77,6 +77,13 @@ internal class SearchFilesRequest : SessionRequest,
         return this;
     }
 
+    public ISearchFilesDateTimeProperty ForValueNotEqualTo(DateTime value)
+    {
+        _searchValue = value;
+        _operator = (long)SearchOperator.IsNotEqualTo;
+        return this;
+    }
+
     public ISearchFilesDateTimeProperty ForValueLessThan(DateTime value)
     {
         _searchValue = value;
