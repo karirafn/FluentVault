@@ -3,45 +3,38 @@ using System.Threading.Tasks;
 
 using FluentAssertions;
 
-using FluentVault.IntegrationTests.Helpers;
-
 using Xunit;
 
 namespace FluentVault.IntegrationTests.Systems.VaultRequestTests;
 
-public class UpdateFileLifecycleStateTests
+public class UpdateFileLifecycleStateTests : BaseRequestTest
 {
     [Fact]
     public async Task UpdateFileLifecycleStateBuilder_Should()
     {
         // Arrange
-        var v = ConfigurationHelper.GetVaultOptions();
         string comment = new Guid().ToString();
 
-        await using var vault = await Vault.SignIn
-            .ToVault(v.Server, v.Database)
-            .WithCredentials(v.Username, v.Password);
-
-        var oldFile = await vault.Search.Files
-            .ForValueContaining(v.TestPartFilename)
+        var oldFile = await _vault.Search.Files
+            .ForValueContaining(_v.TestPartFilename)
             .InSystemProperty(SearchStringProperty.FileName)
             .SearchSingleAsync();
 
-        if (oldFile?.Lifecycle?.StateId.Equals(v.DefaultLifecycleStateId) is false)
-            oldFile = await vault.Update.File.LifecycleState
-            .WithMasterId(v.TestPartMasterId)
-            .ToStateWithId(v.DefaultLifecycleStateId)
+        if (oldFile?.Lifecycle?.StateId.Equals(_v.DefaultLifecycleStateId) is false)
+            oldFile = await _vault.Update.File.LifecycleState
+            .WithMasterId(_v.TestPartMasterId)
+            .ToStateWithId(_v.DefaultLifecycleStateId)
             .WithComment(comment);
 
         // Act
-        var newFile = await vault.Update.File.LifecycleState
-            .WithMasterId(v.TestPartMasterId)
-            .ToStateWithId(v.TestingLifecycleStateId)
+        var newFile = await _vault.Update.File.LifecycleState
+            .WithMasterId(_v.TestPartMasterId)
+            .ToStateWithId(_v.TestingLifecycleStateId)
             .WithComment(comment);
 
         // Assert
         oldFile?.Lifecycle?.StateId.Should().NotBe(newFile.Lifecycle?.StateId);
-        newFile.Lifecycle?.StateId.Should().Be(v.TestingLifecycleStateId);
+        newFile.Lifecycle?.StateId.Should().Be(_v.TestingLifecycleStateId);
         newFile.Comment.Should().Be(comment);
     }
 }

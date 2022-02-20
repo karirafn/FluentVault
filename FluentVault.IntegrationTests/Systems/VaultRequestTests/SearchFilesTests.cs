@@ -5,32 +5,20 @@ using System.Threading.Tasks;
 
 using FluentAssertions;
 
-using FluentVault.IntegrationTests.Helpers;
-
 using Xunit;
 
 namespace FluentVault.IntegrationTests.Systems.VaultRequestTests;
 
-public class SearchFilesTests
+public class SearchFilesTests : BaseRequestTest
 {
-    private readonly VaultOptions _v;
-
-    public SearchFilesTests()
-    {
-        _v = ConfigurationHelper.GetVaultOptions();
-    }
-
     [Fact]
     public async Task SearchFilesByStringEqualTo_ShouldReturnValidSearchResult_WhenInputsAreValid()
     {
         // Arrange
         string searchValue = _v.TestPartFilename;
-        await using var vault = await Vault.SignIn
-            .ToVault(_v.Server, _v.Database)
-            .WithCredentials(_v.Username, _v.Password);
 
         // Act
-        VaultFile result = await vault.Search.Files
+        VaultFile result = await _vault.Search.Files
             .ForValueEqualTo(searchValue)
             .InSystemProperty(SearchStringProperty.FileName)
             .SearchSingleAsync()
@@ -45,12 +33,9 @@ public class SearchFilesTests
     {
         // Arrange
         string searchValue = _v.TestPartDescription.Split('-').First();
-        await using var vault = await Vault.SignIn
-            .ToVault(_v.Server, _v.Database)
-            .WithCredentials(_v.Username, _v.Password);
 
         // Act
-        VaultFile result = await vault.Search.Files
+        VaultFile result = await _vault.Search.Files
             .ForValueContaining(searchValue)
             .InUserProperty("Description")
             .SearchSingleAsync()
@@ -65,39 +50,31 @@ public class SearchFilesTests
     {
         // Arrange
         string searchValue = _v.TestPartFilename;
-        await using var vault = await Vault.SignIn
-            .ToVault(_v.Server, _v.Database)
-            .WithCredentials(_v.Username, _v.Password);
 
         // Act
-        IEnumerable<VaultFile> result = await vault.Search.Files
+        IEnumerable<VaultFile> result = await _vault.Search.Files
             .ForValueNotContaining(searchValue)
             .InSystemProperty(SearchStringProperty.FileName)
-            .SearchAllAsync()
-            ?? throw new Exception($@"Failed to search for ""{searchValue}""");
+            .SearchAllAsync();
 
         // Assert
-        _ = result.Select(x => x.MasterId.Should().NotBe(_v.TestPartMasterId));
+        result.FirstOrDefault(x => x.MasterId.Equals(_v.TestPartMasterId)).Should().BeNull();
     }
 
     [Fact]
     public async Task SearchFilesByDateTimeEqualTo_ShouldReturnValidSearchResult_WhenInputsAreValid()
     {
         // Arrange
-        await using var vault = await Vault.SignIn
-            .ToVault(_v.Server, _v.Database)
-            .WithCredentials(_v.Username, _v.Password);
-
-        VaultFile file = await vault.Search.Files
+        VaultFile file = await _vault.Search.Files
             .ForValueEqualTo(_v.TestPartFilename)
             .InSystemProperty(SearchStringProperty.FileName)
             .SearchSingleAsync()
-            ?? throw new Exception("File not found");
+            ?? throw new Exception($@"File ""{_v.TestPartFilename}"" not found");
         DateTime datetime = file.ModifiedDate;
 
         // Act
-        VaultFile result = await vault.Search.Files
-            .ForValueGreaterThanOrEqualTo(datetime)
+        VaultFile result = await _vault.Search.Files
+            .ForValueEqualTo(datetime)
             .InSystemProperty(SearchDateTimeProperty.DateModified)
             .SearchSingleAsync()
             ?? throw new Exception("File not found");
@@ -111,27 +88,21 @@ public class SearchFilesTests
     public async Task SearchFilesByDateTimeNotEqualTo_ShouldReturnValidSearchResult_WhenInputsAreValid()
     {
         // Arrange
-        await using var vault = await Vault.SignIn
-            .ToVault(_v.Server, _v.Database)
-            .WithCredentials(_v.Username, _v.Password);
-
-        VaultFile file = await vault.Search.Files
+        VaultFile file = await _vault.Search.Files
             .ForValueEqualTo(_v.TestPartFilename)
             .InSystemProperty(SearchStringProperty.FileName)
             .SearchSingleAsync()
-            ?? throw new Exception("File not found");
+            ?? throw new Exception($@"File ""{_v.TestPartFilename}"" not found");
         DateTime datetime = file.ModifiedDate;
 
         // Act
-        VaultFile result = await vault.Search.Files
-            .ForValueGreaterThanOrEqualTo(datetime)
+        IEnumerable<VaultFile> result = await _vault.Search.Files
+            .ForValueNotEqualTo(datetime)
             .InSystemProperty(SearchDateTimeProperty.DateModified)
-            .SearchSingleAsync()
-            ?? throw new Exception("File not found");
+            .SearchAllAsync();
 
         // Assert
-        result.Should().NotBeNull();
-        result.ModifiedDate.Should().Be(datetime);
+        result.FirstOrDefault(x => x.ModifiedDate.Equals(file.ModifiedDate)).Should().BeNull();
     }
 
     [Fact]
@@ -140,16 +111,11 @@ public class SearchFilesTests
         // Arrange
         var datetime = DateTime.Now.AddMonths(-1);
 
-        await using var vault = await Vault.SignIn
-            .ToVault(_v.Server, _v.Database)
-            .WithCredentials(_v.Username, _v.Password);
-
         // Act
-        IEnumerable<VaultFile> result = await vault.Search.Files
+        IEnumerable<VaultFile> result = await _vault.Search.Files
             .ForValueGreaterThanOrEqualTo(datetime)
             .InSystemProperty(SearchDateTimeProperty.DateModified)
-            .SearchAllAsync()
-            ?? throw new Exception("File not found");
+            .SearchAllAsync();
 
         // Assert
         result.Should().NotBeEmpty();
