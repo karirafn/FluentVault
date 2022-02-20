@@ -10,8 +10,10 @@ namespace FluentVault.Requests.Search.Files;
 
 internal class SearchFilesRequest : SessionRequest,
     ISearchFilesRequest,
-    ISearchFilesStringProperty,
+    ISearchFilesBooleanProperty,
     ISearchFilesDateTimeProperty,
+    ISearchFilesNumericProperty,
+    ISearchFilesStringProperty,
     ISearchFilesAddSearchCondition
 {
     private readonly StringBuilder _searchConditionBuilder = new();
@@ -27,7 +29,7 @@ internal class SearchFilesRequest : SessionRequest,
 
     public async Task<IEnumerable<VaultFile>> SearchWithoutPaging()
     {
-        IEnumerable<VaultFile> files = await SearchWithPaging(int.MaxValue);
+        IEnumerable<VaultFile> files = await SearchAsync(int.MaxValue);
         return files;
     }
 
@@ -43,9 +45,9 @@ internal class SearchFilesRequest : SessionRequest,
         return files.FirstOrDefault();
     }
 
-    public ISearchFilesStringProperty ForValueEqualTo(string value) => SetStringValue(value, SearchOperator.IsEqualTo);
-    public ISearchFilesStringProperty ForValueContaining(string value) => SetStringValue(value, SearchOperator.Contains);
-    public ISearchFilesStringProperty ForValueNotContaining(string value) => SetStringValue(value, SearchOperator.DoesNotContain);
+    public ISearchFilesBooleanProperty ForValueEqualTo(bool value) => SetBooleanValue(value, SearchOperator.IsEqualTo);
+    public ISearchFilesBooleanProperty ForValueNotEqualTo(bool value) => SetBooleanValue(value, SearchOperator.IsNotEqualTo);
+
     public ISearchFilesDateTimeProperty ForValueEqualTo(DateTime value) => SetDateTimeValue(value, SearchOperator.IsEqualTo);
     public ISearchFilesDateTimeProperty ForValueNotEqualTo(DateTime value) => SetDateTimeValue(value, SearchOperator.IsNotEqualTo);
     public ISearchFilesDateTimeProperty ForValueLessThan(DateTime value) => SetDateTimeValue(value, SearchOperator.IsLessThan);
@@ -53,13 +55,33 @@ internal class SearchFilesRequest : SessionRequest,
     public ISearchFilesDateTimeProperty ForValueGreaterThan(DateTime value) => SetDateTimeValue(value, SearchOperator.IsGreaterThan);
     public ISearchFilesDateTimeProperty ForValueGreaterThanOrEqualTo(DateTime value) => SetDateTimeValue(value, SearchOperator.IsGreaterThanOrEqualTo);
 
+    public ISearchFilesNumericProperty ForValueEqualTo(int value) => SetNumericValue(value, SearchOperator.IsEqualTo);
+    public ISearchFilesNumericProperty ForValueNotEqualTo(int value) => SetNumericValue(value, SearchOperator.IsNotEqualTo);
+    public ISearchFilesNumericProperty ForValueLessThan(int value) => SetNumericValue(value, SearchOperator.IsLessThan);
+    public ISearchFilesNumericProperty ForValueLessThanOrEqualTo(int value) => SetNumericValue(value, SearchOperator.IsLessThanOrEqualTo);
+    public ISearchFilesNumericProperty ForValueGreaterThan(int value) => SetNumericValue(value, SearchOperator.IsGreaterThan);
+    public ISearchFilesNumericProperty ForValueGreaterThanOrEqualTo(int value) => SetNumericValue(value, SearchOperator.IsGreaterThanOrEqualTo);
+
+    public ISearchFilesNumericProperty ForValueEqualTo(double value) => SetNumericValue(value, SearchOperator.IsEqualTo);
+    public ISearchFilesNumericProperty ForValueNotEqualTo(double value) => SetNumericValue(value, SearchOperator.IsNotEqualTo);
+    public ISearchFilesNumericProperty ForValueLessThan(double value) => SetNumericValue(value, SearchOperator.IsLessThan);
+    public ISearchFilesNumericProperty ForValueLessThanOrEqualTo(double value) => SetNumericValue(value, SearchOperator.IsLessThanOrEqualTo);
+    public ISearchFilesNumericProperty ForValueGreaterThan(double value) => SetNumericValue(value, SearchOperator.IsGreaterThan);
+    public ISearchFilesNumericProperty ForValueGreaterThanOrEqualTo(double value) => SetNumericValue(value, SearchOperator.IsGreaterThanOrEqualTo);
+
+    public ISearchFilesStringProperty ForValueEqualTo(string value) => SetStringValue(value, SearchOperator.IsEqualTo);
+    public ISearchFilesStringProperty ForValueContaining(string value) => SetStringValue(value, SearchOperator.Contains);
+    public ISearchFilesStringProperty ForValueNotContaining(string value) => SetStringValue(value, SearchOperator.DoesNotContain);
+
     public ISearchFilesAddSearchCondition InUserProperty(string name)
     {
         _propertyName = name;
         return this;
     }
 
+    public ISearchFilesAddSearchCondition InSystemProperty(SearchBooleanProperties property) => SetProperty((long)property);
     public ISearchFilesAddSearchCondition InSystemProperty(SearchDateTimeProperty property) => SetProperty((long)property);
+    public ISearchFilesAddSearchCondition InSystemProperty(SearchNumericProperty property) => SetProperty((long)property);
     public ISearchFilesAddSearchCondition InSystemProperty(SearchStringProperty property) => SetProperty((long)property);
 
     public ISearchFilesAddSearchCondition InAllProperties
@@ -94,16 +116,17 @@ internal class SearchFilesRequest : SessionRequest,
         string value = _searchValue switch
         {
             string s => s,
-            long l => l.ToString(),
             DateTime d => d.ToString("MM/dd/yyyy HH:mm:ss", CultureInfo.InvariantCulture),
+            not null => _searchValue.ToString() ?? throw new Exception("Unable to convert search value to string"),
             _ => string.Empty
         };
 
         string condition = GetSearchCondition(value, _property, _operator, _propertyType, SearchRule.Must);
         _searchConditionBuilder.AppendLine(condition);
+        _propertyType = SearchPropertyType.SingleProperty;
     }
 
-    private string GetSearchInnerBody(string bookmark, string searchConditions, string? sortConditions = null, string? folderIds = null, bool recurseFolders = true, bool latestOnly = true)
+    private string GetInnerBody(string bookmark, string searchConditions, string? sortConditions = null, string? folderIds = null, bool recurseFolders = true, bool latestOnly = true)
     {
         StringBuilder bodyBuilder = new();
         bodyBuilder.AppendLine(GetOpeningTag());
@@ -144,7 +167,7 @@ internal class SearchFilesRequest : SessionRequest,
 
     private async Task<IEnumerable<VaultFile>> SearchAsync(int maxResultCount)
     {
-        if (string.IsNullOrEmpty(_propertyName) == false)
+        if (string.IsNullOrEmpty(_propertyName) is false)
             await SetPropertyValue(_propertyName);
 
         AddSearchCondition();
@@ -153,7 +176,7 @@ internal class SearchFilesRequest : SessionRequest,
         string bookmark = string.Empty;
         do
         {
-            string innerBody = GetSearchInnerBody(bookmark, _searchConditionBuilder.ToString());
+            string innerBody = GetInnerBody(bookmark, _searchConditionBuilder.ToString());
             string requestBody = BodyBuilder.GetRequestBody(innerBody, Session.Ticket, Session.UserId);
             XDocument document = await SendAsync(requestBody);
             VaultFileSearchResult result = document.ParseFileSearchResult();
@@ -164,13 +187,31 @@ internal class SearchFilesRequest : SessionRequest,
         return files;
     }
 
-    private ISearchFilesStringProperty SetStringValue(string value, SearchOperator @operator)
+    private ISearchFilesBooleanProperty SetBooleanValue(bool value, SearchOperator @operator)
     {
         SetValue(value, @operator);
         return this;
     }
 
     private ISearchFilesDateTimeProperty SetDateTimeValue(DateTime value, SearchOperator @operator)
+    {
+        SetValue(value, @operator);
+        return this;
+    }
+
+    private ISearchFilesNumericProperty SetNumericValue(int value, SearchOperator @operator)
+    {
+        SetValue(value, @operator);
+        return this;
+    }
+
+    private ISearchFilesNumericProperty SetNumericValue(double value, SearchOperator @operator)
+    {
+        SetValue(value, @operator);
+        return this;
+    }
+
+    private ISearchFilesStringProperty SetStringValue(string value, SearchOperator @operator)
     {
         SetValue(value, @operator);
         return this;

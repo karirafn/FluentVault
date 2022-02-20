@@ -4,14 +4,14 @@ using FluentVault.IntegrationTests.Helpers;
 
 using Xunit;
 
-namespace FluentVault.IntegrationTests.Systems.VaultRequestTests;
+namespace FluentVault.IntegrationTests.Systems;
 
 public abstract class BaseRequestTest : IAsyncLifetime
 {
     protected readonly VaultOptions _v;
     protected Vault _vault;
 
-    public BaseRequestTest() => _v = ConfigurationHelper.GetVaultOptions();
+    public BaseRequestTest() => _v = VaultOptions.Get();
 
     public async Task InitializeAsync()
         => _vault = await Vault.SignIn

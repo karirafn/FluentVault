@@ -7,60 +7,10 @@ using FluentAssertions;
 
 using Xunit;
 
-namespace FluentVault.IntegrationTests.Systems.VaultRequestTests;
+namespace FluentVault.IntegrationTests.Systems.Search;
 
-public class SearchFilesTests : BaseRequestTest
+public class SearchFilesByDateTimeTests : BaseRequestTest
 {
-    [Fact]
-    public async Task SearchFilesByStringEqualTo_ShouldReturnValidSearchResult_WhenInputsAreValid()
-    {
-        // Arrange
-        string searchValue = _v.TestPartFilename;
-
-        // Act
-        VaultFile result = await _vault.Search.Files
-            .ForValueEqualTo(searchValue)
-            .InSystemProperty(SearchStringProperty.FileName)
-            .SearchSingleAsync()
-            ?? throw new Exception($@"Failed to search for ""{searchValue}""");
-
-        // Assert
-        result.MasterId.Should().Be(_v.TestPartMasterId);
-    }
-
-    [Fact]
-    public async Task SearchFilesByStringContaining_ShouldReturnValidSearchResult_WhenInputsAreValid()
-    {
-        // Arrange
-        string searchValue = _v.TestPartDescription.Split('-').Last();
-
-        // Act
-        VaultFile result = await _vault.Search.Files
-            .ForValueContaining(searchValue)
-            .InUserProperty("Description")
-            .SearchSingleAsync()
-            ?? throw new Exception($@"Failed to search for ""{searchValue}""");
-
-        // Assert
-        result.MasterId.Should().Be(_v.TestPartMasterId);
-    }
-
-    [Fact]
-    public async Task SearchFilesByStringNotContaining_ShouldReturnValidSearchResult_WhenInputsAreValid()
-    {
-        // Arrange
-        string searchValue = _v.TestPartFilename;
-
-        // Act
-        IEnumerable<VaultFile> result = await _vault.Search.Files
-            .ForValueNotContaining(searchValue)
-            .InSystemProperty(SearchStringProperty.FileName)
-            .SearchWithPaging();
-
-        // Assert
-        result.FirstOrDefault(x => x.MasterId.Equals(_v.TestPartMasterId)).Should().BeNull();
-    }
-
     [Fact]
     public async Task SearchFilesByDateTimeEqualTo_ShouldReturnValidSearchResult_WhenInputsAreValid()
     {
@@ -175,29 +125,5 @@ public class SearchFilesTests : BaseRequestTest
         result.Should().NotBeEmpty();
         result.Where(x => x.ModifiedDate >= searchValue).Should().NotBeEmpty();
         result.Where(x => x.ModifiedDate < searchValue).Should().BeEmpty();
-    }
-
-    [Fact]
-    public async Task SearchFilesWithoutPaging_ShouldReturnMoreResultsThanThePagingLimit_WhenInputsAreValid()
-    {
-        // This test will fail if the number of assemblies modified in the last month
-        // that are still in the "In Work" state is less than the paging limit (default is 200)
-
-        // Arrange
-        string searchValue = "in work iam";
-        DateTime datetime = DateTime.Now.AddMonths(-1);
-
-        // Act
-        IEnumerable<VaultFile> result = await _vault.Search.Files
-            .ForValueContaining(searchValue)
-            .InAllProperties
-            .And
-            .ForValueGreaterThan(datetime)
-            .InSystemProperty(SearchDateTimeProperty.DateModified)
-            .SearchWithoutPaging();
-
-        // Assert
-        result.Should().NotBeEmpty();
-        result.Should().HaveCountGreaterThan(200);
     }
 }

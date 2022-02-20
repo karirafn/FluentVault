@@ -5,7 +5,7 @@ using FluentAssertions;
 
 using Xunit;
 
-namespace FluentVault.IntegrationTests.Systems.VaultRequestTests;
+namespace FluentVault.IntegrationTests.Systems.Get;
 
 public class GetPropertiesTests : BaseRequestTest
 {

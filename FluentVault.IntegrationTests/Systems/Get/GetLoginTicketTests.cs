@@ -7,7 +7,7 @@ using FluentVault.IntegrationTests.Helpers;
 
 using Xunit;
 
-namespace FluentVault.IntegrationTests.Systems.VaultRequestTests;
+namespace FluentVault.IntegrationTests.Systems.Get;
 
 public class GetLoginTicketTests
 {
@@ -15,7 +15,7 @@ public class GetLoginTicketTests
     public async Task GetLoginTicketBuilder_ShouldReturnValidTicketAndGuid_WhenInputIsValid()
     {
         // Arrange
-        var v = ConfigurationHelper.GetVaultOptions();
+        var v = VaultOptions.Get();
 
         // Act
         await using var vault = await Vault.SignIn
