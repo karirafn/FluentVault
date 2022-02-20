@@ -32,7 +32,7 @@ public class SearchFilesTests : BaseRequestTest
     public async Task SearchFilesByStringContaining_ShouldReturnValidSearchResult_WhenInputsAreValid()
     {
         // Arrange
-        string searchValue = _v.TestPartDescription.Split('-').First();
+        string searchValue = _v.TestPartDescription.Split('-').Last();
 
         // Act
         VaultFile result = await _vault.Search.Files
@@ -70,18 +70,18 @@ public class SearchFilesTests : BaseRequestTest
             .InSystemProperty(SearchStringProperty.FileName)
             .SearchSingleAsync()
             ?? throw new Exception($@"File ""{_v.TestPartFilename}"" not found");
-        DateTime datetime = file.ModifiedDate;
+        DateTime searchValue = file.ModifiedDate;
 
         // Act
         VaultFile result = await _vault.Search.Files
-            .ForValueEqualTo(datetime)
+            .ForValueEqualTo(searchValue)
             .InSystemProperty(SearchDateTimeProperty.DateModified)
             .SearchSingleAsync()
             ?? throw new Exception("File not found");
 
         // Assert
         result.Should().NotBeNull();
-        result.ModifiedDate.Should().Be(datetime);
+        result.ModifiedDate.Should().Be(searchValue);
     }
 
     [Fact]
@@ -93,11 +93,11 @@ public class SearchFilesTests : BaseRequestTest
             .InSystemProperty(SearchStringProperty.FileName)
             .SearchSingleAsync()
             ?? throw new Exception($@"File ""{_v.TestPartFilename}"" not found");
-        DateTime datetime = file.ModifiedDate;
+        DateTime searchValue = file.ModifiedDate;
 
         // Act
         IEnumerable<VaultFile> result = await _vault.Search.Files
-            .ForValueNotEqualTo(datetime)
+            .ForValueNotEqualTo(searchValue)
             .InSystemProperty(SearchDateTimeProperty.DateModified)
             .SearchAllAsync();
 
@@ -106,19 +106,74 @@ public class SearchFilesTests : BaseRequestTest
     }
 
     [Fact]
-    public async Task SearchFilesByDateTimeGreaterThanOrEqualTo_ShouldReturnValidSearchResult_WhenInputsAreValid()
+    public async Task SearchFilesByDateTimeLessThan_ShouldReturnValidSearchResult_WhenInputsAreValid()
     {
         // Arrange
-        var datetime = DateTime.Now.AddMonths(-1);
+        DateTime searchValue = DateTime.Now.AddMonths(-1);
 
         // Act
         IEnumerable<VaultFile> result = await _vault.Search.Files
-            .ForValueGreaterThanOrEqualTo(datetime)
+            .ForValueLessThan(searchValue)
             .InSystemProperty(SearchDateTimeProperty.DateModified)
             .SearchAllAsync();
 
         // Assert
         result.Should().NotBeEmpty();
-        _ = result.Select(x => x.ModifiedDate.Should().BeOnOrAfter(datetime));
+        result.Where(x => x.ModifiedDate < searchValue).Should().NotBeEmpty();
+        result.Where(x => x.ModifiedDate >= searchValue).Should().BeEmpty();
+    }
+
+    [Fact]
+    public async Task SearchFilesByDateTimeLessThanOrEqualTo_ShouldReturnValidSearchResult_WhenInputsAreValid()
+    {
+        // Arrange
+        DateTime searchValue = DateTime.Now.AddMonths(-1);
+
+        // Act
+        IEnumerable<VaultFile> result = await _vault.Search.Files
+            .ForValueLessThanOrEqualTo(searchValue)
+            .InSystemProperty(SearchDateTimeProperty.DateModified)
+            .SearchAllAsync();
+
+        // Assert
+        result.Should().NotBeEmpty();
+        result.Where(x => x.ModifiedDate <= searchValue).Should().NotBeEmpty();
+        result.Where(x => x.ModifiedDate > searchValue).Should().BeEmpty();
+    }
+
+    [Fact]
+    public async Task SearchFilesByDateTimeGreaterThan_ShouldReturnValidSearchResult_WhenInputsAreValid()
+    {
+        // Arrange
+        DateTime searchValue = DateTime.Now.AddMonths(-1);
+
+        // Act
+        IEnumerable<VaultFile> result = await _vault.Search.Files
+            .ForValueGreaterThan(searchValue)
+            .InSystemProperty(SearchDateTimeProperty.DateModified)
+            .SearchAllAsync();
+
+        // Assert
+        result.Should().NotBeEmpty();
+        result.Where(x => x.ModifiedDate > searchValue).Should().NotBeEmpty();
+        result.Where(x => x.ModifiedDate <= searchValue).Should().BeEmpty();
+    }
+
+    [Fact]
+    public async Task SearchFilesByDateTimeGreaterThanOrEqualTo_ShouldReturnValidSearchResult_WhenInputsAreValid()
+    {
+        // Arrange
+        DateTime searchValue = DateTime.Now.AddMonths(-1);
+
+        // Act
+        IEnumerable<VaultFile> result = await _vault.Search.Files
+            .ForValueGreaterThanOrEqualTo(searchValue)
+            .InSystemProperty(SearchDateTimeProperty.DateModified)
+            .SearchAllAsync();
+
+        // Assert
+        result.Should().NotBeEmpty();
+        result.Where(x => x.ModifiedDate >= searchValue).Should().NotBeEmpty();
+        result.Where(x => x.ModifiedDate < searchValue).Should().BeEmpty();
     }
 }
