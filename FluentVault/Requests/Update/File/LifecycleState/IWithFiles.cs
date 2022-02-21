@@ -1,6 +1,6 @@
 ﻿namespace FluentVault;
 
-public interface IWithFileMasterId
+public interface IWithFiles
 {
     public IWithComment ToStateWithId(long stateId);
 }

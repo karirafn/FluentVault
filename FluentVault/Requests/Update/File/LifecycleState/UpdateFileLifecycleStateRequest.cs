@@ -4,21 +4,31 @@ using System.Xml.Linq;
 using FluentVault.Common.Extensions;
 using FluentVault.Common.Helpers;
 using FluentVault.Domain.File;
+using FluentVault.Requests.Search.Files;
 
 namespace FluentVault.Requests.Update.File.LifecycleState;
 
-internal class UpdateFileLifecycleStateRequest : SessionRequest, IUpdateFileLifecycleStateRequest, IWithFileMasterId, IWithComment
+internal class UpdateFileLifecycleStateRequest : SessionRequest, IUpdateFileLifecycleStateRequest, IWithFiles, IWithComment
 {
     private readonly List<long> _masterIds = new();
+    private readonly List<string> _filenames = new();
     private readonly List<long> _stateIds = new();
     private string _comment = string.Empty;
 
     public UpdateFileLifecycleStateRequest(VaultSession session)
         : base(session, RequestData.UpdateFileLifeCycleStates) { }
 
-    public IWithFileMasterId WithMasterId(long masterId)
+    public IWithFiles ByMasterId(long masterId) => ByMasterIds(new[] { masterId });
+    public IWithFiles ByMasterIds(IEnumerable<long> masterIds)
     {
-        _masterIds.Add(masterId);
+        _masterIds.AddRange(masterIds);
+        return this;
+    }
+
+    public IWithFiles ByFilename(string filename) => ByFilenames(new[] { filename });
+    public IWithFiles ByFilenames(IEnumerable<string> filenames)
+    {
+        _filenames.AddRange(filenames);
         return this;
     }
 
@@ -30,6 +40,17 @@ internal class UpdateFileLifecycleStateRequest : SessionRequest, IUpdateFileLife
 
     public async Task<VaultFile> WithComment(string comment)
     {
+        if (_filenames.Any())
+        {
+            string searchString = string.Join(" OR ", _filenames);
+            var result = await new SearchFilesRequest(Session)
+                .ForValueEqualTo(searchString)
+                .InSystemProperty(SearchStringProperty.FileName)
+                .SearchWithoutPaging();
+
+            _masterIds.AddRange(result.Select(x => x.MasterId));
+        }
+
         _comment = comment;
         StringBuilder innerBody = GetInnerBody();
         XDocument document = await SendRequestAsync(innerBody);
