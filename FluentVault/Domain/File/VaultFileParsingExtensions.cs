@@ -9,7 +9,7 @@ internal static class VaultFileParsingExtensions
     private const string FileElementName = "File";
 
     internal static VaultFile ParseVaultFile(this XDocument document)
-        => document.ParseSingleElement(FileElementName, ParseVaultFile);
+        => document.ParseElement(FileElementName, ParseVaultFile);
 
     internal static IEnumerable<VaultFile> ParseAllVaultFiles(this XDocument document)
         => document.ParseAllElements(FileElementName, ParseVaultFile);
@@ -42,9 +42,9 @@ internal static class VaultFileParsingExtensions
             element.ParseAttributeValue("IsOnSite", bool.Parse),
             element.ParseAttributeValue("ControlledByChangeOrder", bool.Parse),
             element.GetAttributeValue("DesignVisAttmtStatus"),
-            element.ParseSingleElement("FileRev", ParseRevision),
-            element.ParseSingleElement("FileLfCyc", ParseLifecycle),
-            element.ParseSingleElement("Cat", ParseCategory));
+            element.ParseElement("FileRev", ParseRevision),
+            element.ParseElement("FileLfCyc", ParseLifecycle),
+            element.ParseElement("Cat", ParseCategory));
 
     private static VaultFileRevision ParseRevision(XElement element)
         => new(element.ParseAttributeValue("RevId", long.Parse),

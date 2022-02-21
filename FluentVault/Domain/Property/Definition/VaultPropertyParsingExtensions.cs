@@ -10,7 +10,7 @@ internal static class VaultPropertyParsingExtensions
         => document.ParseAllElements("PropDefInfo", ParseProperty);
 
     internal static VaultPropertyDefinition ParseProperty(this XElement element)
-        => new(element.ParseSingleElement("PropDef", ParsePropertyDefinition),
+        => new(element.ParseElement("PropDef", ParsePropertyDefinition),
             element.ParseAllElements("PropertyConstraint", ParsePropertyConstraint),
             element.ParseAllElements("ListVal", x => x.Value),
             element.ParseAllElements("EntClassCtntSrcPropDefs", ParseEntityClassContentSourcePropertyDefinition));

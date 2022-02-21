@@ -13,7 +13,7 @@ internal static class XDocumentExtensions
     internal static T ParseAttributeValue<T>(this XElement element, string name, Func<string, T> parse)
         => parse(element.GetAttributeValue(name));
 
-    internal static T ParseSingleElement<T>(this XContainer container, string name, Func<XElement, T> parse)
+    internal static T ParseElement<T>(this XContainer container, string name, Func<XElement, T> parse)
         => parse(container.GetSingleElementByName(name));
 
     internal static IEnumerable<T> ParseAllElements<T>(this XContainer container, string name, Func<XElement, T> parse)
