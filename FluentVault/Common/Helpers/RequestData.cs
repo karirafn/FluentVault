@@ -8,6 +8,7 @@ internal class RequestData
     private readonly string _ns;
     private readonly string _command;
 
+    private const string AddPropertyCommand = "Connectivity.Explorer.DocumentPS.AddPropertyCommand";
     private const string AdminToolsCommand = "Connectivity.Explorer.Admin.AdminToolsCommand";
     private const string ChangeLifecycleStateCommand = "Connectivity.Explorer.DocumentPS.ChangeLifecycleStateCommand";
     private const string SignOutCommand = "Connectivity.Application.VaultBase.SignOutCommand";
@@ -29,6 +30,9 @@ internal class RequestData
 
     public static readonly RequestData UpdateFileLifeCycleStates
         = new(nameof(UpdateFileLifeCycleStates), "v26", "DocumentServiceExtensions", ChangeLifecycleStateCommand, "Services/DocumentExtensions/1/7/2020/");
+
+    public static readonly RequestData UpdateFilePropertyDefinitions
+        = new(nameof(UpdateFilePropertyDefinitions), "Document", AddPropertyCommand);
 
     public static readonly RequestData SignIn
         = new(nameof(SignIn), "Filestore/v26", "AuthService", string.Empty, "Filestore/Auth/1/7/2020/");

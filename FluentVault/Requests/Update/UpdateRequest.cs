@@ -1,4 +1,5 @@
 ﻿using FluentVault.Requests.Update.File.LifecycleState;
+using FluentVault.Requests.Update.File.PropertyDefinitions;
 
 namespace FluentVault.Requests.Update;
 
@@ -13,4 +14,5 @@ internal class UpdateRequest : IUpdateRequest, IUpdateFileRequest
 
     public IUpdateFileRequest File => this;
     public IUpdateFileLifecycleStateRequest LifecycleState => new UpdateFileLifecycleStateRequest(_session);
+    public IUpdateFilePropertyDefinitionsRequest PropertyDefinitions => new UpdateFilePropertyDefinitionsRequest(_session);
 }
