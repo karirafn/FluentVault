@@ -1,6 +1,6 @@
 ﻿namespace FluentVault;
 
-public record VaultProperty(
+public record VaultPropertyDefinition(
     PropertyDefinition Definition,
     IEnumerable<PropertyConstraint> Constraints,
     IEnumerable<string> ListValues,

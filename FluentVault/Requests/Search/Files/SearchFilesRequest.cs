@@ -22,7 +22,7 @@ internal class SearchFilesRequest : SessionRequest,
     private long _operator;
     private string _propertyName = string.Empty;
     private SearchPropertyType _propertyType = SearchPropertyType.SingleProperty;
-    private IEnumerable<VaultProperty> _allProperties = new List<VaultProperty>();
+    private IEnumerable<VaultPropertyDefinition> _allProperties = new List<VaultPropertyDefinition>();
 
     public SearchFilesRequest(VaultSession session)
         : base(session, RequestData.FindFilesBySearchConditions) { }

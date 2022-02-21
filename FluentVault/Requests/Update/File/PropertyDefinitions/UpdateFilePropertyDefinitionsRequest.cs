@@ -17,7 +17,7 @@ internal class UpdateFilePropertyDefinitionsRequest : SessionRequest, IUpdateFil
     private List<string> _filenames = new();
     private List<string> _addedPropertyNames = new();
     private List<string> _removedPropertyNames = new();
-    private IEnumerable<VaultProperty> _allProperties = new List<VaultProperty>();
+    private IEnumerable<VaultPropertyDefinition> _allProperties = new List<VaultPropertyDefinition>();
 
     public UpdateFilePropertyDefinitionsRequest(VaultSession session)
         : base(session, RequestData.UpdateFilePropertyDefinitions) { }

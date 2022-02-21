@@ -6,10 +6,10 @@ namespace FluentVault.Domain.Property;
 
 internal static class VaultPropertyParsingExtensions
 {
-    internal static IEnumerable<VaultProperty> ParseProperties(this XDocument document)
+    internal static IEnumerable<VaultPropertyDefinition> ParseProperties(this XDocument document)
         => document.ParseAllElements("PropDefInfo", ParseProperty);
 
-    internal static VaultProperty ParseProperty(this XElement element)
+    internal static VaultPropertyDefinition ParseProperty(this XElement element)
         => new(element.ParseSingleElement("PropDef", ParsePropertyDefinition),
             element.ParseAllElements("PropertyConstraint", ParsePropertyConstraint),
             element.ParseAllElements("ListVal", x => x.Value),

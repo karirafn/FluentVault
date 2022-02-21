@@ -15,7 +15,7 @@ public class GetPropertiesTests : BaseRequestTest
         // Arrange
 
         // Act
-        IEnumerable<VaultProperty> properties = await _vault.Get.Properties();
+        IEnumerable<VaultPropertyDefinition> properties = await _vault.Get.Properties();
 
         // Assert
         properties.Should().NotBeEmpty();
