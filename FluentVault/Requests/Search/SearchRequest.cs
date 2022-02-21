@@ -1,4 +1,5 @@
-﻿using FluentVault.Requests.Search.Files;
+﻿using FluentVault.Domain.Common;
+using FluentVault.Requests.Search.Files;
 
 namespace FluentVault.Requests.Search;
 

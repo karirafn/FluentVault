@@ -3,6 +3,7 @@ using System.Xml.Linq;
 
 using FluentVault.Common.Extensions;
 using FluentVault.Common.Helpers;
+using FluentVault.Domain.Common;
 using FluentVault.Domain.File;
 using FluentVault.Requests.Search.Files;
 

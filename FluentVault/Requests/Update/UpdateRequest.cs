@@ -1,4 +1,5 @@
-﻿using FluentVault.Requests.Update.File.LifecycleState;
+﻿using FluentVault.Domain.Common;
+using FluentVault.Requests.Update.File.LifecycleState;
 using FluentVault.Requests.Update.File.PropertyDefinitions;
 
 namespace FluentVault.Requests.Update;

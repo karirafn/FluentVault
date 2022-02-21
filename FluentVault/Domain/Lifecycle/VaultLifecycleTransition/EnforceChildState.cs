@@ -1,4 +1,4 @@
-﻿using FluentVault.Common;
+﻿using FluentVault.Domain.Common;
 
 namespace FluentVault;
 

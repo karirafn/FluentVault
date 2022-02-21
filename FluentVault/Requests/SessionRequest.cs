@@ -2,6 +2,7 @@
 using System.Xml.Linq;
 
 using FluentVault.Common.Helpers;
+using FluentVault.Domain.Common;
 
 namespace FluentVault.Requests;
 

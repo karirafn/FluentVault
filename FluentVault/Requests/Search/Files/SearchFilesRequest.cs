@@ -4,6 +4,7 @@ using System.Xml.Linq;
 
 using FluentVault.Common.Extensions;
 using FluentVault.Common.Helpers;
+using FluentVault.Domain.Common;
 using FluentVault.Domain.Search;
 using FluentVault.Requests.Get.Properties;
 

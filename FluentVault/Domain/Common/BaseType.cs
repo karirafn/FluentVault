@@ -1,4 +1,4 @@
-﻿namespace FluentVault.Common;
+﻿namespace FluentVault.Domain.Common;
 
 public abstract class BaseType
 {

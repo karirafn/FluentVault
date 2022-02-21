@@ -1,4 +1,5 @@
-﻿using FluentVault.Requests.Get.Categories;
+﻿using FluentVault.Domain.Common;
+using FluentVault.Requests.Get.Categories;
 using FluentVault.Requests.Get.Lifecycles;
 using FluentVault.Requests.Get.Properties;
 

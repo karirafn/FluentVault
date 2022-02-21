@@ -1,6 +1,7 @@
 ﻿using System.Text;
 
 using FluentVault.Common.Helpers;
+using FluentVault.Domain.Common;
 
 namespace FluentVault.Requests.SignOut;
 

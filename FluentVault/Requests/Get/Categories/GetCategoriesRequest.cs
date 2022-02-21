@@ -3,6 +3,7 @@ using System.Xml.Linq;
 
 using FluentVault.Common.Helpers;
 using FluentVault.Domain.Category;
+using FluentVault.Domain.Common;
 
 namespace FluentVault.Requests.Get.Categories;
 

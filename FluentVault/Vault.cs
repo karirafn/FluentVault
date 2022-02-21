@@ -1,4 +1,5 @@
-﻿using FluentVault.Requests.Get;
+﻿using FluentVault.Domain.Common;
+using FluentVault.Requests.Get;
 using FluentVault.Requests.Search;
 using FluentVault.Requests.SignIn;
 using FluentVault.Requests.SignOut;
