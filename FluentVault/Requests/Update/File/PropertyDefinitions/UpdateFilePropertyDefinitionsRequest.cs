@@ -33,10 +33,8 @@ internal class UpdateFilePropertyDefinitionsRequest : SessionRequest, IUpdateFil
         if (_removedPropertyNames.Any())
             await AddRemovedPropertyIdsFromPropertyNames();
 
-        string innerBody = GetInnerBody();
-        string requestBody = BodyBuilder.GetRequestBody(innerBody, Session.Ticket, Session.UserId);
-
-        XDocument document = await SendAsync(requestBody);
+        StringBuilder innerBody = GetInnerBody();
+        XDocument document = await SendRequestAsync(innerBody);
         IEnumerable<VaultFile> files = document.ParseAllVaultFiles();
 
         return files;
@@ -84,15 +82,14 @@ internal class UpdateFilePropertyDefinitionsRequest : SessionRequest, IUpdateFil
         return this;
     }
 
-    private string GetInnerBody() 
+    private StringBuilder GetInnerBody()
         => new StringBuilder()
             .AppendElementWithAttribute(RequestData.Name, "xmlns", RequestData.Namespace)
-            .AppendNestedElementArray("masterIds", "long", _masterIds)
-            .AppendNestedElementArray("addedPropDefIds", "long", _addedPropertyIds)
-            .AppendNestedElementArray("removedPropDefIds", "long", _removedPropertyIds)
+            .AppendNestedElements("masterIds", "long", _masterIds)
+            .AppendNestedElements("addedPropDefIds", "long", _addedPropertyIds)
+            .AppendNestedElements("removedPropDefIds", "long", _removedPropertyIds)
             .AppendElement("comment", "Add/Remove properties")
-            .AppendClosingTag(RequestData.Name)
-            .ToString();
+            .AppendElementClosing(RequestData.Name);
 
     private async Task AddMasterIdsFromFilenames()
     {

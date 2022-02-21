@@ -1,4 +1,6 @@
-﻿using FluentVault.Common.Helpers;
+﻿using System.Text;
+
+using FluentVault.Common.Helpers;
 
 namespace FluentVault.Requests.SignOut;
 
@@ -9,9 +11,7 @@ internal class SignOutRequest : SessionRequest
 
     public async Task SendAsync()
     {
-        string innerBody = GetOpeningTag(isSelfClosing: true);
-        string requestBody = BodyBuilder.GetRequestBody(innerBody, Session.Ticket, Session.UserId);
-
-        _ = await SendAsync(requestBody);
+        StringBuilder innerBody = GenerateInnerBodyFromRequestData();
+        _ = await SendRequestAsync(innerBody);
     }
 }

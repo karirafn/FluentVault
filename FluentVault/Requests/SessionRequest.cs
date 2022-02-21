@@ -1,4 +1,5 @@
-﻿using System.Xml.Linq;
+﻿using System.Text;
+using System.Xml.Linq;
 
 using FluentVault.Common.Helpers;
 
@@ -11,10 +12,9 @@ internal abstract class SessionRequest : BaseRequest
 
     public VaultSession Session { get; }
 
-    public async Task<XDocument> SendAsync(string requestBody)
+    public async Task<XDocument> SendRequestAsync(StringBuilder innerBody)
     {
-        Uri uri = RequestData.GetUri(Session.Server);
-        XDocument document = await SendAsync(uri, requestBody);
+        XDocument document = await SendRequestAsync(innerBody, Session.Server, Session.Ticket, Session.UserId);
 
         return document;
     }

@@ -26,11 +26,9 @@ internal class SignInRequest : BaseRequest, ISignInRequest, IWithCredentials
     {
         ValidateCredentials(username, password);
 
-        string innerBody = GetInnerBody(_server, _database, username, password);
-        string requestBody = BodyBuilder.GetRequestBody(innerBody);
-        Uri uri = RequestData.GetUri(_server);
+        StringBuilder innerBody = GetInnerBodyBuilder(_server, _database, username, password);
 
-        XDocument document = await SendAsync(uri, requestBody);
+        XDocument document = await SendRequestAsync(innerBody, _server);
 
         string t = document.GetElementValue("Ticket");
         string u = document.GetElementValue("UserId");
@@ -71,16 +69,12 @@ internal class SignInRequest : BaseRequest, ISignInRequest, IWithCredentials
             throw new ArgumentException("Failed to parse user ID.", nameof(userId));
     }
 
-    private string GetInnerBody(string server, string database, string username, string password)
-    {
-        StringBuilder bodyBuilder = new();
-        bodyBuilder.AppendLine(GetOpeningTag());
-        bodyBuilder.AppendLine($"<dataServer>http://{server}</dataServer>");
-        bodyBuilder.AppendLine($"<knowledgeVault>{database}</knowledgeVault>");
-        bodyBuilder.AppendLine($"<userName>{username}</userName>");
-        bodyBuilder.AppendLine($"<userPassword>{password}</userPassword>");
-        bodyBuilder.AppendLine(GetClosingTag());
-
-        return bodyBuilder.ToString();
-    }
+    private StringBuilder GetInnerBodyBuilder(string server, string database, string username, string password)
+        => new StringBuilder()
+            .AppendElementWithAttribute(RequestData.Name, "xmlns", RequestData.Namespace)
+            .AppendElement("dataServer", $"http://{server}")
+            .AppendElement("knowledgeVault", database)
+            .AppendElement("userName", username)
+            .AppendElement("userPassword", password)
+            .AppendElementClosing(RequestData.Name);
 }

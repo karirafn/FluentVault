@@ -2,6 +2,7 @@
 using System.Text;
 using System.Xml.Linq;
 
+using FluentVault.Common.Extensions;
 using FluentVault.Common.Helpers;
 using FluentVault.Domain.Search;
 using FluentVault.Requests.Get.Properties;
@@ -16,13 +17,17 @@ internal class SearchFilesRequest : SessionRequest,
     ISearchFilesStringProperty,
     ISearchFilesAddSearchCondition
 {
-    private readonly StringBuilder _searchConditionBuilder = new();
     private object _searchValue = new();
     private long _property;
     private long _operator;
     private string _propertyName = string.Empty;
     private SearchPropertyType _propertyType = SearchPropertyType.SingleProperty;
     private IEnumerable<VaultPropertyDefinition> _allProperties = new List<VaultPropertyDefinition>();
+    private bool _recurseFolders = true;
+    private bool _latestOnly = true;
+    private readonly List<long> _folderIds = new();
+    private readonly List<IDictionary<string, string>> _searchConditions = new();
+    private readonly List<IDictionary<string, string>> _sortConditions = new();
 
     public SearchFilesRequest(VaultSession session)
         : base(session, RequestData.FindFilesBySearchConditions) { }
@@ -111,50 +116,6 @@ internal class SearchFilesRequest : SessionRequest,
         }
     }
 
-    private void AddSearchCondition()
-    {
-        string value = _searchValue switch
-        {
-            string s => s,
-            DateTime d => d.ToString("MM/dd/yyyy HH:mm:ss", CultureInfo.InvariantCulture),
-            not null => _searchValue.ToString() ?? throw new Exception("Unable to convert search value to string"),
-            _ => string.Empty
-        };
-
-        string condition = GetSearchCondition(value, _property, _operator, _propertyType, SearchRule.Must);
-        _searchConditionBuilder.AppendLine(condition);
-        _propertyType = SearchPropertyType.SingleProperty;
-    }
-
-    private string GetInnerBody(string bookmark, string searchConditions, string? sortConditions = null, string? folderIds = null, bool recurseFolders = true, bool latestOnly = true)
-    {
-        StringBuilder bodyBuilder = new();
-        bodyBuilder.AppendLine(GetOpeningTag());
-        bodyBuilder.AppendLine("<conditions>");
-        bodyBuilder.Append(searchConditions);
-        bodyBuilder.AppendLine("</conditions>");
-
-        bodyBuilder.AppendLine("<sortConditions>");
-        if (string.IsNullOrWhiteSpace(sortConditions) is false)
-            bodyBuilder.Append(sortConditions);
-        bodyBuilder.AppendLine("</sortConditions>");
-
-        bodyBuilder.AppendLine("<folderIds>");
-        if (string.IsNullOrWhiteSpace(folderIds) is false)
-            bodyBuilder.Append(folderIds);
-        bodyBuilder.AppendLine("</folderIds>");
-
-        bodyBuilder.AppendLine($"<recurseFolders>{recurseFolders.ToString().ToLower()}</recurseFolders>");
-        bodyBuilder.AppendLine($"<latestOnly>{latestOnly.ToString().ToLower()}</latestOnly>");
-        bodyBuilder.AppendLine($"<bookmark>{bookmark}</bookmark>");
-        bodyBuilder.AppendLine(GetClosingTag());
-
-        return bodyBuilder.ToString();
-    }
-
-    private static string GetSearchCondition(string searchText, long propertyId, long searchOperator, SearchPropertyType propertyType, SearchRule searchRule)
-        => $@"<SrchCond PropDefId=""{propertyId}"" SrchOper=""{searchOperator}"" SrchTxt=""{searchText}"" PropTyp=""{propertyType}"" SrchRule=""{searchRule}""/>";
-
     private async Task SetPropertyValue(string property)
     {
         if (_allProperties.Any() is false)
@@ -176,9 +137,8 @@ internal class SearchFilesRequest : SessionRequest,
         string bookmark = string.Empty;
         do
         {
-            string innerBody = GetInnerBody(bookmark, _searchConditionBuilder.ToString());
-            string requestBody = BodyBuilder.GetRequestBody(innerBody, Session.Ticket, Session.UserId);
-            XDocument document = await SendAsync(requestBody);
+            StringBuilder innerBody = GetInnerBody(bookmark);
+            XDocument document = await SendRequestAsync(innerBody);
             VaultFileSearchResult result = document.ParseFileSearchResult();
             files.AddRange(result.Files);
             bookmark = result.Bookmark;
@@ -186,6 +146,49 @@ internal class SearchFilesRequest : SessionRequest,
 
         return files;
     }
+
+    private StringBuilder GetInnerBody(string bookmark)
+        => new StringBuilder()
+            .AppendElementWithAttribute(RequestData.Name, "xmlns", RequestData.Namespace)
+            .AppendNestedElementsWithAttributes("conditions", "SrchCond", _searchConditions)
+            .AppendNestedElementsWithAttributes("sortConditions", "SrchSort", _searchConditions)
+            .AppendElements("folderIds", _folderIds)
+            .AppendElement("recurseFolders", _recurseFolders)
+            .AppendElement("latestOnly", _latestOnly)
+            .AppendElement("bookmark", bookmark)
+            .AppendElementClosing(RequestData.Name);
+
+    private void AddSearchCondition()
+    {
+        string value = _searchValue switch
+        {
+            string s => s,
+            DateTime d => d.ToString("MM/dd/yyyy HH:mm:ss", CultureInfo.InvariantCulture),
+            not null => _searchValue.ToString() ?? throw new Exception("Unable to convert search value to string"),
+            _ => string.Empty
+        };
+
+        var searchCondition = GetSearchCondition(_property, _operator, value, _propertyType, SearchRule.Must);
+        _searchConditions.Add(searchCondition);
+        _propertyType = SearchPropertyType.SingleProperty;
+    }
+
+    private static IDictionary<string, string> GetSearchCondition(long propertyId, long searchOperator, string searchText, SearchPropertyType type, SearchRule rule)
+        => new Dictionary<string, string>
+        {
+            { "PropDefId", propertyId.ToString() },
+            { "SrchOper", searchOperator.ToString() },
+            { "SrchTxt", searchText },
+            { "PropTyp", type.ToString() },
+            { "SrchRule", rule.ToString() },
+        };
+
+    private static IDictionary<string, string> GetSortCondition(long propertyId, bool sortAscending)
+        => new Dictionary<string, string>
+        {
+            { "PropDefId", propertyId.ToString() },
+            { "SortAsc", sortAscending.ToString().ToLower() },
+        };
 
     private ISearchFilesBooleanProperty SetBooleanValue(bool value, SearchOperator @operator)
     {

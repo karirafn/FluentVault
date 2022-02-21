@@ -1,4 +1,5 @@
-﻿using System.Xml.Linq;
+﻿using System.Text;
+using System.Xml.Linq;
 
 using FluentVault.Common.Helpers;
 using FluentVault.Domain.Lifecycle;
@@ -12,10 +13,8 @@ internal class GetLifecyclesRequest : SessionRequest
 
     public async Task<IEnumerable<VaultLifecycle>> SendAsync()
     {
-        string innerBody = GetOpeningTag(isSelfClosing: true);
-        string requestBody = BodyBuilder.GetRequestBody(innerBody, Session.Ticket, Session.UserId);
-
-        XDocument document = await SendAsync(requestBody);
+        StringBuilder innerBody = GenerateInnerBodyFromRequestData();
+        XDocument document = await SendRequestAsync(innerBody);
         IEnumerable<VaultLifecycle> lifecycles = document.ParseLifecycles();
 
         return lifecycles;

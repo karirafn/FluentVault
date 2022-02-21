@@ -1,4 +1,5 @@
-﻿using System.Xml.Linq;
+﻿using System.Text;
+using System.Xml.Linq;
 
 using FluentVault.Common.Helpers;
 using FluentVault.Domain.Property;
@@ -12,10 +13,8 @@ internal class GetPropertiesRequest : SessionRequest
 
     public async Task<IEnumerable<VaultPropertyDefinition>> SendAsync()
     {
-        string innerBody = GetOpeningTag(isSelfClosing: true);
-        string requestBody = BodyBuilder.GetRequestBody(innerBody, Session.Ticket, Session.UserId);
-
-        XDocument document = await SendAsync(requestBody);
+        StringBuilder innerBody = GenerateInnerBodyFromRequestData();
+        XDocument document = await SendRequestAsync(innerBody);
         IEnumerable<VaultPropertyDefinition> properties = document.ParseProperties();
 
         return properties;

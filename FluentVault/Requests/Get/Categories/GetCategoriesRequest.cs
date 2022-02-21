@@ -1,4 +1,5 @@
-﻿using System.Xml.Linq;
+﻿using System.Text;
+using System.Xml.Linq;
 
 using FluentVault.Common.Helpers;
 using FluentVault.Domain.Category;
@@ -12,10 +13,8 @@ internal class GetCategoriesRequest : SessionRequest
 
     public async Task<IEnumerable<VaultCategory>> SendAsync()
     {
-        string innerBody = GetOpeningTag(isSelfClosing: true);
-        string requestBody = BodyBuilder.GetRequestBody(innerBody, Session.Ticket, Session.UserId);
-
-        XDocument document = await SendAsync(requestBody);
+        StringBuilder innerBody = GenerateInnerBodyFromRequestData();
+        XDocument document = await SendRequestAsync(innerBody);
         IEnumerable<VaultCategory> categories = document.ParseCategories();
 
         return categories;
