@@ -4,63 +4,68 @@ namespace FluentVault.Common.Extensions;
 
 internal static class StringBuilderExtensions
 {
-    internal static StringBuilder AppendElementOpening(this StringBuilder builder, string elementName)
-        => builder.Append($"<{elementName}>");
+    internal static StringBuilder AppendElementOpening(this StringBuilder builder, string tag)
+        => builder.Append('<')
+            .Append(tag)
+            .Append('>');
 
-    internal static StringBuilder AppendElementClosing(this StringBuilder builder, string elementName)
-        => builder.Append($"</{elementName}>");
+    internal static StringBuilder AppendElementClosing(this StringBuilder builder, string tag)
+        => builder.Append("</")
+            .Append(tag)
+            .Append('>');
 
-    internal static StringBuilder AppendElement(this StringBuilder builder, string elementName, string value)
-        => builder.AppendElementOpening(elementName)
+    internal static StringBuilder AppendElement(this StringBuilder builder, string tag, string value)
+        => builder.AppendElementOpening(tag)
                 .Append(value)
-                .AppendElementClosing(elementName);
+                .AppendElementClosing(tag);
 
-    internal static StringBuilder AppendElement(this StringBuilder builder, string elementName, bool value)
-        => builder.AppendElement(elementName, value.ToString().ToLower());
+    internal static StringBuilder AppendElement(this StringBuilder builder, string tag, bool value)
+        => builder.AppendElement(tag, value.ToString().ToLower());
 
-    internal static StringBuilder AppendElement(this StringBuilder builder, string elementName, Guid value)
-        => builder.AppendElement(elementName, value.ToString());
+    internal static StringBuilder AppendElement(this StringBuilder builder, string tag, Guid value)
+        => builder.AppendElement(tag, value.ToString());
 
-    internal static StringBuilder AppendElement(this StringBuilder builder, string elementName, long value)
-        => builder.AppendElement(elementName, value.ToString());
+    internal static StringBuilder AppendElement(this StringBuilder builder, string tag, long value)
+        => builder.AppendElement(tag, value.ToString());
 
-    internal static StringBuilder AppendElements(this StringBuilder builder, string elementName, IEnumerable<string> values)
-        => values.Aggregate(builder, (b, id) => b.AppendElement(elementName, id));
+    internal static StringBuilder AppendElements(this StringBuilder builder, string tag, IEnumerable<string> values)
+        => values.Aggregate(builder, (b, id) => b.AppendElement(tag, id));
 
-    internal static StringBuilder AppendElements(this StringBuilder builder, string elementName, IEnumerable<bool> values)
-        => builder.AppendElements(elementName, values.Select(x => x.ToString().ToLower()));
+    internal static StringBuilder AppendElements(this StringBuilder builder, string tag, IEnumerable<bool> values)
+        => builder.AppendElements(tag, values.Select(x => x.ToString().ToLower()));
 
-    internal static StringBuilder AppendElements(this StringBuilder builder, string elementName, IEnumerable<long> values)
-        => builder.AppendElements(elementName, values.Select(x => x.ToString()));
+    internal static StringBuilder AppendElements(this StringBuilder builder, string tag, IEnumerable<long> values)
+        => builder.AppendElements(tag, values.Select(x => x.ToString()));
 
-    internal static StringBuilder AppendElementWithAttributes(this StringBuilder builder, string elementName, IDictionary<string, string> attributes, bool isSelfClosing = false)
-        => builder
-            .Append($"<{elementName}")
+    internal static StringBuilder AppendElementWithAttributes(this StringBuilder builder, string tag, IDictionary<string, string> attributes, bool isSelfClosing = false)
+        => builder.Append('<')
+            .Append(tag)
             .AppendAttributes(attributes)
-            .Append($"{(isSelfClosing ? "/" : "")}>");
+            .Append((isSelfClosing ? '/' : ""))
+            .Append('>');
 
-    internal static StringBuilder AppendElementsWithAttributes(this StringBuilder builder, string elementName, IEnumerable<IDictionary<string, string>> elementAttributes)
+    internal static StringBuilder AppendElementsWithAttributes(this StringBuilder builder, string tag, IEnumerable<IDictionary<string, string>> elementAttributes)
         => elementAttributes.Aggregate(builder,
             (builder, attributes)
-                => builder.AppendElementWithAttributes(elementName, attributes, isSelfClosing: true));
+                => builder.AppendElementWithAttributes(tag, attributes, isSelfClosing: true));
 
-    internal static StringBuilder AppendNestedElementsWithAttributes(this StringBuilder builder, string parentName, string childName, IEnumerable<IDictionary<string, string>> attributes)
+    internal static StringBuilder AppendNestedElementsWithAttributes(this StringBuilder builder, string parentTag, string childTag, IEnumerable<IDictionary<string, string>> attributes)
         => builder
-            .AppendElementOpening(parentName)
-            .AppendElementsWithAttributes(childName, attributes)
-            .AppendElementClosing(parentName);
+            .AppendElementOpening(parentTag)
+            .AppendElementsWithAttributes(childTag, attributes)
+            .AppendElementClosing(parentTag);
 
-    internal static StringBuilder AppendElementWithAttribute(this StringBuilder builder, string elementName, string attributeName, string attributeValue, bool isSelfClosing = false)
-        => builder.AppendElementWithAttributes(elementName, new Dictionary<string, string> { { attributeName, attributeValue } }, isSelfClosing);
+    internal static StringBuilder AppendElementWithAttribute(this StringBuilder builder, string tag, string attributeName, string attributeValue, bool isSelfClosing = false)
+        => builder.AppendElementWithAttributes(tag, new Dictionary<string, string> { { attributeName, attributeValue } }, isSelfClosing);
 
-    internal static StringBuilder AppendNestedElements(this StringBuilder builder, string parentName, string childName, IEnumerable<string> values)
+    internal static StringBuilder AppendNestedElements(this StringBuilder builder, string parentTag, string childTag, IEnumerable<string> values)
         => builder
-            .AppendElementOpening(parentName)
-            .AppendElements(childName, values)
-            .AppendElementClosing(parentName);
+            .AppendElementOpening(parentTag)
+            .AppendElements(childTag, values)
+            .AppendElementClosing(parentTag);
 
-    internal static StringBuilder AppendNestedElements(this StringBuilder builder, string parentName, string childName, IEnumerable<bool> values)
-        => builder.AppendNestedElements(parentName, childName, values.Select(x => x.ToString().ToLower()));
+    internal static StringBuilder AppendNestedElements(this StringBuilder builder, string parentTag, string childTag, IEnumerable<bool> values)
+        => builder.AppendNestedElements(parentTag, childTag, values.Select(x => x.ToString().ToLower()));
 
     internal static StringBuilder AppendNestedElements(this StringBuilder builder, string parentName, string childName, IEnumerable<long> values)
         => builder.AppendNestedElements(parentName, childName, values.Select(x => x.ToString()));
@@ -99,5 +104,12 @@ internal static class StringBuilderExtensions
     private static StringBuilder AppendAttributes(this StringBuilder builder, IDictionary<string, string> attributes)
         => attributes.Aggregate(builder,
             (builder, attribute)
-                => builder.Append($@" {attribute.Key}=""{attribute.Value}"""));
+                => builder.AppendAttribute(attribute.Key, attribute.Value));
+
+    private static StringBuilder AppendAttribute(this StringBuilder builder, string name, string value)
+        => builder.Append(' ')
+            .Append(name)
+            .Append(@"=""")
+            .Append(value)
+            .Append('"');
 }
