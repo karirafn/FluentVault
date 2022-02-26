@@ -6,10 +6,10 @@ namespace FluentVault.Domain.Lifecycle;
 
 internal static class VaultLifecycleParsingExtensions
 {
-    internal static IEnumerable<VaultLifecycle> ParseLifecycles(this XDocument document)
+    internal static IEnumerable<VaultLifeCycle> ParseLifeCycles(this XDocument document)
         => document.ParseAllElements("LfCycDef", ParseLifecycle);
 
-    private static VaultLifecycle ParseLifecycle(XElement element)
+    private static VaultLifeCycle ParseLifecycle(XElement element)
         => new(element.ParseAttributeValue("Id", long.Parse),
             element.GetAttributeValue("Name"),
             element.GetAttributeValue("SysName"),
@@ -19,7 +19,7 @@ internal static class VaultLifecycleParsingExtensions
             element.ParseAllElements("State", ParseState),
             element.ParseAllElements("Trans", ParseTransition));
 
-    private static VaultLifecycleState ParseState(this XElement element)
+    private static VaultLifeCycleState ParseState(this XElement element)
         => new(element.ParseAttributeValue("ID", long.Parse),
             element.GetAttributeValue("Name"),
             element.GetAttributeValue("DispName"),
@@ -35,7 +35,7 @@ internal static class VaultLifecycleParsingExtensions
             element.ParseAttributeValue("FolderFileSecMode", FolderFileSecurityMode.Parse),
             element.ParseAllElements("Comm", x => x.Value));
 
-    private static VaultLifecycleTransition ParseTransition(this XElement element)
+    private static VaultLifeCycleTransition ParseTransition(this XElement element)
         => new(element.ParseAttributeValue("Id", long.Parse),
             element.ParseAttributeValue("FromId", long.Parse),
             element.ParseAttributeValue("ToId", long.Parse),

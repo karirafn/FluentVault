@@ -1,6 +1,6 @@
 ﻿namespace FluentVault;
 
-public record VaultLifecycleTransition(
+public record VaultLifeCycleTransition(
     long Id,
     long FromId,
     long ToId,

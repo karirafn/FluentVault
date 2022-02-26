@@ -1,0 +1,67 @@
+{
+  "SoapRequestData": [
+    {
+      "Name": "GetAllLifeCycleDefinitions",
+      "Version": "v26",
+      "Service": "LifeCycleService",
+      "Command": "Connectivity.Explorer.Admin.AdminToolsCommand",
+      "Namespace": "Services/LifeCycle/1/7/2020/"
+    },
+    {
+      "Name": "GetBehaviorConfigurationsByNames",
+      "Version": "v26",
+      "Service": "BehaviorService",
+      "Command": "Connectivity.Explorer.Admin.AdminToolsCommand",
+      "Namespace": "Services/Behavior/1/7/2020/"
+    },
+    {
+      "Name": "GetCategoryConfigurationsByBehaviorNames",
+      "Version": "v26",
+      "Service": "CategoryService",
+      "Command": "Connectivity.Explorer.Admin.AdminToolsCommand",
+      "Namespace": "Services/Category/1/7/2020/"
+    },
+    {
+      "Name": "GetPropertyDefinitionInfosByEntityClassId",
+      "Version": "v26",
+      "Service": "PropertyService",
+      "Command": "Connectivity.Explorer.Admin.AdminToolsCommand",
+      "Namespace": "Services/Property/1/7/2020/"
+    },
+    {
+      "Name": "FindFilesBySearchConditions",
+      "Version": "v26",
+      "Service": "DocumentService",
+      "Command": "",
+      "Namespace": "Services/Document/1/7/2020/"
+    },
+    {
+      "Name": "UpdateFileLifeCycleStates",
+      "Version": "v26",
+      "Service": "DocumentServiceExtensions",
+      "Command": "Connectivity.Explorer.DocumentPS.ChangeLifecycleStateCommand",
+      "Namespace": "Services/DocumentExtensions/1/7/2020/"
+    },
+    {
+      "Name": "UpdateFilePropertyDefinitions",
+      "Version": "v26",
+      "Service": "AuthService",
+      "Command": "Connectivity.Explorer.DocumentPS.ChangeLifecycleStateCommand",
+      "Namespace": "Services/Document/1/7/2020/"
+    },
+    {
+      "Name": "SignIn",
+      "Version": "Filestore/v26",
+      "Service": "DocumentService",
+      "Command": "",
+      "Namespace": "Filestore/Auth/1/7/2020/"
+    },
+    {
+      "Name": "SignOut",
+      "Version": "Filestore/v26_2",
+      "Service": "DocumentService",
+      "Command": "Connectivity.Application.VaultBase.SignOutCommand",
+      "Namespace": "Filestore/Auth/1/8/2021/"
+    }
+  ]
+}

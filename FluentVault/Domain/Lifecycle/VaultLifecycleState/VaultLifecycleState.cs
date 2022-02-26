@@ -1,6 +1,6 @@
 ﻿namespace FluentVault;
 
-public record VaultLifecycleState(
+public record VaultLifeCycleState(
     long Id,
     string Name,
     string DisplayName,

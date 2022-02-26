@@ -6,7 +6,7 @@ namespace FluentVault.UnitTests.Fixtures;
 
 internal static partial class VaultResponseFixtures
 {
-    public static (string Body, IEnumerable<VaultLifecycle> Files) GetVaultLifecycleFixtures(int count)
+    public static (string Body, IEnumerable<VaultLifeCycle> Files) GetVaultLifecycleFixtures(int count)
     {
         Fixture fixture = new();
         fixture.Register(() => RestrictPurgeOption.All);
@@ -19,10 +19,10 @@ internal static partial class VaultResponseFixtures
         fixture.Register(() => FileLinkTypeState.StandardComp);
         fixture.Register(() => FileLinkTypeState.DesignDocs);
 
-        return CreateBody<VaultLifecycle>(fixture, count, "GetAllLifeCycleDefinitions", "http://AutodeskDM/Services/LifeCycle/1/7/2020/", CreateLifecycleBody);
+        return CreateBody<VaultLifeCycle>(fixture, count, "GetAllLifeCycleDefinitions", "http://AutodeskDM/Services/LifeCycle/1/7/2020/", CreateLifecycleBody);
     }
 
-    private static string CreateLifecycleBody(VaultLifecycle lifecycle) => $@"<LfCycDef 
+    private static string CreateLifecycleBody(VaultLifeCycle lifecycle) => $@"<LfCycDef 
                 Id=""{lifecycle.Id}""
 				Name=""{lifecycle.Name}""
 				SysName=""{lifecycle.SystemName}""
@@ -37,7 +37,7 @@ internal static partial class VaultResponseFixtures
                 </TransArray>
             </LfCycDef>";
 
-    private static string CreateStateBody(VaultLifecycleState state) => $@"<State 
+    private static string CreateStateBody(VaultLifeCycleState state) => $@"<State 
 						ID=""{state.Id}""
 						Name=""{state.Name}""
 						DispName=""{state.DisplayName}""
@@ -56,7 +56,7 @@ internal static partial class VaultResponseFixtures
                         </CommArray>
                     </State>";
 
-    private static string CreateTransitionBody(VaultLifecycleTransition transition) => $@"<Trans 
+    private static string CreateTransitionBody(VaultLifeCycleTransition transition) => $@"<Trans 
                         Id=""{transition.Id}""
 						FromId=""{transition.FromId}""
 						ToId=""{transition.ToId}""

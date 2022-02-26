@@ -18,7 +18,7 @@ public class GetLoginTicketTests
         var v = VaultOptions.Get();
 
         // Act
-        await using var vault = await Vault.SignIn
+        await using var vault = await VaultClient.SignIn
             .ToVault(v.Server, v.Database)
             .WithCredentials(v.Username, v.Password);
 
@@ -36,7 +36,7 @@ public class GetLoginTicketTests
     [InlineData("server", "database", " ", "")]
     public async Task GetLoginTicketBuilder_ShouldThrowAnArgumentException_WhenInputIsEmptyOrWhiteSpace(string server, string database, string username, string password)
     {
-        await Assert.ThrowsAsync<ArgumentException>(async () => await Vault.SignIn
+        await Assert.ThrowsAsync<ArgumentException>(async () => await VaultClient.SignIn
             .ToVault(server, database)
             .WithCredentials(username, password));
     }
@@ -48,7 +48,7 @@ public class GetLoginTicketTests
     [InlineData("server", "database", "username", null)]
     public async Task GetLoginTicketBuilder_ShouldThrowAnArgumentNullException_WhenInputIsNull(string server, string database, string username, string password)
     {
-        await Assert.ThrowsAsync<ArgumentNullException>(async () => await Vault.SignIn
+        await Assert.ThrowsAsync<ArgumentNullException>(async () => await VaultClient.SignIn
             .ToVault(server, database)
             .WithCredentials(username, password));
     }

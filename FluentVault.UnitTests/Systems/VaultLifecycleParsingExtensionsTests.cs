@@ -19,7 +19,7 @@ public class VaultLifecycleParsingExtensionsTests
         var document = XDocument.Parse(body);
 
         // Act
-        var result = document.ParseLifecycles();
+        var result = document.ParseLifeCycles();
 
         // Assert
         result.Should().BeEquivalentTo(expectation);

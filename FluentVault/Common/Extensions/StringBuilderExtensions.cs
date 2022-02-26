@@ -1,5 +1,8 @@
 ﻿using System.Text;
 
+using FluentVault.Domain;
+using FluentVault.Domain.SOAP;
+
 namespace FluentVault.Common.Extensions;
 
 internal static class StringBuilderExtensions
@@ -70,23 +73,53 @@ internal static class StringBuilderExtensions
     internal static StringBuilder AppendNestedElements(this StringBuilder builder, string parentName, string childName, IEnumerable<long> values)
         => builder.AppendNestedElements(parentName, childName, values.Select(x => x.ToString()));
 
-    internal static StringBuilder AppendRequestBody(this StringBuilder builder, StringBuilder innerBody, Guid ticket = new(), long userId = 0)
+    internal static StringBuilder AppendRequestBodyOpening(this StringBuilder builder, VaultSessionCredentials session)
         => builder.AppendElementWithAttribute("s:Envelope", "xmlns:s", @"http://schemas.xmlsoap.org/soap/envelope/")
-            .AppendHeaderBody(ticket, userId)
-            .AppendElementWithAttributes("s:Body", _bodyHeaderNamespaces)
-            .Append(innerBody)
-            .AppendElementClosing("s:Body")
+            .AppendHeaderBody(session)
+            .AppendElementWithAttributes("s:Body", _bodyHeaderNamespaces);
+
+    internal static StringBuilder AppendRequestBodyClosing(this StringBuilder builder)
+        => builder.AppendElementClosing("s:Body")
             .AppendElementClosing("s:Envelope");
 
-    internal static StringBuilder AppendHeaderBody(this StringBuilder builder, Guid ticket, long userId)
-        => (ticket != Guid.Empty && userId > 0)
+    internal static StringBuilder AppendHeaderBody(this StringBuilder builder, VaultSessionCredentials session)
+        => (session.Ticket != Guid.Empty && session.UserId > 0)
         ? builder.AppendElementOpening("s:Header")
             .AppendElementWithAttributes("SecurityHeader", _securityHeaderNamespaces)
-            .AppendElement("Ticket", ticket)
-            .AppendElement("UserId", userId)
+            .AppendElement("Ticket", session.Ticket)
+            .AppendElement("UserId", session.UserId)
             .AppendElementClosing("SecurityHeader")
             .AppendElementClosing("s:Header")
         : builder;
+
+    internal static StringBuilder SoapActionStringBuilder(this StringBuilder builder, SoapRequestData request)
+        => builder.Append('"')
+            .AppendNamespace(request)
+            .Append('"')
+            .Append(request.Service)
+            .Append('/')
+            .Append(request.Name)
+            .Append('"');
+
+    internal static StringBuilder AppendNamespace(this StringBuilder builder, SoapRequestData request)
+        => builder.Append("http://AutodeskDM/")
+            .Append(request.Namespace);
+
+    internal static StringBuilder AppendRequestUri(this StringBuilder builder, SoapRequestData request)
+        => builder.Append("AutodeskDM/Services/")
+            .Append(request.Version)
+            .Append('/')
+            .Append(request.Service)
+            .Append(".svc")
+            .AppendRequestCommand(request);
+
+    internal static StringBuilder AppendRequestCommand(this StringBuilder builder, SoapRequestData request)
+        => string.IsNullOrEmpty(request.Command)
+        ? builder
+        : builder.Append("?op=")
+            .Append(request.Name)
+            .Append("&currentCommand=")
+            .Append(request.Command);
 
     private static readonly IDictionary<string, string> _bodyHeaderNamespaces = new Dictionary<string, string>
     {

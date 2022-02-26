@@ -61,8 +61,7 @@ internal class RequestData
     public string Name => _name;
     public string SoapAction => $@"""{Namespace}{_service}/{_name}""";
     public string Namespace => $"http://AutodeskDM/{_ns}";
-    public Uri GetUri(string server)
-        => new($"http://{server}/AutodeskDM/Services/{_version}/{_service}.svc{_command}");
+    public Uri Uri => new($"AutodeskDM/Services/{_version}/{_service}.svc{_command}");
 
     private static string GetCommand(string name, string command)
         => string.IsNullOrEmpty(command)
