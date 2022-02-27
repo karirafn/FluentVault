@@ -10,7 +10,7 @@ using FluentVault.UnitTests.Fixtures;
 
 using Xunit;
 
-namespace FluentVault.UnitTests.Systems;
+namespace FluentVault.UnitTests.Systems.Extensions;
 
 public class VaultFileParsingExtensionsShould
 {
