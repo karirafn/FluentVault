@@ -2,7 +2,7 @@
 
 namespace FluentVault.Common.Extensions;
 
-internal static class XDocumentExtensions
+internal static class XDocumentParsingExtensions
 {
     internal static string GetElementValue(this XContainer container, string name)
         => container.GetSingleElementByName(name).Value;
