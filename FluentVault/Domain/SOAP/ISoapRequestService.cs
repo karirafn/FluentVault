@@ -4,7 +4,5 @@ namespace FluentVault.Domain.SOAP;
 
 internal interface ISoapRequestService
 {
-    Task<XDocument> SendAsync(string requestName, VaultSessionCredentials session);
-    Task<XDocument> SendAsync(string requestName, string requestBody);
-    string GetNamespace(string requestName);
+    Task<XDocument> SendAsync(string requestName, VaultSessionCredentials session, Action<XElement, XNamespace>? contentBuilder = null);
 }

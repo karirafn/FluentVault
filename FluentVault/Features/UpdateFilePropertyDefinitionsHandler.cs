@@ -1,6 +1,4 @@
-﻿
-using System.Text;
-using System.Xml.Linq;
+﻿using System.Xml.Linq;
 
 using FluentVault.Common.Extensions;
 using FluentVault.Domain.File;
@@ -36,8 +34,15 @@ internal class UpdateFilePropertyDefinitionsHandler : IRequestHandler<UpdateFile
         if (command.RemovedPropertyNames.Any())
             command.AddedPropertyIds.AddRange(await GetPropertyIdsFromPropertyNames(command.RemovedPropertyNames, command));
 
-        string requestBody = GetRequestBody(command);
-        XDocument response = await _soapRequestService.SendAsync(RequestName, requestBody);
+        void contentBuilder(XElement content, XNamespace ns)
+        {
+            content.AddNestedElements(ns, "masterIds", "long", command.MasterIds.Select(x => x.ToString()));
+            content.AddNestedElements(ns, "addedPropDefIds", "long", command.AddedPropertyIds.Select(x => x.ToString()));
+            content.AddNestedElements(ns, "removedPropDefIds", "long", command.RemovedPropertyIds.Select(x => x.ToString()));
+            content.AddElement(ns, "comment", "Add/Remove properties");
+        };
+
+        XDocument response = await _soapRequestService.SendAsync(RequestName, command.Session, contentBuilder);
         var files = response.ParseAllVaultFiles();
 
         return files;
@@ -65,16 +70,4 @@ internal class UpdateFilePropertyDefinitionsHandler : IRequestHandler<UpdateFile
         return _allProperties.Where(x => names.Contains(x.Definition.DisplayName))
                .Select(x => x.Definition.Id);
     }
-
-    private string GetRequestBody(UpdateFilePropertyDefinitionsCommand command)
-        => new StringBuilder()
-            .AppendRequestBodyOpening(command.Session)
-            .AppendElementWithAttribute(RequestName, "xmlns", _soapRequestService.GetNamespace(RequestName))
-            .AppendNestedElements("masterIds", "long", command.MasterIds)
-            .AppendNestedElements("addedPropDefIds", "long", command.AddedPropertyIds)
-            .AppendNestedElements("removedPropDefIds", "long", command.RemovedPropertyIds)
-            .AppendElement("comment", "Add/Remove properties")
-            .AppendElementClosing(RequestName)
-            .AppendRequestBodyClosing()
-            .ToString();
 }

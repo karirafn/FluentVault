@@ -1,5 +1,4 @@
-﻿using System.Text;
-using System.Xml.Linq;
+﻿using System.Xml.Linq;
 
 using FluentVault.Common.Extensions;
 using FluentVault.Domain.File;
@@ -38,21 +37,16 @@ internal class UpdateFileLifeCycleStateHandler : IRequestHandler<UpdateFileLifeC
             command = command with { MasterIds = masterIds };
         }
 
-        string requestBody = GetRequestBody(command);
-        XDocument document = await _soapRequestService.SendAsync(RequestName, requestBody);
+        void contentBuilder(XElement content, XNamespace ns)
+        {
+            content.AddNestedElements(ns, "fileMasterIds", "long", command.MasterIds.Select(x => x.ToString()));
+            content.AddNestedElements(ns, "toStateIds", "long", command.StateIds.Select(x => x.ToString()));
+            content.AddElement(ns, "comment", command.Comment);
+        };
+
+        XDocument document = await _soapRequestService.SendAsync(RequestName, command.Session, contentBuilder);
         VaultFile file = document.ParseVaultFile();
 
         return file;
     }
-
-    private string GetRequestBody(UpdateFileLifeCycleStateCommand command)
-        => new StringBuilder()
-            .AppendRequestBodyOpening(command.Session)
-            .AppendElementWithAttribute(RequestName, "xmlns", _soapRequestService.GetNamespace(RequestName))
-            .AppendNestedElements("fileMasterIds", "long", command.MasterIds)
-            .AppendNestedElements("toStateIds", "long", command.StateIds)
-            .AppendElement("comment", command.Comment)
-            .AppendElementClosing(RequestName)
-            .AppendRequestBodyClosing()
-            .ToString();
 }

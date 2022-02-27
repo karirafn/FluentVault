@@ -168,20 +168,20 @@ internal class SearchFilesRequestBuilder :
 
     private static IDictionary<string, string> GetSearchCondition(long propertyId, long searchOperator, string searchText, SearchPropertyType type, SearchRule rule)
         => new Dictionary<string, string>
-        {
-            { "PropDefId", propertyId.ToString() },
-            { "SrchOper", searchOperator.ToString() },
-            { "SrchTxt", searchText },
-            { "PropTyp", type.ToString() },
-            { "SrchRule", rule.ToString() },
-        };
+            {
+                ["PropDefId"] = propertyId.ToString(),
+                ["SrchOper"] = searchOperator.ToString(),
+                ["SrchTxt"] = searchText,
+                ["PropTyp"] = type.ToString(),
+                ["SrchRule"] = rule.ToString(),
+            };
 
     private static IDictionary<string, string> GetSortCondition(long propertyId, bool sortAscending)
         => new Dictionary<string, string>
-        {
-            { "PropDefId", propertyId.ToString() },
-            { "SortAsc", sortAscending.ToString().ToLower() },
-        };
+            {
+                ["PropDefId"] = propertyId.ToString(),
+                ["SortAsc"] = sortAscending.ToString().ToLower(),
+            };
 
     private ISearchFilesBooleanProperty SetBooleanValue(bool value, SearchOperator @operator)
     {

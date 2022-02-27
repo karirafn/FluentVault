@@ -21,16 +21,11 @@ internal class SoapRequestService : ISoapRequestService
             ?? throw new Exception("Failed to parse SOAP data collection");
     }
 
-    public async Task<XDocument> SendAsync(string requestName, string requestBody)
+    public async Task<XDocument> SendAsync(string requestName, VaultSessionCredentials session, Action<XElement, XNamespace>? contentBuilder = null)
     {
-        StringContent requestContent = new(requestBody);
-        requestContent.Headers.ContentType = MediaTypeHeaderValue.Parse("text/xml");
-
-        Uri requestUri = GetUri(requestName);
-        string soapAction = GetSoapAction(requestName);
-        HttpRequestMessage requestMessage = new(HttpMethod.Post, requestUri);
-        requestMessage.Content = requestContent;
-        requestMessage.Headers.Add("SOAPAction", soapAction);
+        XDocument requestBody = GetRequestBody(requestName, session, contentBuilder);
+        StringContent requestContent = GetRequestContent(requestBody);
+        HttpRequestMessage requestMessage = GetRequestMessage(requestName, requestContent);
 
         HttpResponseMessage response = await _httpClient.SendAsync(requestMessage);
         string responseContent = await response.Content.ReadAsStringAsync();
@@ -39,23 +34,51 @@ internal class SoapRequestService : ISoapRequestService
         return document;
     }
 
-    public async Task<XDocument> SendAsync(string requestName, VaultSessionCredentials session)
-        => await SendAsync(requestName, GetRequestBody(requestName, session).ToString());
+    private HttpRequestMessage GetRequestMessage(string requestName, StringContent requestContent)
+    {
+        Uri requestUri = new(UriBuilder(requestName).ToString());
+        string soapAction = SoapActionBuilder(requestName).ToString();
+        HttpRequestMessage requestMessage = new(HttpMethod.Post, requestUri);
+        requestMessage.Content = requestContent;
+        requestMessage.Headers.Add("SOAPAction", soapAction);
 
-    private string GetSoapAction(string requestName)
-        => new StringBuilder().SoapActionStringBuilder(_data[requestName]).ToString();
+        return requestMessage;
+    }
 
-    public string GetNamespace(string requestName)
-        => new StringBuilder().AppendNamespace(_data[requestName]).ToString();
+    private static StringContent GetRequestContent(XDocument requestBody)
+    {
+        StringContent requestContent = new(requestBody.ToString());
+        requestContent.Headers.ContentType = MediaTypeHeaderValue.Parse("text/xml");
 
-    private Uri GetUri(string requestName)
-        => new(new StringBuilder().AppendRequestUri(_data[requestName]).ToString());
+        return requestContent;
+    }
 
-    private string GetRequestBody(string requestName, VaultSessionCredentials session)
-        => new StringBuilder().AppendRequestBodyOpening(session)
-            .AppendElementWithAttribute(requestName,
-                "xmlns",
-                new StringBuilder().AppendNamespace(_data[requestName]).ToString(),
-                isSelfClosing: true)
-            .ToString();
+    private XDocument GetRequestBody(string requestName, VaultSessionCredentials session, Action<XElement, XNamespace>? contentBuilder)
+    {
+        XNamespace ns = NamespaceBuilder(requestName).ToString();
+        XElement content = new(ns + requestName);
+
+        if (contentBuilder is not null)
+            contentBuilder.Invoke(content, ns);
+
+        XDocument requestBody = new XDocument().AddRequestBody(session, content);
+
+        return requestBody;
+    }
+
+    private StringBuilder SoapActionBuilder(string requestName)
+        => new StringBuilder()
+            .Append("http://AutodeskDM/")
+            .Append(NamespaceBuilder(requestName));
+
+    private StringBuilder NamespaceBuilder(string requestName)
+        => new StringBuilder().Append("http://AutodeskDM/").Append(_data[requestName].Namespace);
+
+    private StringBuilder UriBuilder(string requestName)
+        => new StringBuilder().Append("AutodeskDM/Services/")
+            .Append(_data[requestName].Version)
+            .Append('/')
+            .Append(_data[requestName].Service)
+            .Append(".svc")
+            .AppendRequestCommand(_data[requestName].Name, _data[requestName].Command);
 }

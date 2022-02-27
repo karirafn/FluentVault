@@ -1,6 +1,4 @@
-﻿
-using System.Text;
-using System.Xml.Linq;
+﻿using System.Xml.Linq;
 
 using FluentValidation;
 
@@ -28,8 +26,15 @@ internal class SignInHandler : IRequestHandler<SignInCommand, VaultSessionCreden
         var validator = new VaultOptionsValidator();
         var results = validator.Validate(command.VaultOptions, options => options.ThrowOnFailures());
 
-        string requestBody = GenerateRequestBody(command.VaultOptions);
-        XDocument document = await _soapRequestService.SendAsync(RequestName, requestBody);
+        void contentBuilder(XElement content, XNamespace ns)
+        {
+            content.AddElement(ns, "dataServer", $"http://{command.VaultOptions.Server}");
+            content.AddElement(ns, "knowledgeVault", command.VaultOptions.Database);
+            content.AddElement(ns, "userName", command.VaultOptions.Username);
+            content.AddElement(ns, "userPassword", command.VaultOptions.Password);
+        }
+
+        XDocument document = await _soapRequestService.SendAsync(RequestName, new(), contentBuilder);
 
         string t = document.GetElementValue("Ticket");
         string u = document.GetElementValue("UserId");
@@ -49,16 +54,4 @@ internal class SignInHandler : IRequestHandler<SignInCommand, VaultSessionCreden
 
         return new VaultSessionCredentials(ticket, userId);
     }
-
-    private string GenerateRequestBody(VaultOptions o)
-        => new StringBuilder()
-            .AppendRequestBodyOpening(new())
-            .AppendElementWithAttribute(RequestName, "xmlns", _soapRequestService.GetNamespace(RequestName))
-            .AppendElement("dataServer", $"http://{o.Server}")
-            .AppendElement("knowledgeVault", o.Database)
-            .AppendElement("userName", o.Username)
-            .AppendElement("userPassword", o.Password)
-            .AppendElementClosing(RequestName)
-            .AppendRequestBodyClosing()
-            .ToString();
 }

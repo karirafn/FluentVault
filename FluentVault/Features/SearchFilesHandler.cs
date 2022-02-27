@@ -1,5 +1,4 @@
-﻿using System.Text;
-using System.Xml.Linq;
+﻿using System.Xml.Linq;
 
 using FluentVault.Common.Extensions;
 using FluentVault.Domain.Search;
@@ -22,24 +21,19 @@ internal class SearchFilesHandler : IRequestHandler<SearchFilesCommand, VaultFil
 
     public async Task<VaultFileSearchResult> Handle(SearchFilesCommand command, CancellationToken cancellationToken)
     {
-        string requestBody = GetRequestBody(command);
-        XDocument document = await _soapRequestService.SendAsync(RequestName, requestBody);
-        var result = document.ParseFileSearchResult();
+        void contentBuilder(XElement content, XNamespace ns)
+        {
+            content.AddElementsWithAttributes(ns, "SrchCond", command.SearchConditions);
+            content.AddElementsWithAttributes(ns, "SrchSort", command.SortConditions);
+            content.AddNestedElements(ns, "folderIds", "long", command.FolderIds.Select(x => x.ToString()));
+            content.AddElement(ns, "recurseFolders", command.RecurseFolders);
+            content.AddElement(ns, "latestOnly", command.LatestOnly);
+            content.AddElement(ns, "bookmark", command.Bookmark);
+        }
+
+        XDocument responseBody = await _soapRequestService.SendAsync(RequestName, command.Session, contentBuilder);
+        var result = responseBody.ParseFileSearchResult();
 
         return result;
     }
-
-    private string GetRequestBody(SearchFilesCommand command)
-        => new StringBuilder()
-            .AppendRequestBodyOpening(command.Session)
-            .AppendElementWithAttribute(RequestName, "xmlns", _soapRequestService.GetNamespace(RequestName))
-            .AppendNestedElementsWithAttributes("conditions", "SrchCond", command.SearchConditions)
-            .AppendNestedElementsWithAttributes("sortConditions", "SrchSort", command.SortConditions)
-            .AppendElements("folderIds", command.FolderIds)
-            .AppendElement("recurseFolders", command.RecurseFolders)
-            .AppendElement("latestOnly", command.LatestOnly)
-            .AppendElement("bookmark", command.Bookmark)
-            .AppendElementClosing(RequestName)
-            .AppendRequestBodyClosing()
-            .ToString();
 }
