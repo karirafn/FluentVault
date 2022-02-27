@@ -7,12 +7,12 @@ using FluentVault.Common.Extensions;
 
 using Xunit;
 
-namespace FluentVault.UnitTests.Systems.Extensions.XDocumentExtensions;
+namespace FluentVault.UnitTests.Systems.Extensions.XDocumentParsingExtensions;
 
-public class ParseAllElementsTests
+public class ParseAllElementsShould
 {
     [Fact]
-    public void ParseAllElements_ShouldReturnValue_WhenElementsIsParsable()
+    public void ReturnValue_WhenElementsIsParsable()
     {
         // Arrange
         List<TestRecord> expectation = new() { new("A"), new("B") };

@@ -2,24 +2,24 @@
 
 using FluentAssertions;
 
-using FluentVault.Domain.Property;
+using FluentVault.Domain.Category;
 using FluentVault.UnitTests.Fixtures;
 
 using Xunit;
 
 namespace FluentVault.UnitTests.Systems;
 
-public class VaultPropertyParsingExtensionsTests
+public class VaultCategoryParsingExtensionsShould
 {
     [Fact]
-    public void ParseVaultProperty_ShouldReturnValidResult_WhenParsingValidString()
+    public void ReturnValidResult_WhenParsingValidString()
     {
         // Arrange
-        var (body, expectation) = VaultResponseFixtures.GetVaultPropertyFixtures(5);
+        var (body, expectation) = VaultResponseFixtures.GetVaultCategoryFixtures(5);
         var document = XDocument.Parse(body);
 
         // Act
-        var result = document.ParseProperties();
+        var result = document.ParseCategories();
 
         // Assert
         result.Should().BeEquivalentTo(expectation);

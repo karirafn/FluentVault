@@ -7,12 +7,12 @@ using FluentVault.Common.Extensions;
 
 using Xunit;
 
-namespace FluentVault.UnitTests.Systems.Extensions.XDocumentExtensions;
+namespace FluentVault.UnitTests.Systems.Extensions.XDocumentParsingExtensions;
 
-public class GetAttributeValueTests
+public class GetAttributeValueShould
 {
     [Fact]
-    public void GetAttributeValue_ShouldReturnValue_WhenElementContainsAttribute()
+    public void ReturnValue_WhenElementContainsAttribute()
     {
         // Arrange
         string expectation = "Value";
@@ -28,7 +28,7 @@ public class GetAttributeValueTests
     }
 
     [Fact]
-    public void GetAttributeValue_ShouldThrowException_WhenElementDoesNotContainAttribute()
+    public void ThrowException_WhenElementDoesNotContainAttribute()
     {
         // Arrange
         string name = "Invalid";

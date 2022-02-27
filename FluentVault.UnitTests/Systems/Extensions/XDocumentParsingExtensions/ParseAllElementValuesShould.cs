@@ -7,12 +7,12 @@ using FluentVault.Common.Extensions;
 
 using Xunit;
 
-namespace FluentVault.UnitTests.Systems.Extensions.XDocumentExtensions;
+namespace FluentVault.UnitTests.Systems.Extensions.XDocumentParsingExtensions;
 
-public class ParseAllElementValuesTests
+public class ParseAllElementValuesShould
 {
     [Fact]
-    public void ParseAllElementValues_ShouldReturnValues_WhenValuesIsParsable()
+    public void ReturnValues_WhenValuesIsParsable()
     {
         // Arrange
         int[] expectation = new int[] { 1, 77 };

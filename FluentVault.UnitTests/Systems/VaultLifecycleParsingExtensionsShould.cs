@@ -2,24 +2,24 @@
 
 using FluentAssertions;
 
-using FluentVault.Domain.Category;
+using FluentVault.Domain.Lifecycle;
 using FluentVault.UnitTests.Fixtures;
 
 using Xunit;
 
 namespace FluentVault.UnitTests.Systems;
 
-public class VaultCategoryParsingExtensionsTests
+public class VaultLifecycleParsingExtensionsShould
 {
     [Fact]
-    public void ParseVaultLifecycle_ShouldReturnValidResult_WhenParsingValidString()
+    public void ReturnValidResult_WhenParsingValidString()
     {
         // Arrange
-        var (body, expectation) = VaultResponseFixtures.GetVaultCategoryFixtures(5);
+        var (body, expectation) = VaultResponseFixtures.GetVaultLifecycleFixtures(5);
         var document = XDocument.Parse(body);
 
         // Act
-        var result = document.ParseCategories();
+        var result = document.ParseLifeCycles();
 
         // Assert
         result.Should().BeEquivalentTo(expectation);

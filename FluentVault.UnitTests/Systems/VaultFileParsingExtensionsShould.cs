@@ -12,10 +12,10 @@ using Xunit;
 
 namespace FluentVault.UnitTests.Systems;
 
-public class VaultFileParsingExtensionsTests
+public class VaultFileParsingExtensionsShould
 {
     [Fact]
-    public void ParseVaultFile_ShouldReturnFile_WhenParsingValidString()
+    public void ReturnFile_WhenParsingValidString()
     {
         // Arrange
         var (body, expectation) = VaultResponseFixtures.GetVaultFileFixtures(1);
@@ -31,7 +31,7 @@ public class VaultFileParsingExtensionsTests
     }
 
     [Fact]
-    public void ParseAllVaultFiles_ShouldReturnAllFiles_WhenParsingValidString()
+    public void ReturnAllFiles_WhenParsingValidString()
     {
         // Arrange
         int fileCount = 3;

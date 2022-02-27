@@ -7,12 +7,12 @@ using FluentVault.Common.Extensions;
 
 using Xunit;
 
-namespace FluentVault.UnitTests.Systems.Extensions.XDocumentExtensions;
+namespace FluentVault.UnitTests.Systems.Extensions.XDocumentParsingExtensions;
 
-public class ParseAttributeValueTests
+public class ParseAttributeValueShould
 {
     [Fact]
-    public void ParseAttributeValue_ShouldReturnValue_WhenAttributeIsParsable()
+    public void ReturnValue_WhenAttributeIsParsable()
     {
         // Arrange
         int expectation = 50;
@@ -28,7 +28,7 @@ public class ParseAttributeValueTests
     }
 
     [Fact]
-    public void ParseAttributeValue_ShouldThrowException_WhenValueIsInvalid()
+    public void ThrowException_WhenValueIsInvalid()
     {
         // Arrange
         string name = "Attribute";
