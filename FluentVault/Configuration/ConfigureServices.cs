@@ -16,5 +16,6 @@ public static class ConfigureServices
             .AddHttpClient("Vault", httpClient =>
                 {
                     httpClient.BaseAddress = new Uri($@"http://{options.Value.Server}/");
-                }).Services;
+                }).Services
+            .AddTransient<IVaultClient, VaultClient>();
 }

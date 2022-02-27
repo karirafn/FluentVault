@@ -11,7 +11,7 @@ using Microsoft.Extensions.Options;
 
 namespace FluentVault;
 
-internal class VaultClient : IAsyncDisposable
+internal class VaultClient : IAsyncDisposable, IVaultClient
 {
     private readonly VaultSessionCredentials _session;
     private readonly VaultOptions _options;
