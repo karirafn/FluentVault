@@ -39,7 +39,7 @@ internal class SoapRequestService : ISoapRequestService
         string directory = Path.GetDirectoryName(typeof(VaultClient).Assembly.Location)
             ?? throw new Exception("Failed to get assembly location");
         string path = Path.Combine(directory, "requestdata.json");
-        string json = System.IO.File.ReadAllText(path);
+        string json = File.ReadAllText(path);
 
         return json;
     }

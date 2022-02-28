@@ -2,7 +2,7 @@
 
 using FluentVault.Common.Extensions;
 
-namespace FluentVault.Domain.File;
+namespace FluentVault.Domain.Files;
 
 internal static class VaultFileParsingExtensions
 {

@@ -1,7 +1,7 @@
 ﻿using System.Xml.Linq;
 
 using FluentVault.Common.Extensions;
-using FluentVault.Domain.File;
+using FluentVault.Domain.Files;
 
 namespace FluentVault.Domain.Search;
 
