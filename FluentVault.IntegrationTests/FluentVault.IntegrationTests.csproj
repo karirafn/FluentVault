@@ -30,6 +30,7 @@
 
   <ItemGroup>
     <Folder Include="Fixtures\" />
+    <Folder Include="Helpers\" />
     <Folder Include="Systems\" />
   </ItemGroup>
 

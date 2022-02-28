@@ -42,25 +42,47 @@ public class AddFluentVaultShould
 
     [Fact]
     public void RegisterSoapRequestService()
-        => _provider.GetRequiredService<ISoapRequestService>().Should().NotBeNull();
+        => _provider.GetRequiredService<ISoapRequestService>()
+            .Should()
+            .NotBeNull();
 
     [Fact]
     public void RegisterHttpClientFactory()
-        => _provider.GetRequiredService<IHttpClientFactory>().Should().NotBeNull();
+        => _provider.GetRequiredService<IHttpClientFactory>()
+            .Should()
+            .NotBeNull();
+
+    [Fact]
+    public void RegisterHttpClientFactoryWithBaseAddressFromConfiguration()
+        => _provider.GetRequiredService<IHttpClientFactory>()
+            .CreateClient("Vault")
+            .BaseAddress
+            .Should()
+            .Be($"http://{_settings["Vault:Server"]}/");
 
     [Fact]
     public void RegisterMediator()
-        => _provider.GetRequiredService<IMediator>().Should().NotBeNull();
+        => _provider.GetRequiredService<IMediator>()
+            .Should()
+            .NotBeNull();
 
     [Fact]
     public void RegisterVaultOptions()
-        => _provider.GetRequiredService<IOptions<VaultOptions>>().Should().NotBeNull();
+        => _provider.GetRequiredService<IOptions<VaultOptions>>()
+            .Should()
+            .NotBeNull();
 
     [Fact]
     public void RegisterVaultOptionsWithDataFromConfiguration()
-        => _provider.GetRequiredService<IOptions<VaultOptions>>().Value.Server.Should().Be(_settings["Vault:Server"]);
+        => _provider.GetRequiredService<IOptions<VaultOptions>>()
+            .Value
+            .Server
+            .Should()
+            .Be(_settings["Vault:Server"]);
 
     [Fact]
     public void RegisterVaultClient()
-        => _provider.GetRequiredService<IVaultClient>().Should().NotBeNull();
+        => _provider.GetRequiredService<IVaultClient>()
+            .Should()
+            .NotBeNull();
 }
