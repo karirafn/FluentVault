@@ -12,8 +12,7 @@ public static class ConfigureServices
 {
     public static IServiceCollection AddFluentVault(this IServiceCollection services, IConfiguration configuration)
         =>  services
-            .AddOptions<VaultOptions>("Vault")
-            .Services
+            .Configure<VaultOptions>(configuration.GetSection("Vault"))
             .AddHttpClient("Vault", httpClient =>
                 {
                     httpClient.BaseAddress = new Uri($@"http://{configuration.GetSection("Vault:Server").Value}/");
