@@ -8,6 +8,8 @@ using MediatR;
 
 namespace FluentVault.Features;
 
+internal record GetPropertyDefinitionsQuery(VaultSessionCredentials Session) : IRequest<IEnumerable<VaultPropertyDefinition>>;
+
 internal class GetPropertyDefinitionsHandler : IRequestHandler<GetPropertyDefinitionsQuery, IEnumerable<VaultPropertyDefinition>>
 {
     private const string RequestName = "GetPropertyDefinitionInfosByEntityClassId";

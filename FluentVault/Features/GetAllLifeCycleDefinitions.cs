@@ -8,6 +8,8 @@ using MediatR;
 
 namespace FluentVault.Features;
 
+internal record GetAllLifeCycleDefinitionsQuery(VaultSessionCredentials Session) : IRequest<IEnumerable<VaultLifeCycle>>;
+
 internal class GetAllLifeCycleDefinitionsHandler : IRequestHandler<GetAllLifeCycleDefinitionsQuery, IEnumerable<VaultLifeCycle>>
 {
     private const string RequestName = "GetAllLifeCycleDefinitions";

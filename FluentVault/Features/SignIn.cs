@@ -9,6 +9,7 @@ using FluentVault.Domain.SOAP;
 using MediatR;
 
 namespace FluentVault.Features;
+internal record SignInCommand(VaultOptions VaultOptions) : IRequest<VaultSessionCredentials>;
 
 internal class SignInHandler : IRequestHandler<SignInCommand, VaultSessionCredentials>
 {

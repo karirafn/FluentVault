@@ -8,6 +8,8 @@ using MediatR;
 
 namespace FluentVault.Features;
 
+public record GetCategoriesQuery(VaultSessionCredentials Session) : IRequest<IEnumerable<VaultCategory>>;
+
 internal class GetCategoriesHandler : IRequestHandler<GetCategoriesQuery, IEnumerable<VaultCategory>>
 {
     private const string RequestName = "GetCategoryConfigurationsByBehaviorNames";

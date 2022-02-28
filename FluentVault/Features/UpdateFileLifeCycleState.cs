@@ -1,6 +1,7 @@
 ﻿using System.Xml.Linq;
 
 using FluentVault.Common.Extensions;
+using FluentVault.Domain;
 using FluentVault.Domain.Files;
 using FluentVault.Domain.SOAP;
 using FluentVault.Requests.Search.Files;
@@ -8,6 +9,14 @@ using FluentVault.Requests.Search.Files;
 using MediatR;
 
 namespace FluentVault.Features;
+
+internal record UpdateFileLifeCycleStateCommand(
+    IEnumerable<string> FileNames,
+    IEnumerable<long> MasterIds,
+    IEnumerable<long> StateIds,
+    string Comment,
+    VaultSessionCredentials Session) : IRequest<VaultFile>;
+
 
 internal class UpdateFileLifeCycleStateHandler : IRequestHandler<UpdateFileLifeCycleStateCommand, VaultFile>
 {

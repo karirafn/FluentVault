@@ -1,12 +1,22 @@
 ﻿using System.Xml.Linq;
 
 using FluentVault.Common.Extensions;
+using FluentVault.Domain;
 using FluentVault.Domain.Search;
 using FluentVault.Domain.SOAP;
 
 using MediatR;
 
 namespace FluentVault.Features;
+internal record SearchFilesCommand(
+    IEnumerable<IDictionary<string, string>> SearchConditions,
+    IEnumerable<IDictionary<string, string>> SortConditions,
+    IEnumerable<long> FolderIds,
+    bool RecurseFolders,
+    bool LatestOnly,
+    string Bookmark,
+    VaultSessionCredentials Session) : IRequest<VaultFileSearchResult>;
+
 
 internal class SearchFilesHandler : IRequestHandler<SearchFilesCommand, VaultFileSearchResult>
 {

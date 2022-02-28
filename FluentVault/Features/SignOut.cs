@@ -6,6 +6,8 @@ using MediatR;
 
 namespace FluentVault.Features;
 
+public record SignOutCommand() : IRequest;
+
 internal class SignOutHandler : IRequestHandler<SignOutCommand>
 {
     private const string RequestName = "SignOut";
