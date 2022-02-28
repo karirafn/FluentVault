@@ -13,7 +13,7 @@ namespace FluentVault;
 
 internal class VaultClient : IAsyncDisposable, IVaultClient
 {
-    private VaultSessionCredentials _session = new();
+    private readonly VaultSessionCredentials _session;
     private readonly VaultOptions _options;
     private readonly IMediator _mediator;
 
@@ -21,14 +21,13 @@ internal class VaultClient : IAsyncDisposable, IVaultClient
     {
         _options = options.Value;
         _mediator = mediator;
+        _session = _options.AutoLogin
+            ? SignIn().GetAwaiter().GetResult()
+            : new();
     }
 
     public async Task<VaultSessionCredentials> SignIn()
-    {
-        _session = await _mediator.Send(new SignInCommand(_options));
-
-        return _session;
-    }
+        => await _mediator.Send(new SignInCommand(_options));
 
     public IGetRequestBuilder Get => new GetRequestBuilder(_mediator, _session);
     public ISearchRequestBuilder Search => new SearchRequestBuilder(_mediator, _session);
