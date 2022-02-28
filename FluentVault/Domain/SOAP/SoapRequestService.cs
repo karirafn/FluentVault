@@ -16,7 +16,7 @@ internal class SoapRequestService : ISoapRequestService
     {
         _httpClient = httpClientFactory.CreateClient("Vault");
 
-        string json = System.IO.File.ReadAllText("requestdata.json");
+        string json = ReadRequestDataFromFile();
         _data = JsonSerializer.Deserialize<SoapRequestDataCollection>(json)?.SoapRequestData.ToDictionary(x => x.Name)
             ?? throw new Exception("Failed to parse SOAP data collection");
     }
@@ -32,6 +32,16 @@ internal class SoapRequestService : ISoapRequestService
         XDocument document = XDocument.Parse(responseContent);
 
         return document;
+    }
+
+    private static string ReadRequestDataFromFile()
+    {
+        string directory = Path.GetDirectoryName(typeof(VaultClient).Assembly.Location)
+            ?? throw new Exception("Failed to get assembly location");
+        string path = Path.Combine(directory, "requestdata.json");
+        string json = System.IO.File.ReadAllText(path);
+
+        return json;
     }
 
     private HttpRequestMessage GetRequestMessage(string requestName, StringContent requestContent)
