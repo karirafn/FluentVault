@@ -6,13 +6,10 @@ namespace FluentVault.Common.Extensions;
 
 internal static class XDocumentGeneratingExtensions
 {
-    private static readonly XNamespace _envelopeNamespace = "http://schemas.xmlsoap.org/soap/envelope/";
-    private static readonly XNamespace _xsdNamespace = "http://www.w3.org/2001/XMLSchema";
-    private static readonly XNamespace _xsiNamespace = "http://www.w3.org/2001/XMLSchema-instance";
-    private static readonly XNamespace _autodeskNamespace = "http://AutodeskDM/Services";
-
-    private static readonly XAttribute _xsdAttribute = new(XNamespace.Xmlns + "xsd", _xsdNamespace.NamespaceName);
-    private static readonly XAttribute _xsiAttribute = new(XNamespace.Xmlns + "xsi", _xsiNamespace.NamespaceName);
+    private static readonly XNamespace _xsd = "http://www.w3.org/2001/XMLSchema";
+    private static readonly XNamespace _xsi = "http://www.w3.org/2001/XMLSchema-instance";
+    private static readonly XNamespace _envelope = "http://schemas.xmlsoap.org/soap/envelope/";
+    private static readonly XNamespace _autodesk = "http://AutodeskDM/Services";
 
     internal static void AddAttribute(this XElement element, XName name, string value)
         => element.Add(new XAttribute(name, value));
@@ -70,9 +67,8 @@ internal static class XDocumentGeneratingExtensions
 
     private static XElement AddBody(this XElement element)
     {
-        XElement body = new(_envelopeNamespace + "Body");
-        body.Add(_xsdAttribute);
-        body.Add(_xsiAttribute);
+        XElement body = new(_envelope + "Body");
+        body.AddXmlSchema();
 
         element.Add(body);
 
@@ -81,12 +77,11 @@ internal static class XDocumentGeneratingExtensions
 
     private static XElement AddSecurityHeader(this XElement element, VaultSessionCredentials session)
     {
-        XElement securityHeader = new(_autodeskNamespace + "SecurityHeader");
-        XElement ticket = new(_autodeskNamespace + "Ticket", session.Ticket);
-        XElement userId = new(_autodeskNamespace + "UserId", session.UserId);
-        
-        securityHeader.Add(_xsdAttribute);
-        securityHeader.Add(_xsiAttribute);
+        XElement securityHeader = new(_autodesk + "SecurityHeader");
+        XElement ticket = new(_autodesk + "Ticket", session.Ticket);
+        XElement userId = new(_autodesk + "UserId", session.UserId);
+
+        securityHeader.AddXmlSchema();
         securityHeader.Add(ticket);
         securityHeader.Add(userId);
 
@@ -97,7 +92,7 @@ internal static class XDocumentGeneratingExtensions
 
     private static XElement AddHeader(this XElement element)
     {
-        XElement header = new(_envelopeNamespace + "Header");
+        XElement header = new(_envelope + "Header");
 
         element.Add(header);
 
@@ -106,12 +101,20 @@ internal static class XDocumentGeneratingExtensions
 
     private static XElement AddEnvelope(this XDocument document)
     {
-        XAttribute elementAttribute = new(XNamespace.Xmlns + "s", _envelopeNamespace.NamespaceName);
-        XElement envelope = new(_envelopeNamespace + "Envelope");
-        envelope.Add(elementAttribute);
+        XElement envelope = new(_envelope + "Envelope");
+        envelope.AddNamespace(XNamespace.Xmlns + "s", _envelope);
 
         document.Add(envelope);
 
         return envelope;
     }
+
+    private static void AddXmlSchema(this XElement element)
+    {
+        element.AddNamespace(XNamespace.Xmlns + "xsd", _xsd);
+        element.AddNamespace(XNamespace.Xmlns + "xsi", _xsi);
+    }
+
+    private static void AddNamespace(this XElement element, XName name, XNamespace ns)
+        => element.Add(new XAttribute(name, ns.NamespaceName));
 }
