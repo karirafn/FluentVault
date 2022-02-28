@@ -1,4 +1,5 @@
-﻿using System.Net.Http.Headers;
+﻿using System.Net;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
 using System.Xml.Linq;
@@ -17,7 +18,9 @@ internal class SoapRequestService : ISoapRequestService
         _httpClient = httpClientFactory.CreateClient("Vault");
 
         string json = ReadRequestDataFromFile();
-        _data = JsonSerializer.Deserialize<SoapRequestDataCollection>(json)?.SoapRequestData.ToDictionary(x => x.Name)
+        _data = JsonSerializer.Deserialize<SoapRequestDataCollection>(json)?
+            .SoapRequestData
+            .ToDictionary(x => x.Name)
             ?? throw new Exception("Failed to parse SOAP data collection");
     }
 
@@ -27,8 +30,12 @@ internal class SoapRequestService : ISoapRequestService
         StringContent requestContent = GetRequestContent(requestBody);
         HttpRequestMessage requestMessage = GetRequestMessage(requestName, requestContent);
 
-        HttpResponseMessage response = await _httpClient.SendAsync(requestMessage);
-        string responseContent = await response.Content.ReadAsStringAsync();
+        HttpResponseMessage responseMessage = await _httpClient.SendAsync(requestMessage);
+
+        if (responseMessage.StatusCode == HttpStatusCode.NotFound)
+            throw new Exception("Invalid request, status code is 404 Not Found");
+
+        string responseContent = await responseMessage.Content.ReadAsStringAsync();
         XDocument document = XDocument.Parse(responseContent);
 
         return document;
@@ -46,9 +53,9 @@ internal class SoapRequestService : ISoapRequestService
 
     private HttpRequestMessage GetRequestMessage(string requestName, StringContent requestContent)
     {
-        Uri requestUri = new(UriBuilder(requestName).ToString());
+        string uri = UriBuilder(requestName).ToString();
         string soapAction = SoapActionBuilder(requestName).ToString();
-        HttpRequestMessage requestMessage = new(HttpMethod.Post, requestUri);
+        HttpRequestMessage requestMessage = new(HttpMethod.Post, uri);
         requestMessage.Content = requestContent;
         requestMessage.Headers.Add("SOAPAction", soapAction);
 
