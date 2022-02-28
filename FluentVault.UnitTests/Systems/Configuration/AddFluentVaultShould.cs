@@ -10,7 +10,6 @@ using MediatR;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 
 using Xunit;
 
@@ -18,71 +17,38 @@ namespace FluentVault.UnitTests.Systems.Configuration;
 
 public class AddFluentVaultShould
 {
-    private readonly IConfiguration _configuration;
-    private readonly ServiceProvider _provider;
-
-    private static readonly ServiceCollection _collection = new();
+    private static readonly ServiceCollection _services = new();
     private static readonly IDictionary<string, string> _settings = new Dictionary<string, string>
     {
         ["Vault:Server"] = "server",
         ["Vault:Database"] = "database",
         ["Vault:Username"] = "username",
         ["Vault:Password"] = "password",
+        ["Vault:AutoLogin"] = "false",
     };
 
     public AddFluentVaultShould()
     {
-        _configuration = new ConfigurationBuilder()
+        IConfiguration configuration = new ConfigurationBuilder()
             .AddInMemoryCollection(_settings)
             .Build();
 
-        _collection.AddFluentVault(_configuration);
-        _provider = _collection.BuildServiceProvider();
+        _services.AddFluentVault(configuration);
     }
 
     [Fact]
     public void RegisterSoapRequestService()
-        => _provider.GetRequiredService<ISoapRequestService>()
-            .Should()
-            .NotBeNull();
+        => _services.Should().Contain(x => x.ServiceType == typeof(ISoapRequestService));
 
     [Fact]
     public void RegisterHttpClientFactory()
-        => _provider.GetRequiredService<IHttpClientFactory>()
-            .Should()
-            .NotBeNull();
-
-    [Fact]
-    public void RegisterHttpClientFactoryWithBaseAddressFromConfiguration()
-        => _provider.GetRequiredService<IHttpClientFactory>()
-            .CreateClient("Vault")
-            .BaseAddress
-            .Should()
-            .Be($"http://{_settings["Vault:Server"]}/");
+        => _services.Should().Contain(x => x.ServiceType == typeof(IHttpClientFactory));
 
     [Fact]
     public void RegisterMediator()
-        => _provider.GetRequiredService<IMediator>()
-            .Should()
-            .NotBeNull();
-
-    [Fact]
-    public void RegisterVaultOptions()
-        => _provider.GetRequiredService<IOptions<VaultOptions>>()
-            .Should()
-            .NotBeNull();
-
-    [Fact]
-    public void RegisterVaultOptionsWithDataFromConfiguration()
-        => _provider.GetRequiredService<IOptions<VaultOptions>>()
-            .Value
-            .Server
-            .Should()
-            .Be(_settings["Vault:Server"]);
+        => _services.Should().Contain(x => x.ServiceType == typeof(IMediator));
 
     [Fact]
     public void RegisterVaultClient()
-        => _provider.GetRequiredService<IVaultClient>()
-            .Should()
-            .NotBeNull();
+        => _services.Should().Contain(x => x.ServiceType == typeof(IVaultClient));
 }
