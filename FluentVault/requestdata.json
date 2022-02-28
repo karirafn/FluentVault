@@ -51,17 +51,17 @@
     },
     {
       "Name": "SignIn",
-      "Version": "Filestore/v26",
+      "Version": "Filestore/v26_2",
       "Service": "DocumentService",
       "Command": "",
-      "Namespace": "Filestore/Auth/1/7/2020/"
+      "Namespace": "Filestore/Auth/1/8/2021/"
     },
     {
       "Name": "SignOut",
-      "Version": "Filestore/v26_2",
+      "Version": "Filestore/v26",
       "Service": "DocumentService",
       "Command": "Connectivity.Application.VaultBase.SignOutCommand",
-      "Namespace": "Filestore/Auth/1/8/2021/"
+      "Namespace": "Filestore/Auth/1/7/2020/"
     }
   ]
 }
