@@ -14,4 +14,6 @@ public class VaultOptions
         Username = username;
         Password = password;
     }
+
+    public VaultOptions() { }
 }
