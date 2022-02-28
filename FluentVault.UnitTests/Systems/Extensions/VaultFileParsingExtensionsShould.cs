@@ -5,7 +5,7 @@ using System.Xml.Linq;
 using FluentAssertions;
 using FluentAssertions.Extensions;
 
-using FluentVault.Domain.File;
+using FluentVault.Domain.Files;
 using FluentVault.UnitTests.Fixtures;
 
 using Xunit;
