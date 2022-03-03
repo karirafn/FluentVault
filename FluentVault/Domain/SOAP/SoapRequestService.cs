@@ -1,6 +1,5 @@
 ﻿using System.Net;
 using System.Net.Http.Headers;
-using System.Text;
 using System.Text.Json;
 using System.Xml.Linq;
 
@@ -53,8 +52,8 @@ internal class SoapRequestService : ISoapRequestService
 
     private HttpRequestMessage GetRequestMessage(string requestName, StringContent requestContent)
     {
-        string uri = UriBuilder(requestName).ToString();
-        string soapAction = SoapActionBuilder(requestName).ToString();
+        Uri uri = _data[requestName].Uri;
+        string soapAction = _data[requestName].SoapAction;
         HttpRequestMessage requestMessage = new(HttpMethod.Post, uri);
         requestMessage.Content = requestContent;
         requestMessage.Headers.Add("SOAPAction", soapAction);
@@ -72,7 +71,7 @@ internal class SoapRequestService : ISoapRequestService
 
     private XDocument GetRequestBody(string requestName, VaultSessionCredentials session, Action<XElement, XNamespace>? contentBuilder)
     {
-        XNamespace ns = NamespaceBuilder(requestName).ToString();
+        XNamespace ns = _data[requestName].NamespaceBuilder.ToString();
         XElement content = new(ns + requestName);
 
         if (contentBuilder is not null)
@@ -82,20 +81,4 @@ internal class SoapRequestService : ISoapRequestService
 
         return requestBody;
     }
-
-    private StringBuilder SoapActionBuilder(string requestName)
-        => new StringBuilder()
-            .Append("http://AutodeskDM/")
-            .Append(NamespaceBuilder(requestName));
-
-    private StringBuilder NamespaceBuilder(string requestName)
-        => new StringBuilder().Append("http://AutodeskDM/").Append(_data[requestName].Namespace);
-
-    private StringBuilder UriBuilder(string requestName)
-        => new StringBuilder().Append("AutodeskDM/Services/")
-            .Append(_data[requestName].Version)
-            .Append('/')
-            .Append(_data[requestName].Service)
-            .Append(".svc")
-            .AppendRequestCommand(_data[requestName].Name, _data[requestName].Command);
 }
