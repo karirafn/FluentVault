@@ -52,7 +52,7 @@ internal class SoapRequestService : ISoapRequestService
 
     private HttpRequestMessage GetRequestMessage(string requestName, StringContent requestContent)
     {
-        Uri uri = _data[requestName].Uri;
+        string uri = _data[requestName].Uri;
         string soapAction = _data[requestName].SoapAction;
         HttpRequestMessage requestMessage = new(HttpMethod.Post, uri);
         requestMessage.Content = requestContent;
@@ -71,7 +71,7 @@ internal class SoapRequestService : ISoapRequestService
 
     private XDocument GetRequestBody(string requestName, VaultSessionCredentials session, Action<XElement, XNamespace>? contentBuilder)
     {
-        XNamespace ns = _data[requestName].NamespaceBuilder.ToString();
+        XNamespace ns = _data[requestName].Namespace;
         XElement content = new(ns + requestName);
 
         if (contentBuilder is not null)
