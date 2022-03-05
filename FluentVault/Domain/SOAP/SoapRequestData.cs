@@ -15,7 +15,6 @@ internal class SoapRequestData
 
     internal SoapRequestData(string name, string version, string service, string command, string @namespace)
     {
-
         (Name, _version, _service, _command, _namespace) = (name, version, service, command, @namespace);
         new SoapRequestDataValidator().ValidateAndThrow(this);
     }
@@ -57,7 +56,7 @@ internal class SoapRequestData
             RuleFor(x => x._version).Matches(@"^(Filestore\/)?v\d{2}(_\d)?$");
             RuleFor(x => x._service).Matches(@"^[A-Z][a-z]+Service(Extensions)?$");
             RuleFor(x => x._command).Matches(@"^$|^\w+\.\w+\.\w+\.\w+$");
-            RuleFor(x => x._namespace).Matches(@"^(Services|Filestore)\/\w+\/\b([1-9]|12[1-9]|3[01])\b\/\b([0-9]|1[02])\b\/\d{4}\/$");
+            RuleFor(x => x._namespace).Matches(@"^(Services|Filestore)\/\w+\/\b([1-9]|12[1-9]|3[01])\b\/\b([0-9]|1[02])\b\/\d{4}$");
         }
     }
 }
