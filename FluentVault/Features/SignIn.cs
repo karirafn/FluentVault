@@ -13,7 +13,7 @@ internal record SignInCommand(VaultOptions VaultOptions) : IRequest<VaultSession
 
 internal class SignInHandler : IRequestHandler<SignInCommand, VaultSessionCredentials>
 {
-    private const string RequestName = "SignIn";
+    private const string Operation = "SignIn";
 
     private readonly ISoapRequestService _soapRequestService;
 
@@ -35,7 +35,7 @@ internal class SignInHandler : IRequestHandler<SignInCommand, VaultSessionCreden
             content.AddElement(ns, "userPassword", command.VaultOptions.Password);
         }
 
-        XDocument document = await _soapRequestService.SendAsync(RequestName, new(), contentBuilder);
+        XDocument document = await _soapRequestService.SendAsync(Operation, new(), contentBuilder);
 
         string t = document.GetElementValue("Ticket");
         string u = document.GetElementValue("UserId");

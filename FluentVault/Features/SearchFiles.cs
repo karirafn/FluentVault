@@ -20,7 +20,7 @@ internal record SearchFilesCommand(
 
 internal class SearchFilesHandler : IRequestHandler<SearchFilesCommand, VaultFileSearchResult>
 {
-    private const string RequestName = "FindFilesBySearchConditions";
+    private const string Operation = "FindFilesBySearchConditions";
 
     private readonly ISoapRequestService _soapRequestService;
 
@@ -41,7 +41,7 @@ internal class SearchFilesHandler : IRequestHandler<SearchFilesCommand, VaultFil
             content.AddElement(ns, "bookmark", command.Bookmark);
         }
 
-        XDocument responseBody = await _soapRequestService.SendAsync(RequestName, command.Session, contentBuilder);
+        XDocument responseBody = await _soapRequestService.SendAsync(Operation, command.Session, contentBuilder);
         var result = responseBody.ParseFileSearchResult();
 
         return result;

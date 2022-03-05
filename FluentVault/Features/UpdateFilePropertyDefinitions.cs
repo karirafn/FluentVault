@@ -21,7 +21,7 @@ internal record UpdateFilePropertyDefinitionsCommand(
 
 internal class UpdateFilePropertyDefinitionsHandler : IRequestHandler<UpdateFilePropertyDefinitionsCommand, IEnumerable<VaultFile>>
 {
-    private const string RequestName = "UpdateFilePropertyDefinitions";
+    private const string Operation = "UpdateFilePropertyDefinitions";
 
     private readonly IMediator _mediator;
     private readonly ISoapRequestService _soapRequestService;
@@ -52,7 +52,7 @@ internal class UpdateFilePropertyDefinitionsHandler : IRequestHandler<UpdateFile
             content.AddElement(ns, "comment", "Add/Remove properties");
         };
 
-        XDocument response = await _soapRequestService.SendAsync(RequestName, command.Session, contentBuilder);
+        XDocument response = await _soapRequestService.SendAsync(Operation, command.Session, contentBuilder);
         var files = response.ParseAllVaultFiles();
 
         return files;

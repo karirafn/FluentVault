@@ -10,7 +10,7 @@ public record SignOutCommand() : IRequest;
 
 internal class SignOutHandler : IRequestHandler<SignOutCommand>
 {
-    private const string RequestName = "SignOut";
+    private const string Operation = "SignOut";
 
     private readonly ISoapRequestService _soapRequestService;
     private readonly VaultSessionCredentials _session;
@@ -23,7 +23,7 @@ internal class SignOutHandler : IRequestHandler<SignOutCommand>
 
     public async Task<Unit> Handle(SignOutCommand request, CancellationToken cancellationToken)
     {
-        _ = await _soapRequestService.SendAsync(RequestName, _session);
+        _ = await _soapRequestService.SendAsync(Operation, _session);
 
         return Unit.Value;
     }

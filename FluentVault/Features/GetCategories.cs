@@ -12,7 +12,7 @@ public record GetCategoriesQuery(VaultSessionCredentials Session) : IRequest<IEn
 
 internal class GetCategoriesHandler : IRequestHandler<GetCategoriesQuery, IEnumerable<VaultCategory>>
 {
-    private const string RequestName = "GetCategoryConfigurationsByBehaviorNames";
+    private const string Operation = "GetCategoryConfigurationsByBehaviorNames";
 
     private readonly ISoapRequestService _soapRequestService;
     private readonly VaultSessionCredentials _session;
@@ -25,7 +25,7 @@ internal class GetCategoriesHandler : IRequestHandler<GetCategoriesQuery, IEnume
 
     public async Task<IEnumerable<VaultCategory>> Handle(GetCategoriesQuery query, CancellationToken cancellationToken)
     {
-        XDocument response = await _soapRequestService.SendAsync(RequestName, _session);
+        XDocument response = await _soapRequestService.SendAsync(Operation, _session);
         IEnumerable<VaultCategory> categories = response.ParseCategories();
 
         return categories;

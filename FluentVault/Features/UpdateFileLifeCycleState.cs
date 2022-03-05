@@ -20,7 +20,7 @@ internal record UpdateFileLifeCycleStateCommand(
 
 internal class UpdateFileLifeCycleStateHandler : IRequestHandler<UpdateFileLifeCycleStateCommand, VaultFile>
 {
-    private const string RequestName = "UpdateFileLifeCycleStates";
+    private const string Operation = "UpdateFileLifeCycleStates";
 
     private readonly IMediator _mediator;
     private readonly ISoapRequestService _soapRequestService;
@@ -53,7 +53,7 @@ internal class UpdateFileLifeCycleStateHandler : IRequestHandler<UpdateFileLifeC
             content.AddElement(ns, "comment", command.Comment);
         };
 
-        XDocument document = await _soapRequestService.SendAsync(RequestName, command.Session, contentBuilder);
+        XDocument document = await _soapRequestService.SendAsync(Operation, command.Session, contentBuilder);
         VaultFile file = document.ParseVaultFile();
 
         return file;

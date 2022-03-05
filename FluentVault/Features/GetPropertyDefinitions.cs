@@ -12,7 +12,7 @@ internal record GetPropertyDefinitionsQuery(VaultSessionCredentials Session) : I
 
 internal class GetPropertyDefinitionsHandler : IRequestHandler<GetPropertyDefinitionsQuery, IEnumerable<VaultPropertyDefinition>>
 {
-    private const string RequestName = "GetPropertyDefinitionInfosByEntityClassId";
+    private const string Operation = "GetPropertyDefinitionInfosByEntityClassId";
 
     private readonly ISoapRequestService _soapRequestService;
     private readonly VaultSessionCredentials _session;
@@ -25,7 +25,7 @@ internal class GetPropertyDefinitionsHandler : IRequestHandler<GetPropertyDefini
 
     public async Task<IEnumerable<VaultPropertyDefinition>> Handle(GetPropertyDefinitionsQuery request, CancellationToken cancellationToken)
     {
-        XDocument response = await _soapRequestService.SendAsync(RequestName, _session);
+        XDocument response = await _soapRequestService.SendAsync(Operation, _session);
         IEnumerable<VaultPropertyDefinition> properties = response.ParseProperties();
 
         return properties;

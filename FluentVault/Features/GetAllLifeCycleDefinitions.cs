@@ -12,7 +12,7 @@ internal record GetAllLifeCycleDefinitionsQuery(VaultSessionCredentials Session)
 
 internal class GetAllLifeCycleDefinitionsHandler : IRequestHandler<GetAllLifeCycleDefinitionsQuery, IEnumerable<VaultLifeCycle>>
 {
-    private const string RequestName = "GetAllLifeCycleDefinitions";
+    private const string Operation = "GetAllLifeCycleDefinitions";
 
     private readonly ISoapRequestService _soapRequestService;
     private readonly VaultSessionCredentials _session;
@@ -25,7 +25,7 @@ internal class GetAllLifeCycleDefinitionsHandler : IRequestHandler<GetAllLifeCyc
 
     public async Task<IEnumerable<VaultLifeCycle>> Handle(GetAllLifeCycleDefinitionsQuery query, CancellationToken cancellationToken)
     {
-        XDocument response = await _soapRequestService.SendAsync(RequestName, _session);
+        XDocument response = await _soapRequestService.SendAsync(Operation, _session);
         IEnumerable<VaultLifeCycle> lifeCycles = response.ParseLifeCycles();
 
         return lifeCycles;
