@@ -53,11 +53,11 @@ internal class SoapRequestData
     {
         public SoapRequestDataValidator()
         {
-            RuleFor(x => x.Name).NotEmpty();
-            RuleFor(x => x._version).NotEmpty().Matches(@"^(Filestore\/)?v\d{2}(_\d)?$");
-            RuleFor(x => x._service).NotEmpty().Matches(@"^[A-Z][a-z]+Service(Extensions)?$");
-            RuleFor(x => x._command).NotNull().Matches(@"^$|^\w+\.\w+\.\w+\.\w+$");
-            RuleFor(x => x._namespace).NotEmpty();
+            RuleFor(x => x.Name).Matches(@"^(Get|Find|Update|Sign)[A-Z]\w+$");
+            RuleFor(x => x._version).Matches(@"^(Filestore\/)?v\d{2}(_\d)?$");
+            RuleFor(x => x._service).Matches(@"^[A-Z][a-z]+Service(Extensions)?$");
+            RuleFor(x => x._command).Matches(@"^$|^\w+\.\w+\.\w+\.\w+$");
+            RuleFor(x => x._namespace).Matches(@"^(Services|Filestore)\/\w+\/\b([1-9]|12[1-9]|3[01])\b\/\b([0-9]|1[02])\b\/\d{4}\/$");
         }
     }
 }
