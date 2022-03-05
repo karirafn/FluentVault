@@ -1,5 +1,6 @@
 ﻿using System.Net;
 using System.Net.Http.Headers;
+using System.Web.Http;
 using System.Xml.Linq;
 
 using FluentVault.Common.Extensions;
@@ -26,7 +27,7 @@ internal class SoapRequestService : ISoapRequestService
         HttpResponseMessage responseMessage = await _httpClient.SendAsync(requestMessage);
 
         if (responseMessage.StatusCode != HttpStatusCode.OK)
-            return new XDocument();
+            throw new HttpResponseException(responseMessage.StatusCode);
         
         string responseContent = await responseMessage.Content.ReadAsStringAsync();
         XDocument document = XDocument.Parse(responseContent);
