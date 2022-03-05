@@ -1,6 +1,5 @@
 ﻿using System.Net;
 using System.Net.Http.Headers;
-using System.Text.Json;
 using System.Xml.Linq;
 
 using FluentVault.Common.Extensions;
@@ -16,18 +15,12 @@ internal class SoapRequestService : ISoapRequestService
     {
         _httpClient = httpClientFactory.CreateClient("Vault");
 
-        string json = ReadRequestDataFromFile();
-        _data = JsonSerializer.Deserialize<SoapRequestDataCollection>(json)?
-            .SoapRequestData
-            .ToDictionary(x => x.Name)
-            ?? throw new Exception("Failed to parse SOAP data collection");
+        _data = SoapRequestDataCollection.SoapRequestData.ToDictionary(x => x.Name);
     }
 
     public async Task<XDocument> SendAsync(string requestName, VaultSessionCredentials session, Action<XElement, XNamespace>? contentBuilder = null)
     {
-        XDocument requestBody = GetRequestBody(requestName, session, contentBuilder);
-        StringContent requestContent = GetRequestContent(requestBody);
-        HttpRequestMessage requestMessage = GetRequestMessage(requestName, requestContent);
+        HttpRequestMessage requestMessage = GetRequestMessage(requestName, session, contentBuilder);
 
         HttpResponseMessage responseMessage = await _httpClient.SendAsync(requestMessage);
 
@@ -40,14 +33,12 @@ internal class SoapRequestService : ISoapRequestService
         return document;
     }
 
-    private static string ReadRequestDataFromFile()
+    private HttpRequestMessage GetRequestMessage(string requestName, VaultSessionCredentials session, Action<XElement, XNamespace>? contentBuilder)
     {
-        string directory = Path.GetDirectoryName(typeof(VaultClient).Assembly.Location)
-            ?? throw new Exception("Failed to get assembly location");
-        string path = Path.Combine(directory, "requestdata.json");
-        string json = File.ReadAllText(path);
-
-        return json;
+        XDocument requestBody = GetRequestBody(requestName, session, contentBuilder);
+        StringContent requestContent = GetRequestContent(requestBody);
+        HttpRequestMessage requestMessage = GetRequestMessage(requestName, requestContent);
+        return requestMessage;
     }
 
     private HttpRequestMessage GetRequestMessage(string requestName, StringContent requestContent)
