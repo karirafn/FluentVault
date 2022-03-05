@@ -13,13 +13,13 @@ internal class SoapRequestData
     private readonly string _command;
     private readonly string _namespace;
 
-    internal SoapRequestData(string name, string version, string service, string command, string @namespace)
+    internal SoapRequestData(string operation, string version, string service, string command, string @namespace)
     {
-        (Name, _version, _service, _command, _namespace) = (name, version, service, command, @namespace);
+        (Operation, _version, _service, _command, _namespace) = (operation, version, service, command, @namespace);
         new SoapRequestDataValidator().ValidateAndThrow(this);
     }
 
-    internal string Name { get; init; }
+    internal string Operation { get; init; }
 
     internal string SoapAction
         => new StringBuilder()
@@ -27,7 +27,7 @@ internal class SoapRequestData
             .Append('/')
             .Append(_service)
             .Append('/')
-            .Append(Name)
+            .Append(Operation)
             .ToString();
 
     internal string Uri
@@ -37,7 +37,7 @@ internal class SoapRequestData
             .Append('/')
             .Append(_service)
             .Append(".svc")
-            .AppendRequestCommand(Name, _command)
+            .AppendRequestCommand(Operation, _command)
             .ToString();
 
     internal string Namespace
@@ -52,7 +52,7 @@ internal class SoapRequestData
     {
         public SoapRequestDataValidator()
         {
-            RuleFor(x => x.Name).Matches(@"^(Get|Find|Update|Sign)[A-Z]\w+$");
+            RuleFor(x => x.Operation).Matches(@"^(Get|Find|Update|Sign)[A-Z]\w+$");
             RuleFor(x => x._version).Matches(@"^(Filestore\/)?v\d{2}(_\d)?$");
             RuleFor(x => x._service).Matches(@"^\w+Service(Extensions)?$");
             RuleFor(x => x._command).Matches(@"^$|^\w+\.\w+\.\w+\.\w+$");

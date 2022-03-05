@@ -14,37 +14,33 @@ internal class SoapRequestService : ISoapRequestService
     public SoapRequestService(IHttpClientFactory httpClientFactory)
     {
         _httpClient = httpClientFactory.CreateClient("Vault");
-
-        _data = SoapRequestDataCollection.SoapRequestData.ToDictionary(x => x.Name);
+        _data = SoapRequestDataCollection.SoapRequestData.ToDictionary(x => x.Operation);
     }
 
-    public async Task<XDocument> SendAsync(string requestName, VaultSessionCredentials session, Action<XElement, XNamespace>? contentBuilder = null)
+    public async Task<XDocument> SendAsync(string operation, VaultSessionCredentials session, Action<XElement, XNamespace>? contentBuilder = null)
     {
-        HttpRequestMessage requestMessage = GetRequestMessage(requestName, session, contentBuilder);
+        if (_data.Keys.Any(key => key == operation) is false)
+            throw new KeyNotFoundException($@"Operation ""{operation}"" was not found in SOAP request data collection");
 
+        HttpRequestMessage requestMessage = GetRequestMessage(operation, session, contentBuilder);
         HttpResponseMessage responseMessage = await _httpClient.SendAsync(requestMessage);
 
-        if (responseMessage.StatusCode == HttpStatusCode.NotFound)
-            throw new Exception("Invalid request, status code is 404 Not Found");
-
+        if (responseMessage.StatusCode != HttpStatusCode.OK)
+            return new XDocument();
+        
         string responseContent = await responseMessage.Content.ReadAsStringAsync();
         XDocument document = XDocument.Parse(responseContent);
 
         return document;
     }
 
-    private HttpRequestMessage GetRequestMessage(string requestName, VaultSessionCredentials session, Action<XElement, XNamespace>? contentBuilder)
+    private HttpRequestMessage GetRequestMessage(string operation, VaultSessionCredentials session, Action<XElement, XNamespace>? contentBuilder)
     {
-        XDocument requestBody = GetRequestBody(requestName, session, contentBuilder);
+        string uri = _data[operation].Uri;
+        string soapAction = _data[operation].SoapAction;
+        XDocument requestBody = GetRequestBody(operation, session, contentBuilder);
         StringContent requestContent = GetRequestContent(requestBody);
-        HttpRequestMessage requestMessage = GetRequestMessage(requestName, requestContent);
-        return requestMessage;
-    }
 
-    private HttpRequestMessage GetRequestMessage(string requestName, StringContent requestContent)
-    {
-        string uri = _data[requestName].Uri;
-        string soapAction = _data[requestName].SoapAction;
         HttpRequestMessage requestMessage = new(HttpMethod.Post, uri);
         requestMessage.Content = requestContent;
         requestMessage.Headers.Add("SOAPAction", soapAction);
@@ -60,10 +56,10 @@ internal class SoapRequestService : ISoapRequestService
         return requestContent;
     }
 
-    private XDocument GetRequestBody(string requestName, VaultSessionCredentials session, Action<XElement, XNamespace>? contentBuilder)
+    private XDocument GetRequestBody(string operation, VaultSessionCredentials session, Action<XElement, XNamespace>? contentBuilder)
     {
-        XNamespace ns = _data[requestName].Namespace;
-        XElement content = new(ns + requestName);
+        XNamespace ns = _data[operation].Namespace;
+        XElement content = new(ns + operation);
 
         if (contentBuilder is not null)
             contentBuilder.Invoke(content, ns);
