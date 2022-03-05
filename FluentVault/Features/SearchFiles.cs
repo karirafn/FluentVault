@@ -25,9 +25,7 @@ internal class SearchFilesHandler : IRequestHandler<SearchFilesCommand, VaultFil
     private readonly ISoapRequestService _soapRequestService;
 
     public SearchFilesHandler(ISoapRequestService soapRequestService)
-    {
-        _soapRequestService = soapRequestService;
-    }
+        => _soapRequestService = soapRequestService;
 
     public async Task<VaultFileSearchResult> Handle(SearchFilesCommand command, CancellationToken cancellationToken)
     {

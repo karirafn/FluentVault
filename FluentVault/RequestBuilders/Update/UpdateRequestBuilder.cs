@@ -12,10 +12,7 @@ internal class UpdateRequestBuilder : IUpdateRequestBuilder, IUpdateFileRequestB
     private readonly VaultSessionCredentials _session;
 
     public UpdateRequestBuilder(IMediator mediator, VaultSessionCredentials session)
-    {
-        _mediator = mediator;
-        _session = session;
-    }
+        => (_mediator, _session) = (mediator, session);
 
     public IUpdateFileRequestBuilder File => this;
     public IUpdateFileLifecycleStateRequestBuilder LifecycleState => new UpdateFileLifecycleStateRequestBuilder(_mediator, _session);

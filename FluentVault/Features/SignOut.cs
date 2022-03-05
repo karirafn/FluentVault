@@ -16,10 +16,7 @@ internal class SignOutHandler : IRequestHandler<SignOutCommand>
     private readonly VaultSessionCredentials _session;
 
     public SignOutHandler(ISoapRequestService soapRequestService, VaultSessionCredentials session)
-    {
-        _soapRequestService = soapRequestService;
-        _session = session;
-    }
+        => (_soapRequestService, _session) = (soapRequestService, session);
 
     public async Task<Unit> Handle(SignOutCommand request, CancellationToken cancellationToken)
     {

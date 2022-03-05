@@ -26,10 +26,7 @@ internal class UpdateFileLifeCycleStateHandler : IRequestHandler<UpdateFileLifeC
     private readonly ISoapRequestService _soapRequestService;
 
     public UpdateFileLifeCycleStateHandler(IMediator mediator, ISoapRequestService soapRequestService)
-    {
-        _mediator = mediator;
-        _soapRequestService = soapRequestService;
-    }
+        => (_mediator, _soapRequestService) = (mediator, soapRequestService);
 
     public async Task<VaultFile> Handle(UpdateFileLifeCycleStateCommand command, CancellationToken cancellationToken)
     {

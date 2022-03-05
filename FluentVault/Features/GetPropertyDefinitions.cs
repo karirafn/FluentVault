@@ -18,10 +18,7 @@ internal class GetPropertyDefinitionsHandler : IRequestHandler<GetPropertyDefini
     private readonly VaultSessionCredentials _session;
 
     public GetPropertyDefinitionsHandler(ISoapRequestService soapRequestService, VaultSessionCredentials session)
-    {
-        _soapRequestService = soapRequestService;
-        _session = session;
-    }
+        => (_soapRequestService, _session) = (soapRequestService, session);
 
     public async Task<IEnumerable<VaultPropertyDefinition>> Handle(GetPropertyDefinitionsQuery request, CancellationToken cancellationToken)
     {

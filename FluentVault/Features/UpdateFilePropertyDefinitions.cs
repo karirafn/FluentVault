@@ -28,10 +28,7 @@ internal class UpdateFilePropertyDefinitionsHandler : IRequestHandler<UpdateFile
     private IEnumerable<VaultPropertyDefinition> _allProperties = new List<VaultPropertyDefinition>();
 
     public UpdateFilePropertyDefinitionsHandler(IMediator mediator, ISoapRequestService soapRequestService)
-    {
-        _mediator = mediator;
-        _soapRequestService = soapRequestService;
-    }
+        => (_mediator, _soapRequestService) = (mediator, soapRequestService);
 
     public async Task<IEnumerable<VaultFile>> Handle(UpdateFilePropertyDefinitionsCommand command, CancellationToken cancellationToken)
     {

@@ -18,9 +18,7 @@ internal class SignInHandler : IRequestHandler<SignInCommand, VaultSessionCreden
     private readonly ISoapRequestService _soapRequestService;
 
     public SignInHandler(ISoapRequestService soapRequestService)
-    {
-        _soapRequestService = soapRequestService;
-    }
+        => _soapRequestService = soapRequestService;
 
     public async Task<VaultSessionCredentials> Handle(SignInCommand command, CancellationToken cancellationToken)
     {

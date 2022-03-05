@@ -18,10 +18,7 @@ internal class GetCategoriesHandler : IRequestHandler<GetCategoriesQuery, IEnume
     private readonly VaultSessionCredentials _session;
 
     public GetCategoriesHandler(ISoapRequestService soapRequestService, VaultSessionCredentials session)
-    {
-        _soapRequestService = soapRequestService;
-        _session = session;
-    }
+        => (_soapRequestService, _session) = (soapRequestService, session);
 
     public async Task<IEnumerable<VaultCategory>> Handle(GetCategoriesQuery query, CancellationToken cancellationToken)
     {

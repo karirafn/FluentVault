@@ -11,10 +11,7 @@ internal class GetRequestBuilder : IGetRequestBuilder
     private readonly VaultSessionCredentials _session;
 
     public GetRequestBuilder(IMediator mediator, VaultSessionCredentials session)
-    {
-        _mediator = mediator;
-        _session = session;
-    }
+        => (_mediator, _session) = (mediator, session);
 
     public async Task<IEnumerable<VaultCategory>> Categories()
         => await _mediator.Send(new GetCategoriesQuery(_session));

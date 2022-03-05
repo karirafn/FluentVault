@@ -18,10 +18,7 @@ internal class UpdateFilePropertyDefinitionsRequestBuilder : IUpdateFileProperty
     private readonly List<string> _removedPropertyNames = new();
 
     public UpdateFilePropertyDefinitionsRequestBuilder(IMediator mediator, VaultSessionCredentials session)
-    {
-        _mediator = mediator;
-        _session = session;
-    }
+        => (_mediator, _session) = (mediator, session);
 
     public async Task<IEnumerable<VaultFile>> ExecuteAsync()
     {

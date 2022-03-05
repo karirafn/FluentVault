@@ -16,10 +16,7 @@ internal class UpdateFileLifecycleStateRequestBuilder : IUpdateFileLifecycleStat
     private string _comment = string.Empty;
 
     public UpdateFileLifecycleStateRequestBuilder(IMediator mediator, VaultSessionCredentials session)
-    {
-        _mediator = mediator;
-        _session = session;
-    }
+        => (_mediator, _session) = (mediator, session);
 
     public IWithFiles ByMasterId(long masterId) => ByMasterIds(new[] { masterId });
     public IWithFiles ByMasterIds(IEnumerable<long> masterIds)

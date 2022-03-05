@@ -19,8 +19,8 @@ internal class VaultClient : IAsyncDisposable, IVaultClient
 
     public VaultClient(IMediator mediator, IOptions<VaultOptions> options)
     {
-        _options = options.Value;
-        _mediator = mediator;
+        (_mediator, _options) = (mediator, options.Value);
+
         _session = _options.AutoLogin
             ? SignIn().GetAwaiter().GetResult()
             : new();

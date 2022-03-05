@@ -32,10 +32,7 @@ internal class SearchFilesRequestBuilder :
     private readonly List<IDictionary<string, string>> _sortConditions = new();
 
     public SearchFilesRequestBuilder(IMediator mediator, VaultSessionCredentials session)
-    {
-        _mediator = mediator;
-        _session = session;
-    }
+        => (_mediator, _session) = (mediator, session);
 
     public async Task<IEnumerable<VaultFile>> SearchWithoutPaging()
     {

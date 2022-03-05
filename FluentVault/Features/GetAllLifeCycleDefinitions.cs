@@ -18,10 +18,7 @@ internal class GetAllLifeCycleDefinitionsHandler : IRequestHandler<GetAllLifeCyc
     private readonly VaultSessionCredentials _session;
 
     public GetAllLifeCycleDefinitionsHandler(ISoapRequestService soapRequestService, VaultSessionCredentials session)
-    {
-        _soapRequestService = soapRequestService;
-        _session = session;
-    }
+        => (_soapRequestService, _session) = (soapRequestService, session);
 
     public async Task<IEnumerable<VaultLifeCycle>> Handle(GetAllLifeCycleDefinitionsQuery query, CancellationToken cancellationToken)
     {

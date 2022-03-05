@@ -11,10 +11,7 @@ internal class SearchRequestBuilder : ISearchRequestBuilder
     private readonly VaultSessionCredentials _session;
 
     public SearchRequestBuilder(IMediator mediator, VaultSessionCredentials session)
-    {
-        _mediator = mediator;
-        _session = session;
-    }
+        => (_mediator, _session) = (mediator, session);
 
     public ISearchFilesRequestBuilder Files => new SearchFilesRequestBuilder(_mediator, _session);
 }
