@@ -2,7 +2,7 @@
 
 internal class SoapRequestDataCollection
 {
-    public static IEnumerable<SoapRequestData> SoapRequestData { get; set; } = new SoapRequestData[]
+    public static IEnumerable<SoapRequestData> SoapRequestData => new SoapRequestData[]
     {
         new(
           name: "GetAllLifeCycleDefinitions",
