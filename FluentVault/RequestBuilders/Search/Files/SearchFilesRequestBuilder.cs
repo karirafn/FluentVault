@@ -169,7 +169,7 @@ internal class SearchFilesRequestBuilder :
                 ["PropDefId"] = propertyId.ToString(),
                 ["SrchOper"] = searchOperator.ToString(),
                 ["SrchTxt"] = searchText,
-                ["PropTyp"] = type.ToString(),
+                ["PropTyp"] = type.Name,
                 ["SrchRule"] = rule.ToString(),
             };
 

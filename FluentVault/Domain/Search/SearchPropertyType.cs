@@ -1,14 +1,12 @@
-﻿namespace FluentVault.Domain.Search;
+﻿using Ardalis.SmartEnum;
 
-internal sealed class SearchPropertyType
+namespace FluentVault.Domain.Search;
+
+internal sealed class SearchPropertyType : SmartEnum<SearchPropertyType>
 {
-    public static readonly SearchPropertyType SingleProperty = new(nameof(SingleProperty));
-    public static readonly SearchPropertyType AllProperties = new(nameof(AllProperties));
-    public static readonly SearchPropertyType AllPropertiesAndContent = new(nameof(AllPropertiesAndContent));
+    public static readonly SearchPropertyType SingleProperty = new(nameof(SingleProperty), 1);
+    public static readonly SearchPropertyType AllProperties = new(nameof(AllProperties), 2);
+    public static readonly SearchPropertyType AllPropertiesAndContent = new(nameof(AllPropertiesAndContent), 3);
 
-    private readonly string _value;
-
-    private SearchPropertyType(string value) => _value = value;
-
-    public override string ToString() => _value;
+    private SearchPropertyType(string name, int value) : base(name, value) { }
 }
