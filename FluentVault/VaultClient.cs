@@ -1,6 +1,4 @@
-﻿
-using FluentVault.Domain;
-using FluentVault.Features;
+﻿using FluentVault.Features;
 using FluentVault.RequestBuilders;
 using FluentVault.Requests.Search;
 using FluentVault.Requests.Update;
