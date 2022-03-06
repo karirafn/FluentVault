@@ -35,7 +35,7 @@ internal static class VaultFileParsingExtensions
             element.GetAttributeValue("CkOutMach"),
             element.ParseAttributeValue("CkOutUserId", long.Parse),
             element.GetAttributeValue("FileClass"),
-            element.ParseAttributeValue("FileStatus", VaultFileStatus.Parse),
+            element.ParseAttributeValue("FileStatus", x => VaultFileStatus.FromName(x)),
             element.ParseAttributeValue("Locked", bool.Parse),
             element.ParseAttributeValue("Hidden", bool.Parse),
             element.ParseAttributeValue("Cloaked", bool.Parse),

@@ -1,16 +1,13 @@
-﻿using FluentVault.Domain.Common;
+﻿using Ardalis.SmartEnum;
 
 namespace FluentVault;
 
-public class EntityClass : BaseType
+public sealed class EntityClass : SmartEnum<EntityClass>
 {
-    public static readonly EntityClass File = new("FILE");
-    public static readonly EntityClass Folder = new("FLDR");
-    public static readonly EntityClass Item = new("ITEM");
-    public static readonly EntityClass CustomEntity = new("CUSTENT");
+    public static readonly EntityClass File = new("FILE", 1);
+    public static readonly EntityClass Folder = new("FLDR", 2);
+    public static readonly EntityClass Item = new("ITEM", 3);
+    public static readonly EntityClass CustomEntity = new("CUSTENT", 4);
 
-    private EntityClass(string value) : base(value) { }
-
-    public static EntityClass Parse(string value)
-        => Parse(value, new[] { File, Folder, Item, CustomEntity });
+    private EntityClass(string name, int value) : base(name, value) { }
 }

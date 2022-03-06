@@ -1,17 +1,14 @@
-﻿using FluentVault.Domain.Common;
+﻿using Ardalis.SmartEnum;
 
 namespace FluentVault;
 
-public class ContentSourceDefinitionType : BaseType
+public sealed class ContentSourceDefinitionType : SmartEnum<ContentSourceDefinitionType>
 {
-    public static readonly ContentSourceDefinitionType All = new(nameof(All));
-    public static readonly ContentSourceDefinitionType Component = new(nameof(Component));
-    public static readonly ContentSourceDefinitionType File = new(nameof(File));
-    public static readonly ContentSourceDefinitionType RefDes = new(nameof(RefDes));
-    public static readonly ContentSourceDefinitionType None = new(nameof(None));
+    public static readonly ContentSourceDefinitionType All = new(nameof(All), 1);
+    public static readonly ContentSourceDefinitionType Component = new(nameof(Component), 2);
+    public static readonly ContentSourceDefinitionType File = new(nameof(File), 3);
+    public static readonly ContentSourceDefinitionType RefDes = new(nameof(RefDes), 4);
+    public static readonly ContentSourceDefinitionType None = new(nameof(None), 5);
 
-    private ContentSourceDefinitionType(string value) : base(value) { }
-
-    public static ContentSourceDefinitionType Parse(string value)
-        => Parse(value, new[] { All, Component, File, RefDes, None });
+    private ContentSourceDefinitionType(string name, int value) : base(name, value) { }
 }

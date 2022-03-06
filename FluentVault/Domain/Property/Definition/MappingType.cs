@@ -1,14 +1,11 @@
-﻿using FluentVault.Domain.Common;
+﻿using Ardalis.SmartEnum;
 
 namespace FluentVault;
 
-public class MappingType : BaseType
+public sealed class MappingType : SmartEnum<MappingType>
 {
-    public static readonly MappingType Constant = new(nameof(Constant));
-    public static readonly MappingType Default = new(nameof(Default));
+    public static readonly MappingType Constant = new(nameof(Constant), 1);
+    public static readonly MappingType Default = new(nameof(Default), 2);
 
-    private MappingType(string value) : base(value) { }
-
-    public static MappingType Parse(string value)
-        => Parse(value, new[] { Constant, Default });
+    private MappingType(string name, int value) : base(name, value) { }
 }

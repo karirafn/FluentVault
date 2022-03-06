@@ -1,15 +1,12 @@
-﻿using FluentVault.Domain.Common;
+﻿using Ardalis.SmartEnum;
 
 namespace FluentVault;
 
-public class VaultFileStatus : BaseType
+public sealed class VaultFileStatus : SmartEnum<VaultFileStatus>
 {
-    public static readonly VaultFileStatus NeedsUpdating = new(nameof(NeedsUpdating));
-    public static readonly VaultFileStatus Unknown = new(nameof(Unknown));
-    public static readonly VaultFileStatus UpToDate = new(nameof(UpToDate));
+    public static readonly VaultFileStatus NeedsUpdating = new(nameof(NeedsUpdating), 1);
+    public static readonly VaultFileStatus Unknown = new(nameof(Unknown), 2);
+    public static readonly VaultFileStatus UpToDate = new(nameof(UpToDate), 3);
 
-    private VaultFileStatus(string value) : base(value) { }
-
-    public static VaultFileStatus Parse(string value)
-        => Parse(value, new[] { NeedsUpdating, Unknown, UpToDate });
+    private VaultFileStatus(string name, int value) : base(name, value) { }
 }

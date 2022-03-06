@@ -1,16 +1,13 @@
-﻿using FluentVault.Domain.Common;
+﻿using Ardalis.SmartEnum;
 
 namespace FluentVault;
 
-public class RestrictPurgeOption : BaseType
+public class RestrictPurgeOption : SmartEnum<RestrictPurgeOption>
 {
-    public static readonly RestrictPurgeOption All = new(nameof(All));
-    public static readonly RestrictPurgeOption FirstAndLast = new(nameof(FirstAndLast));
-    public static readonly RestrictPurgeOption Last = new(nameof(Last));
-    public static readonly RestrictPurgeOption None = new(nameof(None));
+    public static readonly RestrictPurgeOption All = new(nameof(All), 1);
+    public static readonly RestrictPurgeOption FirstAndLast = new(nameof(FirstAndLast), 2);
+    public static readonly RestrictPurgeOption Last = new(nameof(Last), 3);
+    public static readonly RestrictPurgeOption None = new(nameof(None), 4);
 
-    private RestrictPurgeOption(string value) : base(value) { }
-
-    public static RestrictPurgeOption Parse(string value)
-        => Parse(value, new[] { All, FirstAndLast, Last, None });
+    private RestrictPurgeOption(string name, int value) : base(name, value) { }
 }

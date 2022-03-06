@@ -1,16 +1,13 @@
-﻿using FluentVault.Domain.Common;
+﻿using Ardalis.SmartEnum;
 
 namespace FluentVault;
 
-public class SynchronizePropertiesState : BaseType
+public sealed class SynchronizePropertiesState : SmartEnum<SynchronizePropertiesState>
 {
-    public static readonly SynchronizePropertiesState SyncPropAndUpdatePdf = new(nameof(SyncPropAndUpdatePdf));
-    public static readonly SynchronizePropertiesState SyncPropAndUpdateView = new(nameof(SyncPropAndUpdateView));
-    public static readonly SynchronizePropertiesState SyncPropOnly = new(nameof(SyncPropOnly));
-    public static readonly SynchronizePropertiesState None = new(nameof(None));
+    public static readonly SynchronizePropertiesState SyncPropAndUpdatePdf = new(nameof(SyncPropAndUpdatePdf), 1);
+    public static readonly SynchronizePropertiesState SyncPropAndUpdateView = new(nameof(SyncPropAndUpdateView), 2);
+    public static readonly SynchronizePropertiesState SyncPropOnly = new(nameof(SyncPropOnly), 3);
+    public static readonly SynchronizePropertiesState None = new(nameof(None), 4);
 
-    private SynchronizePropertiesState(string value) : base(value) { }
-
-    public static SynchronizePropertiesState Parse(string value)
-        => Parse(value, new[] { SyncPropAndUpdatePdf, SyncPropAndUpdateView, SyncPropOnly, None });
+    private SynchronizePropertiesState(string name, int value) : base(name, value) { }
 }

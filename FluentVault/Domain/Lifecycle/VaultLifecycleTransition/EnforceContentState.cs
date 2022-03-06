@@ -1,18 +1,15 @@
-﻿using FluentVault.Domain.Common;
+﻿using Ardalis.SmartEnum;
 
 namespace FluentVault;
 
-public class EnforceContentState : BaseType
+public sealed class EnforceContentState : SmartEnum<EnforceContentState>
 {
-    public static readonly EnforceContentState EnforceFiles = new(nameof(EnforceFiles));
-    public static readonly EnforceContentState EnforceLinkToCustomEntities = new(nameof(EnforceLinkToCustomEntities));
-    public static readonly EnforceContentState EnforceLinkToFiles = new(nameof(EnforceLinkToFiles));
-    public static readonly EnforceContentState EnforceLinkToFolders = new(nameof(EnforceLinkToFolders));
-    public static readonly EnforceContentState EnforceLinkToItems = new(nameof(EnforceLinkToItems));
-    public static readonly EnforceContentState None = new(nameof(None));
+    public static readonly EnforceContentState EnforceFiles = new(nameof(EnforceFiles), 1);
+    public static readonly EnforceContentState EnforceLinkToCustomEntities = new(nameof(EnforceLinkToCustomEntities), 2);
+    public static readonly EnforceContentState EnforceLinkToFiles = new(nameof(EnforceLinkToFiles), 3);
+    public static readonly EnforceContentState EnforceLinkToFolders = new(nameof(EnforceLinkToFolders), 4);
+    public static readonly EnforceContentState EnforceLinkToItems = new(nameof(EnforceLinkToItems), 5);
+    public static readonly EnforceContentState None = new(nameof(None), 6);
 
-    private EnforceContentState(string value) : base(value) { }
-
-    public static EnforceContentState Parse(string value)
-        => Parse(value, new[] { EnforceFiles, EnforceLinkToCustomEntities, EnforceLinkToFiles, EnforceLinkToFolders, EnforceLinkToItems, None });
+    private EnforceContentState(string name, int value) : base(name, value) { }
 }

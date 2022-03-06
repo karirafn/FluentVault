@@ -23,7 +23,7 @@ internal static partial class VaultResponseFixtures
 						<Color>{category.Color}</Color>
 						<Descr>{category.Description}</Descr>
 						<EntClassIdArray>
-							{CreateElementArray(category.EntityClasses.Select(x => x.Value), "EntClassId")}
+							{CreateElementArray(category.EntityClasses.Select(x => x.Name), "EntClassId")}
 						</EntClassIdArray>
 					</Cat>
                 </CatCfg>";

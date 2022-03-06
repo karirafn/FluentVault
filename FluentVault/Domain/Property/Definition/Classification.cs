@@ -1,15 +1,12 @@
-﻿using FluentVault.Domain.Common;
+﻿using Ardalis.SmartEnum;
 
 namespace FluentVault;
 
-public class Classification : BaseType
+public sealed class Classification : SmartEnum<Classification>
 {
-    public static readonly Classification Standard = new(nameof(Standard));
-    public static readonly Classification Custom = new(nameof(Custom));
-    public static readonly Classification None = new(nameof(None));
+    public static readonly Classification Standard = new(nameof(Standard), 1);
+    public static readonly Classification Custom = new(nameof(Custom), 2);
+    public static readonly Classification None = new(nameof(None), 3);
 
-    private Classification(string value) : base(value) { }
-
-    public static Classification Parse(string value)
-        => Parse(value, new[] { Standard, Custom, None });
+    private Classification(string name, int value) : base(name, value) { }
 }

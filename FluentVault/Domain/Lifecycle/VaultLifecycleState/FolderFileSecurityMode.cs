@@ -1,16 +1,13 @@
-﻿using FluentVault.Domain.Common;
+﻿using Ardalis.SmartEnum;
 
 namespace FluentVault;
 
-public class FolderFileSecurityMode : BaseType
+public sealed class FolderFileSecurityMode : SmartEnum<FolderFileSecurityMode>
 {
-    public static readonly FolderFileSecurityMode ApplyACL = new(nameof(ApplyACL));
-    public static readonly FolderFileSecurityMode RemoveACL = new(nameof(RemoveACL));
-    public static readonly FolderFileSecurityMode UseFolderSecurity = new(nameof(UseFolderSecurity));
-    public static readonly FolderFileSecurityMode None = new(nameof(None));
+    public static readonly FolderFileSecurityMode ApplyACL = new(nameof(ApplyACL), 1);
+    public static readonly FolderFileSecurityMode RemoveACL = new(nameof(RemoveACL), 2);
+    public static readonly FolderFileSecurityMode UseFolderSecurity = new(nameof(UseFolderSecurity), 3);
+    public static readonly FolderFileSecurityMode None = new(nameof(None), 4);
 
-    private FolderFileSecurityMode(string value) : base(value) { }
-
-    public static FolderFileSecurityMode Parse(string value)
-        => Parse(value, new[] { ApplyACL, RemoveACL, UseFolderSecurity, None });
+    private FolderFileSecurityMode(string name, int value) : base(name, value) { }
 }

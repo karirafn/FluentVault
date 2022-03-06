@@ -15,5 +15,5 @@ internal static class VaultCategoryParsingExtensions
             element.GetElementValue("SysName"),
             element.ParseElementValue("Color", long.Parse),
             element.GetElementValue("Descr"),
-            element.ParseAllElementValues("EntClassId", EntityClass.Parse));
+            element.ParseAllElementValues("EntClassId", x => EntityClass.FromName(x)));
 }

@@ -1,21 +1,18 @@
-﻿using FluentVault.Domain.Common;
+﻿using Ardalis.SmartEnum;
 
 namespace FluentVault;
 
-public class PropertyConstraintType : BaseType
+public sealed class PropertyConstraintType : SmartEnum<PropertyConstraintType>
 {
-    public static readonly PropertyConstraintType Case = new(nameof(Case));
-    public static readonly PropertyConstraintType EnforceListOfValues = new(nameof(EnforceListOfValues));
-    public static readonly PropertyConstraintType MaximumDate = new(nameof(MaximumDate));
-    public static readonly PropertyConstraintType MaximumLength = new(nameof(MaximumLength));
-    public static readonly PropertyConstraintType MaximumValue = new(nameof(MaximumValue));
-    public static readonly PropertyConstraintType MinimumDate = new(nameof(MinimumDate));
-    public static readonly PropertyConstraintType MinimumLength = new(nameof(MinimumLength));
-    public static readonly PropertyConstraintType MinimumValue = new(nameof(MinimumValue));
-    public static readonly PropertyConstraintType RequiresValue = new(nameof(RequiresValue));
+    public static readonly PropertyConstraintType Case = new(nameof(Case), 1);
+    public static readonly PropertyConstraintType EnforceListOfValues = new(nameof(EnforceListOfValues), 2);
+    public static readonly PropertyConstraintType MaximumDate = new(nameof(MaximumDate), 3);
+    public static readonly PropertyConstraintType MaximumLength = new(nameof(MaximumLength), 4);
+    public static readonly PropertyConstraintType MaximumValue = new(nameof(MaximumValue), 5);
+    public static readonly PropertyConstraintType MinimumDate = new(nameof(MinimumDate), 6);
+    public static readonly PropertyConstraintType MinimumLength = new(nameof(MinimumLength), 7);
+    public static readonly PropertyConstraintType MinimumValue = new(nameof(MinimumValue), 8);
+    public static readonly PropertyConstraintType RequiresValue = new(nameof(RequiresValue), 9);
 
-    private PropertyConstraintType(string value) : base(value) { }
-
-    public static PropertyConstraintType Parse(string value)
-        => Parse(value, new[] { Case, EnforceListOfValues, MaximumDate, MaximumLength, MaximumValue, MinimumDate, MinimumLength, MinimumValue, RequiresValue });
+    private PropertyConstraintType(string name, int value) : base(name, value) { }
 }

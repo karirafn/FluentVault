@@ -17,7 +17,7 @@ internal static class VaultPropertyParsingExtensions
 
     internal static PropertyDefinition ParsePropertyDefinition(this XElement element)
         => new(element.ParseAttributeValue("Id", long.Parse),
-            element.ParseAttributeValue("Typ", DataType.Parse),
+            element.ParseAttributeValue("Typ", x => DataType.FromName(x)),
             element.GetAttributeValue("DispName"),
             element.GetAttributeValue("SysName"),
             element.ParseAttributeValue("IsAct", bool.Parse),
@@ -30,28 +30,28 @@ internal static class VaultPropertyParsingExtensions
         => new(element.ParseAttributeValue("Id", long.Parse),
             element.ParseAttributeValue("PropDefId", long.Parse),
             element.ParseAttributeValue("CatId", long.Parse),
-            element.ParseAttributeValue("PropConstrTyp", PropertyConstraintType.Parse),
+            element.ParseAttributeValue("PropConstrTyp", x => PropertyConstraintType.FromName(x)),
             element.ParseAttributeValue("Val", bool.Parse));
 
     internal static EntityClassAssociation ParseEntityClassAssociation(this XElement element)
-        => new(element.ParseAttributeValue("EntClassId", EntityClass.Parse),
-            element.ParseAttributeValue("MapDirection", AllowedMappingDirection.Parse));
+        => new(element.ParseAttributeValue("EntClassId", x => EntityClass.FromName(x)),
+            element.ParseAttributeValue("MapDirection", x => AllowedMappingDirection.FromName(x)));
 
     internal static EntityClassContentSourcePropertyDefinition ParseEntityClassContentSourcePropertyDefinition(this XElement element)
-        => new(element.ParseAttributeValue("EntClassId", EntityClass.Parse),
+        => new(element.ParseAttributeValue("EntClassId", x => EntityClass.FromName(x)),
             element.ParseAllElements("CtntSrcPropDef", ParseContentSourcePropertyDefinition),
-            element.ParseAllElementValues("MapTyp", MappingType.Parse),
+            element.ParseAllElementValues("MapTyp", x => MappingType.FromName(x)),
             element.ParseAllElementValues("Priority", long.Parse),
-            element.ParseAllElementValues("MapDirection", MappingDirection.Parse),
+            element.ParseAllElementValues("MapDirection", x => MappingDirection.FromName(x)),
             element.ParseAllElementValues("CreateNew", bool.Parse));
 
     internal static ContentSourcePropertyDefinition ParseContentSourcePropertyDefinition(this XElement element)
         => new(element.ParseAttributeValue("CtntSrcId", long.Parse),
             element.GetAttributeValue("DispName"),
             element.GetAttributeValue("Moniker"),
-            element.ParseAttributeValue("MapDirection", AllowedMappingDirection.Parse),
+            element.ParseAttributeValue("MapDirection", x => AllowedMappingDirection.FromName(x)),
             element.ParseAttributeValue("CanCreateNew", bool.Parse),
-            element.ParseAttributeValue("Classification", Classification.Parse),
-            element.ParseAttributeValue("Typ", DataType.Parse),
-            element.ParseAttributeValue("CtntSrcDefTyp", ContentSourceDefinitionType.Parse));
+            element.ParseAttributeValue("Classification", x => Classification.FromName(x)),
+            element.ParseAttributeValue("Typ", x => DataType.FromName(x)),
+            element.ParseAttributeValue("CtntSrcDefTyp", x => ContentSourceDefinitionType.FromName(x)));
 }

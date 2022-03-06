@@ -1,16 +1,13 @@
-﻿using FluentVault.Domain.Common;
+﻿using Ardalis.SmartEnum;
 
 namespace FluentVault;
 
-public class ItemToFileSecurityMode : BaseType
+public sealed class ItemToFileSecurityMode : SmartEnum<ItemToFileSecurityMode>
 {
-    public static readonly ItemToFileSecurityMode ApplyACL = new(nameof(ApplyACL));
-    public static readonly ItemToFileSecurityMode RemoveACL = new(nameof(RemoveACL));
-    public static readonly ItemToFileSecurityMode UseItemSecurity = new(nameof(UseItemSecurity));
-    public static readonly ItemToFileSecurityMode None = new(nameof(None));
+    public static readonly ItemToFileSecurityMode ApplyACL = new(nameof(ApplyACL), 1);
+    public static readonly ItemToFileSecurityMode RemoveACL = new(nameof(RemoveACL), 2);
+    public static readonly ItemToFileSecurityMode UseItemSecurity = new(nameof(UseItemSecurity), 3);
+    public static readonly ItemToFileSecurityMode None = new(nameof(None), 4);
 
-    private ItemToFileSecurityMode(string value) : base(value) { }
-
-    public static ItemToFileSecurityMode Parse(string value)
-        => Parse(value, new[] { ApplyACL, RemoveACL, UseItemSecurity, None });
+    private ItemToFileSecurityMode(string name, int value) : base(name, value) { }
 }
