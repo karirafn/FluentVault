@@ -1,7 +1,6 @@
 ﻿using System.Xml.Linq;
 
 using FluentVault.Common.Extensions;
-using FluentVault.Domain;
 using FluentVault.Domain.Search;
 using FluentVault.Domain.SOAP;
 
@@ -38,8 +37,8 @@ internal class SearchFilesHandler : IRequestHandler<SearchFilesCommand, VaultFil
             content.AddElement(ns, "bookmark", command.Bookmark);
         }
 
-        XDocument responseBody = await _soapRequestService.SendAsync(Operation, command.Session, contentBuilder);
-        var result = responseBody.ParseFileSearchResult();
+        XDocument response = await _soapRequestService.SendAsync(Operation, command.Session, contentBuilder);
+        var result = VaultFileSearchResult.Parse(response);
 
         return result;
     }
