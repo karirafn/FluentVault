@@ -28,7 +28,7 @@ internal class SearchFilesRequestBuilder :
     private bool _recurseFolders = true;
     private bool _latestOnly = true;
     private readonly List<long> _folderIds = new();
-    private readonly List<IDictionary<string, string>> _searchConditions = new();
+    private readonly List<SearchCondition> _searchConditions = new();
     private readonly List<IDictionary<string, string>> _sortConditions = new();
 
     public SearchFilesRequestBuilder(IMediator mediator, VaultSessionCredentials session)
@@ -137,9 +137,10 @@ internal class SearchFilesRequestBuilder :
 
         List<VaultFile> files = new();
         string bookmark = string.Empty;
+        var searchConditionAttributes = _searchConditions.Select(x => x.Attributes);
         do
         {
-            var command = new SearchFilesCommand(_searchConditions, _sortConditions, _folderIds, _recurseFolders, _latestOnly, bookmark, _session);
+            var command = new SearchFilesCommand(searchConditionAttributes, _sortConditions, _folderIds, _recurseFolders, _latestOnly, bookmark, _session);
             var result = await _mediator.Send(command);
             files.AddRange(result.Files);
             bookmark = result.Bookmark;
@@ -150,28 +151,10 @@ internal class SearchFilesRequestBuilder :
 
     private void AddSearchCondition()
     {
-        string searchConditionValue = _searchConditionValue switch
-        {
-            string s => s,
-            DateTime d => d.ToString("MM/dd/yyyy HH:mm:ss", CultureInfo.InvariantCulture),
-            not null => _searchConditionValue.ToString() ?? throw new Exception("Unable to convert search value to string"),
-            _ => string.Empty
-        };
-
-        var searchCondition = GetSearchCondition(_searchConditionPropertyId, _searchConditionOperator, searchConditionValue, _searchConditionPropertyType, SearchRule.Must);
+        SearchCondition searchCondition = new(_searchConditionPropertyId, _searchConditionOperator, _searchConditionValue, _searchConditionPropertyType, SearchRule.Must);
         _searchConditions.Add(searchCondition);
         _searchConditionPropertyType = SearchPropertyType.SingleProperty;
     }
-
-    private static IDictionary<string, string> GetSearchCondition(long propertyId, long searchOperator, string searchText, SearchPropertyType type, SearchRule rule)
-        => new Dictionary<string, string>
-            {
-                ["PropDefId"] = propertyId.ToString(),
-                ["SrchOper"] = searchOperator.ToString(),
-                ["SrchTxt"] = searchText,
-                ["PropTyp"] = type.Name,
-                ["SrchRule"] = rule.ToString(),
-            };
 
     private static IDictionary<string, string> GetSortCondition(long propertyId, bool sortAscending)
         => new Dictionary<string, string>
