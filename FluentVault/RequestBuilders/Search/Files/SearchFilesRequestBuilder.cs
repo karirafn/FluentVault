@@ -1,7 +1,4 @@
-﻿using System.Globalization;
-
-using FluentVault.Domain;
-using FluentVault.Domain.Search;
+﻿using FluentVault.Domain.Search;
 using FluentVault.Features;
 
 using MediatR;
@@ -29,7 +26,7 @@ internal class SearchFilesRequestBuilder :
     private bool _latestOnly = true;
     private readonly List<long> _folderIds = new();
     private readonly List<SearchCondition> _searchConditions = new();
-    private readonly List<IDictionary<string, string>> _sortConditions = new();
+    private readonly List<SortCondition> _sortConditions = new();
 
     public SearchFilesRequestBuilder(IMediator mediator, VaultSessionCredentials session)
         => (_mediator, _session) = (mediator, session);
@@ -138,9 +135,11 @@ internal class SearchFilesRequestBuilder :
         List<VaultFile> files = new();
         string bookmark = string.Empty;
         var searchConditionAttributes = _searchConditions.Select(x => x.Attributes);
+        var sortConditionAttributes = _sortConditions.Select(x => x.Attributes);
+
         do
         {
-            var command = new SearchFilesCommand(searchConditionAttributes, _sortConditions, _folderIds, _recurseFolders, _latestOnly, bookmark, _session);
+            var command = new SearchFilesCommand(searchConditionAttributes, sortConditionAttributes, _folderIds, _recurseFolders, _latestOnly, bookmark, _session);
             var result = await _mediator.Send(command);
             files.AddRange(result.Files);
             bookmark = result.Bookmark;
@@ -155,13 +154,6 @@ internal class SearchFilesRequestBuilder :
         _searchConditions.Add(searchCondition);
         _searchConditionPropertyType = SearchPropertyType.SingleProperty;
     }
-
-    private static IDictionary<string, string> GetSortCondition(long propertyId, bool sortAscending)
-        => new Dictionary<string, string>
-            {
-                ["PropDefId"] = propertyId.ToString(),
-                ["SortAsc"] = sortAscending.ToString().ToLower(),
-            };
 
     private ISearchFilesBooleanProperty SetBooleanValue(bool value, SearchOperator @operator)
     {
