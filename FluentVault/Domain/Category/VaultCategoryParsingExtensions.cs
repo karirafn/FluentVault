@@ -4,7 +4,7 @@ using FluentVault.Common.Extensions;
 
 namespace FluentVault.Domain.Category;
 
-internal static class CategoryParsingExtensions
+internal static class VaultCategoryParsingExtensions
 {
     internal static IEnumerable<VaultCategory> ParseCategories(this XDocument document)
         => document.ParseAllElements("Cat", ParseCategory);

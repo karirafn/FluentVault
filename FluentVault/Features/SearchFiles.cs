@@ -17,7 +17,6 @@ internal record SearchFilesCommand(
     string Bookmark,
     VaultSessionCredentials Session) : IRequest<VaultFileSearchResult>;
 
-
 internal class SearchFilesHandler : IRequestHandler<SearchFilesCommand, VaultFileSearchResult>
 {
     private const string Operation = "FindFilesBySearchConditions";

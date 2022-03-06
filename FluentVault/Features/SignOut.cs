@@ -6,7 +6,7 @@ using MediatR;
 
 namespace FluentVault.Features;
 
-public record SignOutCommand() : IRequest;
+internal record SignOutCommand() : IRequest;
 
 internal class SignOutHandler : IRequestHandler<SignOutCommand>
 {
