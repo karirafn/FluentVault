@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace FluentVault.Common.Extensions;
+namespace FluentVault.Extensions;
 
 internal static class StringBuilderExtensions
 {

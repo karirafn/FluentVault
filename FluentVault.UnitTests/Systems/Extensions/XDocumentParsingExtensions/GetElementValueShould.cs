@@ -3,7 +3,7 @@ using System.Xml.Linq;
 
 using FluentAssertions;
 
-using FluentVault.Common.Extensions;
+using FluentVault.Extensions;
 
 using Xunit;
 

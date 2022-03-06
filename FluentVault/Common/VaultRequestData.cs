@@ -2,7 +2,7 @@
 
 using FluentValidation;
 
-using FluentVault.Common.Extensions;
+using FluentVault.Extensions;
 
 namespace FluentVault.Common;
 

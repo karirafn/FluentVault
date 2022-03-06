@@ -2,7 +2,7 @@
 using System.Net.Http.Headers;
 using System.Xml.Linq;
 
-using FluentVault.Common.Extensions;
+using FluentVault.Extensions;
 
 namespace FluentVault.Common;
 

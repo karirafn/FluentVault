@@ -1,7 +1,7 @@
 ﻿using System.Xml.Linq;
 
 using FluentVault.Common;
-using FluentVault.Common.Extensions;
+using FluentVault.Extensions;
 using FluentVault.Requests.Search.Files;
 
 using MediatR;

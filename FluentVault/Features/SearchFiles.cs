@@ -1,8 +1,8 @@
 ﻿using System.Xml.Linq;
 
 using FluentVault.Common;
-using FluentVault.Common.Extensions;
 using FluentVault.Domain.Search;
+using FluentVault.Extensions;
 
 using MediatR;
 
