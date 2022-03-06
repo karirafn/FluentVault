@@ -1,7 +1,5 @@
 ﻿using System.Xml.Linq;
 
-using FluentVault.Domain;
-using FluentVault.Domain.Property;
 using FluentVault.Domain.SOAP;
 
 using MediatR;
@@ -23,7 +21,7 @@ internal class GetPropertyDefinitionsHandler : IRequestHandler<GetPropertyDefini
     public async Task<IEnumerable<VaultPropertyDefinition>> Handle(GetPropertyDefinitionsQuery request, CancellationToken cancellationToken)
     {
         XDocument response = await _soapRequestService.SendAsync(Operation, _session);
-        IEnumerable<VaultPropertyDefinition> properties = response.ParseProperties();
+        IEnumerable<VaultPropertyDefinition> properties = VaultPropertyDefinition.ParseAll(response);
 
         return properties;
     }
