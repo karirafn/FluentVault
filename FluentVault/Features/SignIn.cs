@@ -22,8 +22,7 @@ internal class SignInHandler : IRequestHandler<SignInCommand, VaultSessionCreden
 
     public async Task<VaultSessionCredentials> Handle(SignInCommand command, CancellationToken cancellationToken)
     {
-        var validator = new VaultOptionsValidator();
-        var results = validator.Validate(command.VaultOptions, options => options.ThrowOnFailures());
+        new VaultOptionsValidator().ValidateAndThrow(command.VaultOptions);
 
         void contentBuilder(XElement content, XNamespace ns)
         {
