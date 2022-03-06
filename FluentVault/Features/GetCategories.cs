@@ -1,7 +1,5 @@
 ﻿using System.Xml.Linq;
 
-using FluentVault.Domain;
-using FluentVault.Domain.Category;
 using FluentVault.Domain.SOAP;
 
 using MediatR;
@@ -23,7 +21,7 @@ internal class GetCategoriesHandler : IRequestHandler<GetCategoriesQuery, IEnume
     public async Task<IEnumerable<VaultCategory>> Handle(GetCategoriesQuery query, CancellationToken cancellationToken)
     {
         XDocument response = await _soapRequestService.SendAsync(Operation, _session);
-        IEnumerable<VaultCategory> categories = response.ParseCategories();
+        IEnumerable<VaultCategory> categories = VaultCategory.ParseAll(response);
 
         return categories;
     }
