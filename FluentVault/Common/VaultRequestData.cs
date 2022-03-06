@@ -4,16 +4,16 @@ using FluentValidation;
 
 using FluentVault.Common.Extensions;
 
-namespace FluentVault.Domain.SOAP;
+namespace FluentVault.Common;
 
-internal class SoapRequestData
+internal class VaultRequestData
 {
     private readonly string _version;
     private readonly string _service;
     private readonly string _command;
     private readonly string _namespace;
 
-    internal SoapRequestData(string operation, string version, string service, string command, string @namespace)
+    internal VaultRequestData(string operation, string version, string service, string command, string @namespace)
     {
         (Operation, _version, _service, _command, _namespace) = (operation, version, service, command, @namespace);
         new SoapRequestDataValidator().ValidateAndThrow(this);
@@ -48,7 +48,7 @@ internal class SoapRequestData
             .Append("http://AutodeskDM/")
             .Append(_namespace);
 
-    private class SoapRequestDataValidator : AbstractValidator<SoapRequestData>
+    private class SoapRequestDataValidator : AbstractValidator<VaultRequestData>
     {
         public SoapRequestDataValidator()
         {

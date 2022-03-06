@@ -1,6 +1,6 @@
 ﻿
+using FluentVault.Common;
 using FluentVault.Domain;
-using FluentVault.Domain.SOAP;
 
 using MediatR;
 
@@ -12,10 +12,10 @@ internal class SignOutHandler : IRequestHandler<SignOutCommand>
 {
     private const string Operation = "SignOut";
 
-    private readonly ISoapRequestService _soapRequestService;
+    private readonly IVaultRequestService _soapRequestService;
     private readonly VaultSessionCredentials _session;
 
-    public SignOutHandler(ISoapRequestService soapRequestService, VaultSessionCredentials session)
+    public SignOutHandler(IVaultRequestService soapRequestService, VaultSessionCredentials session)
         => (_soapRequestService, _session) = (soapRequestService, session);
 
     public async Task<Unit> Handle(SignOutCommand request, CancellationToken cancellationToken)

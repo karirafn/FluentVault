@@ -1,5 +1,5 @@
 ﻿
-using FluentVault.Domain.SOAP;
+using FluentVault.Common;
 
 using MediatR;
 
@@ -18,6 +18,6 @@ public static class ConfigureServices
                     httpClient.BaseAddress = new Uri($@"http://{configuration.GetSection("Vault:Server").Value}/");
                 }).Services
             .AddMediatR(typeof(VaultClient).Assembly)
-            .AddSingleton<ISoapRequestService, SoapRequestService>()
+            .AddSingleton<IVaultRequestService, VaultRequestService>()
             .AddTransient<IVaultClient, VaultClient>();
 }

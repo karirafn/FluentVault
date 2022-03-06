@@ -4,17 +4,17 @@ using System.Xml.Linq;
 
 using FluentVault.Common.Extensions;
 
-namespace FluentVault.Domain.SOAP;
+namespace FluentVault.Common;
 
-internal class SoapRequestService : ISoapRequestService
+internal class VaultRequestService : IVaultRequestService
 {
     private readonly HttpClient _httpClient;
-    private readonly IDictionary<string, SoapRequestData> _data;
+    private readonly IDictionary<string, VaultRequestData> _data;
 
-    public SoapRequestService(IHttpClientFactory httpClientFactory)
+    public VaultRequestService(IHttpClientFactory httpClientFactory)
     {
         _httpClient = httpClientFactory.CreateClient("Vault");
-        _data = SoapRequestDataCollection.SoapRequestData.ToDictionary(x => x.Operation);
+        _data = VaultRequestDataCollection.SoapRequestData.ToDictionary(x => x.Operation);
     }
 
     public async Task<XDocument> SendAsync(string operation, VaultSessionCredentials session, Action<XElement, XNamespace>? contentBuilder = null)
@@ -27,7 +27,7 @@ internal class SoapRequestService : ISoapRequestService
 
         if (responseMessage.StatusCode != HttpStatusCode.OK)
             throw new HttpRequestException("Invalid HTTP response", null, responseMessage.StatusCode);
-        
+
         string responseContent = await responseMessage.Content.ReadAsStringAsync();
         XDocument document = XDocument.Parse(responseContent);
 

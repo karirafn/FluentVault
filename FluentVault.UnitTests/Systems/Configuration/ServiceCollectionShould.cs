@@ -3,8 +3,8 @@ using System.Net.Http;
 
 using FluentAssertions;
 
+using FluentVault.Common;
 using FluentVault.Configuration;
-using FluentVault.Domain.SOAP;
 
 using MediatR;
 
@@ -41,7 +41,7 @@ public class ServiceCollectionShould
 
     [Fact]
     public void ReturnSoapRequestService()
-        => _provider.GetRequiredService<ISoapRequestService>()
+        => _provider.GetRequiredService<IVaultRequestService>()
             .Should()
             .NotBeNull();
 

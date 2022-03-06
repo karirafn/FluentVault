@@ -1,6 +1,6 @@
 ﻿using System.Xml.Linq;
 
-using FluentVault.Domain.SOAP;
+using FluentVault.Common;
 
 using MediatR;
 
@@ -12,10 +12,10 @@ internal class GetCategoriesHandler : IRequestHandler<GetCategoriesQuery, IEnume
 {
     private const string Operation = "GetCategoryConfigurationsByBehaviorNames";
 
-    private readonly ISoapRequestService _soapRequestService;
+    private readonly IVaultRequestService _soapRequestService;
     private readonly VaultSessionCredentials _session;
 
-    public GetCategoriesHandler(ISoapRequestService soapRequestService, VaultSessionCredentials session)
+    public GetCategoriesHandler(IVaultRequestService soapRequestService, VaultSessionCredentials session)
         => (_soapRequestService, _session) = (soapRequestService, session);
 
     public async Task<IEnumerable<VaultCategory>> Handle(GetCategoriesQuery query, CancellationToken cancellationToken)

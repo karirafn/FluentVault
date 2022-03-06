@@ -1,8 +1,8 @@
-﻿namespace FluentVault.Domain.SOAP;
+﻿namespace FluentVault.Common;
 
-internal class SoapRequestDataCollection
+internal class VaultRequestDataCollection
 {
-    public static IEnumerable<SoapRequestData> SoapRequestData => new SoapRequestData[]
+    public static IEnumerable<VaultRequestData> SoapRequestData => new VaultRequestData[]
     {
         new(
           operation: "GetAllLifeCycleDefinitions",

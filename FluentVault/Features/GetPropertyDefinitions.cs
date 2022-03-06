@@ -1,6 +1,6 @@
 ﻿using System.Xml.Linq;
 
-using FluentVault.Domain.SOAP;
+using FluentVault.Common;
 
 using MediatR;
 
@@ -12,10 +12,10 @@ internal class GetPropertyDefinitionsHandler : IRequestHandler<GetPropertyDefini
 {
     private const string Operation = "GetPropertyDefinitionInfosByEntityClassId";
 
-    private readonly ISoapRequestService _soapRequestService;
+    private readonly IVaultRequestService _soapRequestService;
     private readonly VaultSessionCredentials _session;
 
-    public GetPropertyDefinitionsHandler(ISoapRequestService soapRequestService, VaultSessionCredentials session)
+    public GetPropertyDefinitionsHandler(IVaultRequestService soapRequestService, VaultSessionCredentials session)
         => (_soapRequestService, _session) = (soapRequestService, session);
 
     public async Task<IEnumerable<VaultPropertyDefinition>> Handle(GetPropertyDefinitionsQuery request, CancellationToken cancellationToken)

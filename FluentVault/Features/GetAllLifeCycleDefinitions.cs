@@ -1,6 +1,6 @@
 ﻿using System.Xml.Linq;
 
-using FluentVault.Domain.SOAP;
+using FluentVault.Common;
 
 using MediatR;
 
@@ -12,10 +12,10 @@ internal class GetAllLifeCycleDefinitionsHandler : IRequestHandler<GetAllLifeCyc
 {
     private const string Operation = "GetAllLifeCycleDefinitions";
 
-    private readonly ISoapRequestService _soapRequestService;
+    private readonly IVaultRequestService _soapRequestService;
     private readonly VaultSessionCredentials _session;
 
-    public GetAllLifeCycleDefinitionsHandler(ISoapRequestService soapRequestService, VaultSessionCredentials session)
+    public GetAllLifeCycleDefinitionsHandler(IVaultRequestService soapRequestService, VaultSessionCredentials session)
         => (_soapRequestService, _session) = (soapRequestService, session);
 
     public async Task<IEnumerable<VaultLifeCycle>> Handle(GetAllLifeCycleDefinitionsQuery query, CancellationToken cancellationToken)

@@ -1,8 +1,8 @@
 ﻿using System.Xml.Linq;
 
+using FluentVault.Common;
 using FluentVault.Common.Extensions;
 using FluentVault.Domain.Search;
-using FluentVault.Domain.SOAP;
 
 using MediatR;
 
@@ -20,9 +20,9 @@ internal class SearchFilesHandler : IRequestHandler<SearchFilesCommand, VaultFil
 {
     private const string Operation = "FindFilesBySearchConditions";
 
-    private readonly ISoapRequestService _soapRequestService;
+    private readonly IVaultRequestService _soapRequestService;
 
-    public SearchFilesHandler(ISoapRequestService soapRequestService)
+    public SearchFilesHandler(IVaultRequestService soapRequestService)
         => _soapRequestService = soapRequestService;
 
     public async Task<VaultFileSearchResult> Handle(SearchFilesCommand command, CancellationToken cancellationToken)

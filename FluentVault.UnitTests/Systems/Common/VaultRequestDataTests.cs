@@ -3,13 +3,13 @@ using FluentAssertions;
 
 using FluentValidation;
 
-using FluentVault.Domain.SOAP;
+using FluentVault.Common;
 
 using Xunit;
 
-namespace FluentVault.UnitTests.Systems.Domain;
+namespace FluentVault.UnitTests.Systems.Common;
 
-public class SoapRequestDataTests
+public class VaultRequestDataTests
 {
     private const string Name = "GetSomething";
     private const string Version = "v26";
@@ -17,7 +17,7 @@ public class SoapRequestDataTests
     private const string Command = "This.Is.A.Command";
     private const string Namespace = "Services/Something/1/1/2000";
 
-    private static readonly SoapRequestData _data = new(Name, Version, Service, Command, Namespace);
+    private static readonly VaultRequestData _data = new(Name, Version, Service, Command, Namespace);
 
     [Theory]
     [InlineData(Name)]
@@ -25,7 +25,7 @@ public class SoapRequestDataTests
     [InlineData("UpdateStuff")]
     [InlineData("SignAutograph")]
     public void ConstructorShould_Construct_WhenNameIsValid(string name)
-        => _ = new SoapRequestData(name, Version, Service, Command, Namespace);
+        => _ = new VaultRequestData(name, Version, Service, Command, Namespace);
 
     [Theory]
     [InlineData("")]
@@ -34,7 +34,7 @@ public class SoapRequestDataTests
     [InlineData("Get")]
     [InlineData("WatchSomething")]
     public void ConstructorShould_ThrowException_WhenNameIsInvalid(string name)
-        => Assert.Throws<ValidationException>(() => new SoapRequestData(name, Version, Service, Command, Namespace));
+        => Assert.Throws<ValidationException>(() => new VaultRequestData(name, Version, Service, Command, Namespace));
 
     [Theory]
     [InlineData(Version)]
@@ -42,7 +42,7 @@ public class SoapRequestDataTests
     [InlineData("Filestore/v26")]
     [InlineData("Filestore/v26_2")]
     public void ConstructorShould_Construct_WhenVersionIsValid(string version)
-        => _ = new SoapRequestData(Name, version, Service, Command, Namespace);
+        => _ = new VaultRequestData(Name, version, Service, Command, Namespace);
 
     [Theory]
     [InlineData("")]
@@ -53,13 +53,13 @@ public class SoapRequestDataTests
     [InlineData("Smilestore/v26")]
     [InlineData("Services/v26")]
     public void ConstructorShould_ThrowException_WhenVersionIsInvalid(string version)
-        => Assert.Throws<ValidationException>(() => new SoapRequestData(Name, version, Service, Command, Namespace));
+        => Assert.Throws<ValidationException>(() => new VaultRequestData(Name, version, Service, Command, Namespace));
 
     [Theory]
     [InlineData(Service)]
     [InlineData("SomeServiceExtensions")]
     public void ConstructorShould_Construct_WhenServiceIsValid(string service)
-        => _ = new SoapRequestData(Name, Version, service, Command, Namespace);
+        => _ = new VaultRequestData(Name, Version, service, Command, Namespace);
 
     [Theory]
     [InlineData("")]
@@ -67,13 +67,13 @@ public class SoapRequestDataTests
     [InlineData("ServiceExtensions")]
     [InlineData("SomeServiceSomething")]
     public void ConstructorShould_ThrowException_WhenServiceIsInvalid(string service)
-        => Assert.Throws<ValidationException>(() => new SoapRequestData(Name, Version, service, Command, Namespace));
+        => Assert.Throws<ValidationException>(() => new VaultRequestData(Name, Version, service, Command, Namespace));
 
     [Theory]
     [InlineData(Command)]
     [InlineData("")]
     public void ConstructorShould_Construct_WhenCommandIsValid(string command)
-        => _ = new SoapRequestData(Name, Version, Service, command, Namespace);
+        => _ = new VaultRequestData(Name, Version, Service, command, Namespace);
 
     [Theory]
     [InlineData("This")]
@@ -81,13 +81,13 @@ public class SoapRequestDataTests
     [InlineData("This.Is.A")]
     [InlineData("Command")]
     public void ConstructorShould_ThrowException_WhenCommandIsInvalid(string command)
-        => Assert.Throws<ValidationException>(() => new SoapRequestData(Name, Version, Service, command, Namespace));
+        => Assert.Throws<ValidationException>(() => new VaultRequestData(Name, Version, Service, command, Namespace));
 
     [Theory]
     [InlineData(Namespace)]
     [InlineData("Filestore/Auth/1/7/2020")]
     public void ConstructorShould_Construct_WhenNamespaceIsValid(string @namespace)
-        => _ = new SoapRequestData(Name, Version, Service, Command, @namespace);
+        => _ = new VaultRequestData(Name, Version, Service, Command, @namespace);
 
     [Theory]
     [InlineData("")]
@@ -97,7 +97,7 @@ public class SoapRequestDataTests
     [InlineData("Something/Category/1/7/2020")]
     [InlineData("Services/Something/1/17/500/")]
     public void ConstructorShould_ThrowException_WhenNamespaceIsInvalid(string @namespace)
-        => Assert.Throws<ValidationException>(() => new SoapRequestData(Name, Version, Service, Command, @namespace));
+        => Assert.Throws<ValidationException>(() => new VaultRequestData(Name, Version, Service, Command, @namespace));
 
     [Fact]
     public void NamespaceShould_ReturnNamespace_WhenDataIsValid()
@@ -129,7 +129,7 @@ public class SoapRequestDataTests
     public void UriShould_ReturnUriWithoutCommand_WhenCommandIsEmpty()
     {
         // Arrange
-        SoapRequestData data = new(Name, Version, Service, string.Empty, Namespace);
+        VaultRequestData data = new(Name, Version, Service, string.Empty, Namespace);
         string expectation = @"AutodeskDM/Services/v26/SomeService.svc";
 
         // Act

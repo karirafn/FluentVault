@@ -2,9 +2,9 @@
 
 using FluentValidation;
 
+using FluentVault.Common;
 using FluentVault.Common.Extensions;
 using FluentVault.Domain;
-using FluentVault.Domain.SOAP;
 
 using MediatR;
 
@@ -15,9 +15,9 @@ internal class SignInHandler : IRequestHandler<SignInCommand, VaultSessionCreden
 {
     private const string Operation = "SignIn";
 
-    private readonly ISoapRequestService _soapRequestService;
+    private readonly IVaultRequestService _soapRequestService;
 
-    public SignInHandler(ISoapRequestService soapRequestService)
+    public SignInHandler(IVaultRequestService soapRequestService)
         => _soapRequestService = soapRequestService;
 
     public async Task<VaultSessionCredentials> Handle(SignInCommand command, CancellationToken cancellationToken)

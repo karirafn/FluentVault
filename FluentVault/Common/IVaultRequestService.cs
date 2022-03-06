@@ -1,8 +1,8 @@
 ﻿using System.Xml.Linq;
 
-namespace FluentVault.Domain.SOAP;
+namespace FluentVault.Common;
 
-internal interface ISoapRequestService
+internal interface IVaultRequestService
 {
     Task<XDocument> SendAsync(string requestName, VaultSessionCredentials session, Action<XElement, XNamespace>? contentBuilder = null);
 }

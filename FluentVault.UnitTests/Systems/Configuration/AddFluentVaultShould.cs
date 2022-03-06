@@ -3,8 +3,8 @@ using System.Net.Http;
 
 using FluentAssertions;
 
+using FluentVault.Common;
 using FluentVault.Configuration;
-using FluentVault.Domain.SOAP;
 
 using MediatR;
 
@@ -38,7 +38,7 @@ public class AddFluentVaultShould
 
     [Fact]
     public void RegisterSoapRequestService()
-        => _services.Should().Contain(x => x.ServiceType == typeof(ISoapRequestService));
+        => _services.Should().Contain(x => x.ServiceType == typeof(IVaultRequestService));
 
     [Fact]
     public void RegisterHttpClientFactory()

@@ -1,7 +1,7 @@
 ﻿using System.Xml.Linq;
 
+using FluentVault.Common;
 using FluentVault.Common.Extensions;
-using FluentVault.Domain.SOAP;
 using FluentVault.Requests.Search.Files;
 
 using MediatR;
@@ -22,10 +22,10 @@ internal class UpdateFilePropertyDefinitionsHandler : IRequestHandler<UpdateFile
     private const string Operation = "UpdateFilePropertyDefinitions";
 
     private readonly IMediator _mediator;
-    private readonly ISoapRequestService _soapRequestService;
+    private readonly IVaultRequestService _soapRequestService;
     private IEnumerable<VaultPropertyDefinition> _allProperties = new List<VaultPropertyDefinition>();
 
-    public UpdateFilePropertyDefinitionsHandler(IMediator mediator, ISoapRequestService soapRequestService)
+    public UpdateFilePropertyDefinitionsHandler(IMediator mediator, IVaultRequestService soapRequestService)
         => (_mediator, _soapRequestService) = (mediator, soapRequestService);
 
     public async Task<IEnumerable<VaultFile>> Handle(UpdateFilePropertyDefinitionsCommand command, CancellationToken cancellationToken)

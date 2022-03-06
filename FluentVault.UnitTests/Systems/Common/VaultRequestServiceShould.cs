@@ -8,17 +8,17 @@ using System.Threading.Tasks;
 
 using AutoFixture;
 
+using FluentVault.Common;
 using FluentVault.Domain;
-using FluentVault.Domain.SOAP;
 
 using Moq;
 using Moq.Protected;
 
 using Xunit;
 
-namespace FluentVault.UnitTests.Systems.Domain;
+namespace FluentVault.UnitTests.Systems.Common;
 
-public class SoapRequestServiceShould
+public class VaultRequestServiceShould
 {
     private static readonly Fixture _fixture = new();
     private readonly Mock<IHttpClientFactory> _httpClientFactory = new();
@@ -28,7 +28,7 @@ public class SoapRequestServiceShould
     {
         // Arrange
         string requestName = "This request name is definitely invalid.";
-        SoapRequestService sut = new(_httpClientFactory.Object);
+        VaultRequestService sut = new(_httpClientFactory.Object);
 
         // Assert
         await Assert.ThrowsAsync<KeyNotFoundException>(() => sut.SendAsync(requestName, It.IsAny<VaultSessionCredentials>()));
@@ -38,7 +38,7 @@ public class SoapRequestServiceShould
     public async Task ThrowHttpResponseException_WhenResponseStatusCodeIsNotOk()
     {
         // Arrange
-        string operation = SoapRequestDataCollection.SoapRequestData.First().Operation;
+        string operation = VaultRequestDataCollection.SoapRequestData.First().Operation;
         VaultSessionCredentials session = _fixture.Create<VaultSessionCredentials>();
         HttpResponseMessage response = new(HttpStatusCode.NotFound);
         Mock<HttpMessageHandler> handler = new();
@@ -51,7 +51,7 @@ public class SoapRequestServiceShould
         HttpClient httpClient = new(handler.Object) { BaseAddress = new Uri("http://server") };
         _httpClientFactory.Setup(x => x.CreateClient(It.IsAny<string>()))
             .Returns(httpClient);
-        SoapRequestService sut = new(_httpClientFactory.Object);
+        VaultRequestService sut = new(_httpClientFactory.Object);
 
         // Act
 

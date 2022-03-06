@@ -1,7 +1,7 @@
 ﻿using System.Xml.Linq;
 
+using FluentVault.Common;
 using FluentVault.Common.Extensions;
-using FluentVault.Domain.SOAP;
 using FluentVault.Requests.Search.Files;
 
 using MediatR;
@@ -21,9 +21,9 @@ internal class UpdateFileLifeCycleStateHandler : IRequestHandler<UpdateFileLifeC
     private const string Operation = "UpdateFileLifeCycleStates";
 
     private readonly IMediator _mediator;
-    private readonly ISoapRequestService _soapRequestService;
+    private readonly IVaultRequestService _soapRequestService;
 
-    public UpdateFileLifeCycleStateHandler(IMediator mediator, ISoapRequestService soapRequestService)
+    public UpdateFileLifeCycleStateHandler(IMediator mediator, IVaultRequestService soapRequestService)
         => (_mediator, _soapRequestService) = (mediator, soapRequestService);
 
     public async Task<VaultFile> Handle(UpdateFileLifeCycleStateCommand command, CancellationToken cancellationToken)
