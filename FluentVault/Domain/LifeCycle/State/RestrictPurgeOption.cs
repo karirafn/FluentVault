@@ -2,7 +2,7 @@
 
 namespace FluentVault;
 
-public class RestrictPurgeOption : SmartEnum<RestrictPurgeOption>
+public sealed class RestrictPurgeOption : SmartEnum<RestrictPurgeOption>
 {
     public static readonly RestrictPurgeOption All = new(nameof(All), 1);
     public static readonly RestrictPurgeOption FirstAndLast = new(nameof(FirstAndLast), 2);
