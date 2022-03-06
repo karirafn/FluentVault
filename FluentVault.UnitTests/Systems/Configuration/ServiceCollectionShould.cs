@@ -24,11 +24,11 @@ public class ServiceCollectionShould
     {
         IDictionary<string, string> settings = new Dictionary<string, string>
         {
-            ["Vault:Server"] = Server,
-            ["Vault:Database"] = "database",
-            ["Vault:Username"] = "username",
-            ["Vault:Password"] = "password",
-            ["Vault:AutoLogin"] = "false",
+            ["VaultOptions:Server"] = Server,
+            ["VaultOptions:Database"] = "database",
+            ["VaultOptions:Username"] = "username",
+            ["VaultOptions:Password"] = "password",
+            ["VaultOptions:AutoLogin"] = "false",
         };
         IConfiguration configuration = new ConfigurationBuilder()
             .AddInMemoryCollection(settings)
