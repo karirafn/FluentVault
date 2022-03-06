@@ -14,7 +14,7 @@ internal static partial class VaultResponseFixtures
         fixture.Register(() => AllowedMappingDirection.Read);
         fixture.Register(() => Classification.Standard);
         fixture.Register(() => ContentSourceDefinitionType.File);
-        fixture.Register(() => DataType.Text);
+        fixture.Register(() => DataType.String);
         fixture.Register(() => EntityClass.File);
         fixture.Register(() => MappingDirection.Write);
         fixture.Register(() => MappingType.Constant);
