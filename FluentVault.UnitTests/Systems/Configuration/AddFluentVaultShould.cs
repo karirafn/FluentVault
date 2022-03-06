@@ -20,11 +20,11 @@ public class AddFluentVaultShould
     private static readonly ServiceCollection _services = new();
     private static readonly IDictionary<string, string> _settings = new Dictionary<string, string>
     {
-        ["Vault:Server"] = "server",
-        ["Vault:Database"] = "database",
-        ["Vault:Username"] = "username",
-        ["Vault:Password"] = "password",
-        ["Vault:AutoLogin"] = "false",
+        ["VaultOptions:Server"] = "server",
+        ["VaultOptions:Database"] = "database",
+        ["VaultOptions:Username"] = "username",
+        ["VaultOptions:Password"] = "password",
+        ["VaultOptions:AutoLogin"] = "false",
     };
 
     public AddFluentVaultShould()
