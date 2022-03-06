@@ -2,24 +2,23 @@
 
 using FluentAssertions;
 
-using FluentVault.Domain.Lifecycle;
 using FluentVault.UnitTests.Fixtures;
 
 using Xunit;
 
-namespace FluentVault.UnitTests.Systems.Extensions;
+namespace FluentVault.UnitTests.Systems.Doman;
 
-public class VaultLifecycleParsingExtensionsShould
+public class VaultLifecycleShould
 {
     [Fact]
-    public void ReturnValidResult_WhenParsingValidString()
+    public void ParseLifeCyclesFromXDocument()
     {
         // Arrange
         var (body, expectation) = VaultResponseFixtures.GetVaultLifecycleFixtures(5);
         var document = XDocument.Parse(body);
 
         // Act
-        var result = document.ParseLifeCycles();
+        var result = VaultLifeCycle.ParseAll(document);
 
         // Assert
         result.Should().BeEquivalentTo(expectation);

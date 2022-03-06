@@ -1,7 +1,5 @@
 ﻿using System.Xml.Linq;
 
-using FluentVault.Domain;
-using FluentVault.Domain.Lifecycle;
 using FluentVault.Domain.SOAP;
 
 using MediatR;
@@ -23,7 +21,7 @@ internal class GetAllLifeCycleDefinitionsHandler : IRequestHandler<GetAllLifeCyc
     public async Task<IEnumerable<VaultLifeCycle>> Handle(GetAllLifeCycleDefinitionsQuery query, CancellationToken cancellationToken)
     {
         XDocument response = await _soapRequestService.SendAsync(Operation, _session);
-        IEnumerable<VaultLifeCycle> lifeCycles = response.ParseLifeCycles();
+        IEnumerable<VaultLifeCycle> lifeCycles = VaultLifeCycle.ParseAll(response);
 
         return lifeCycles;
     }
