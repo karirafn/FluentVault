@@ -9,7 +9,6 @@ using System.Threading.Tasks;
 using AutoFixture;
 
 using FluentVault.Common;
-using FluentVault.Domain;
 
 using Moq;
 using Moq.Protected;
@@ -52,8 +51,6 @@ public class VaultRequestServiceShould
         _httpClientFactory.Setup(x => x.CreateClient(It.IsAny<string>()))
             .Returns(httpClient);
         VaultRequestService sut = new(_httpClientFactory.Object);
-
-        // Act
 
         // Assert
         await Assert.ThrowsAsync<HttpRequestException>(() => sut.SendAsync(operation, session));
