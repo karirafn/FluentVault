@@ -1,8 +1,6 @@
 ﻿using System.Xml.Linq;
 
 using FluentVault.Common.Extensions;
-using FluentVault.Domain;
-using FluentVault.Domain.Files;
 using FluentVault.Domain.SOAP;
 using FluentVault.Requests.Search.Files;
 
@@ -50,7 +48,7 @@ internal class UpdateFilePropertyDefinitionsHandler : IRequestHandler<UpdateFile
         };
 
         XDocument response = await _soapRequestService.SendAsync(Operation, command.Session, contentBuilder);
-        var files = response.ParseAllVaultFiles();
+        var files = VaultFile.ParseAll(response);
 
         return files;
     }

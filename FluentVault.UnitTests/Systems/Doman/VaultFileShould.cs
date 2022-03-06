@@ -5,24 +5,23 @@ using System.Xml.Linq;
 using FluentAssertions;
 using FluentAssertions.Extensions;
 
-using FluentVault.Domain.Files;
 using FluentVault.UnitTests.Fixtures;
 
 using Xunit;
 
 namespace FluentVault.UnitTests.Systems.Extensions;
 
-public class VaultFileParsingExtensionsShould
+public class VaultFileShould
 {
     [Fact]
-    public void ReturnFile_WhenParsingValidString()
+    public void ParseSingleFileFromXDocument()
     {
         // Arrange
         var (body, expectation) = VaultResponseFixtures.GetVaultFileFixtures(1);
         var document = XDocument.Parse(body);
 
         // Act
-        var result = document.ParseVaultFile();
+        var result = VaultFile.ParseSingle(document);
 
         // Assert
         result.Should().BeEquivalentTo(expectation.Single(), options => options
@@ -31,7 +30,7 @@ public class VaultFileParsingExtensionsShould
     }
 
     [Fact]
-    public void ReturnAllFiles_WhenParsingValidString()
+    public void ParseAllFilesFromXDocument()
     {
         // Arrange
         int fileCount = 3;
@@ -39,7 +38,7 @@ public class VaultFileParsingExtensionsShould
         var document = XDocument.Parse(body);
 
         // Act
-        var result = document.ParseAllVaultFiles();
+        var result = VaultFile.ParseAll(document);
 
         // Assert
         result.Should().HaveCount(fileCount);
