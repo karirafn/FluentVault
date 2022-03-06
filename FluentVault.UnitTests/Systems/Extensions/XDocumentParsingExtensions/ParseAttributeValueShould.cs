@@ -38,6 +38,6 @@ public class ParseAttributeValueShould
         // Act
 
         // Assert
-        Assert.Throws<FormatException>(() => element.ParseAttributeValue(name, x => VaultFileStatus.FromName(x)));
+        Assert.Throws<FormatException>(() => element.ParseAttributeValue(name, int.Parse));
     }
 }
