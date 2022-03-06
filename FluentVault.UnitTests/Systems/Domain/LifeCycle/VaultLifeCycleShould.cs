@@ -6,19 +6,19 @@ using FluentVault.UnitTests.Fixtures;
 
 using Xunit;
 
-namespace FluentVault.UnitTests.Systems.Doman;
+namespace FluentVault.UnitTests.Systems.Domain.LifeCycle;
 
-public class VaultCategoryShould
+public class VaultLifecycleShould
 {
     [Fact]
-    public void ParseCategoriesFromXDocument()
+    public void ParseLifeCyclesFromXDocument()
     {
         // Arrange
-        var (body, expectation) = VaultResponseFixtures.GetVaultCategoryFixtures(5);
+        var (body, expectation) = VaultResponseFixtures.GetVaultLifecycleFixtures(5);
         var document = XDocument.Parse(body);
 
         // Act
-        var result = VaultCategory.ParseAll(document);
+        var result = VaultLifeCycle.ParseAll(document);
 
         // Assert
         result.Should().BeEquivalentTo(expectation);

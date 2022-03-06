@@ -6,7 +6,7 @@ using FluentVault.UnitTests.Fixtures;
 
 using Xunit;
 
-namespace FluentVault.UnitTests.Systems.Extensions;
+namespace FluentVault.UnitTests.Systems.Domain.Property;
 
 public class VaultPropertyDefinitionShould
 {
