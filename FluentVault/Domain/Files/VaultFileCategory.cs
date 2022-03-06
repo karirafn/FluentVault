@@ -1,3 +1,12 @@
-﻿namespace FluentVault;
+﻿using System.Xml.Linq;
 
-public record VaultFileCategory(long Id, string Name);
+using FluentVault.Common.Extensions;
+
+namespace FluentVault;
+
+public record VaultFileCategory(long Id, string Name)
+{
+    internal static VaultFileCategory Parse(XElement element)
+        => new(element.ParseAttributeValue("CatId", long.Parse),
+            element.GetAttributeValue("CatName"));
+}

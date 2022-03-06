@@ -33,7 +33,7 @@ public record VaultFile(
     bool IsControlledByChangeOrder,
     string DesignVisualAttachmentStatus,
     VaultFileRevision Revision,
-    VaultFileLifecycle Lifecycle,
+    VaultFileLifeCycle Lifecycle,
     VaultFileCategory Category)
 {
     private const string FileElementName = "File";
@@ -72,27 +72,7 @@ public record VaultFile(
             element.ParseAttributeValue("IsOnSite", bool.Parse),
             element.ParseAttributeValue("ControlledByChangeOrder", bool.Parse),
             element.GetAttributeValue("DesignVisAttmtStatus"),
-            element.ParseElement("FileRev", ParseRevision),
-            element.ParseElement("FileLfCyc", ParseLifecycle),
-            element.ParseElement("Cat", ParseCategory));
-
-    private static VaultFileRevision ParseRevision(XElement element)
-        => new(element.ParseAttributeValue("RevId", long.Parse),
-            element.ParseAttributeValue("RevDefId", long.Parse),
-            element.GetAttributeValue("Label"),
-            element.ParseAttributeValue("MaxConsumeFileId", long.Parse),
-            element.ParseAttributeValue("MaxFileId", long.Parse),
-            element.ParseAttributeValue("MaxRevId", long.Parse),
-            element.ParseAttributeValue("Order", long.Parse));
-
-    private static VaultFileLifecycle ParseLifecycle(XElement element)
-        => new(element.ParseAttributeValue("LfCycStateId", long.Parse),
-            element.ParseAttributeValue("LfCycDefId", long.Parse),
-            element.GetAttributeValue("LfCycStateName"),
-            element.ParseAttributeValue("Consume", bool.Parse),
-            element.ParseAttributeValue("Obsolete", bool.Parse));
-
-    private static VaultFileCategory ParseCategory(XElement element)
-        => new(element.ParseAttributeValue("CatId", long.Parse),
-            element.GetAttributeValue("CatName"));
+            element.ParseElement("FileRev", VaultFileRevision.Parse),
+            element.ParseElement("FileLfCyc", VaultFileLifeCycle.Parse),
+            element.ParseElement("Cat", VaultFileCategory.Parse));
 }
