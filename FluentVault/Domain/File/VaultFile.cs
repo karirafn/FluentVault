@@ -5,7 +5,7 @@ using FluentVault.Extensions;
 namespace FluentVault;
 
 public record VaultFile(
-    FileId Id,
+    VaultFileId Id,
     string Filename,
     MasterId MasterId,
     string VersionName,
@@ -20,7 +20,7 @@ public record VaultFile(
     long CheckSum,
     long FileSize,
     bool IsCheckedOut,
-    FolderId FolderId,
+    VaultFolderId FolderId,
     string CheckedOutPath,
     string CheckedOutMachine,
     long CheckedOutUserId,
@@ -45,7 +45,7 @@ public record VaultFile(
         => document.ParseAllElements(FileElementName, ParseVaultFile);
 
     private static VaultFile ParseVaultFile(XElement element)
-        => new(FileId.ParseFromAttribute(element, "Id"),
+        => new(VaultFileId.ParseFromAttribute(element, "Id"),
             element.GetAttributeValue("Name"),
             MasterId.ParseFromAttribute(element, "MasterId"),
             element.GetAttributeValue("VerName"),
@@ -60,7 +60,7 @@ public record VaultFile(
             element.ParseAttributeValue("Cksum", long.Parse),
             element.ParseAttributeValue("FileSize", long.Parse),
             element.ParseAttributeValue("CheckedOut", bool.Parse),
-            FolderId.ParseFromAttribute(element, "FolderId"),
+            VaultFolderId.ParseFromAttribute(element, "FolderId"),
             element.GetAttributeValue("CkOutSpec"),
             element.GetAttributeValue("CkOutMach"),
             element.ParseAttributeValue("CkOutUserId", long.Parse),

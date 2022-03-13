@@ -11,7 +11,7 @@ namespace FluentVault.Features;
 internal record UpdateFileLifeCycleStateCommand(
     IEnumerable<string> FileNames,
     IEnumerable<MasterId> MasterIds,
-    IEnumerable<LifeCycleStateId> StateIds,
+    IEnumerable<VaultLifeCycleStateId> StateIds,
     string Comment,
     VaultSessionCredentials Session) : IRequest<VaultFile>;
 

@@ -2,5 +2,5 @@
 
 public interface IWithFiles
 {
-    public IWithComment ToStateWithId(LifeCycleStateId stateId);
+    public IWithComment ToStateWithId(VaultLifeCycleStateId stateId);
 }

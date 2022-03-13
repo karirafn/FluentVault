@@ -5,12 +5,12 @@ using FluentVault.Extensions;
 namespace FluentVault;
 
 public record VaultLifeCycleState(
-    LifeCycleStateId Id,
+    VaultLifeCycleStateId Id,
     string Name,
     string DisplayName,
     string Description,
     bool IsDefault,
-    LifeCycleDefinitionId LifecycleId,
+    VaultLifeCycleDefinitionId LifecycleId,
     bool HasStateBasedSecurity,
     bool IsReleasedState,
     bool IsObsoleteState,
@@ -21,12 +21,12 @@ public record VaultLifeCycleState(
     IEnumerable<string> Comments)
 {
     internal static VaultLifeCycleState Parse(XElement element)
-        => new(LifeCycleStateId.ParseFromAttribute(element, "ID"),
+        => new(VaultLifeCycleStateId.ParseFromAttribute(element, "ID"),
             element.GetAttributeValue("Name"),
             element.GetAttributeValue("DispName"),
             element.GetAttributeValue("Descr"),
             element.ParseAttributeValue("IsDflt", bool.Parse),
-            LifeCycleDefinitionId.ParseFromAttribute(element, "LfCycDefId"),
+            VaultLifeCycleDefinitionId.ParseFromAttribute(element, "LfCycDefId"),
             element.ParseAttributeValue("StateBasedSec", bool.Parse),
             element.ParseAttributeValue("ReleasedState", bool.Parse),
             element.ParseAttributeValue("ObsoleteState", bool.Parse),

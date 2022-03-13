@@ -6,9 +6,9 @@ using MediatR;
 
 namespace FluentVault.Features;
 
-internal record GetPropertyDefinitionInfosQuery(VaultSessionCredentials Session) : IRequest<IEnumerable<VaultPropertyDefinitionInfo>>;
+internal record GetPropertyDefinitionInfosQuery(VaultSessionCredentials Session) : IRequest<IEnumerable<VaultProperty>>;
 
-internal class GetPropertyDefinitionInfosHandler : IRequestHandler<GetPropertyDefinitionInfosQuery, IEnumerable<VaultPropertyDefinitionInfo>>
+internal class GetPropertyDefinitionInfosHandler : IRequestHandler<GetPropertyDefinitionInfosQuery, IEnumerable<VaultProperty>>
 {
     private const string Operation = "GetPropertyDefinitionInfosByEntityClassId";
 
@@ -18,10 +18,10 @@ internal class GetPropertyDefinitionInfosHandler : IRequestHandler<GetPropertyDe
     public GetPropertyDefinitionInfosHandler(IVaultRequestService soapRequestService, VaultSessionCredentials session)
         => (_soapRequestService, _session) = (soapRequestService, session);
 
-    public async Task<IEnumerable<VaultPropertyDefinitionInfo>> Handle(GetPropertyDefinitionInfosQuery request, CancellationToken cancellationToken)
+    public async Task<IEnumerable<VaultProperty>> Handle(GetPropertyDefinitionInfosQuery request, CancellationToken cancellationToken)
     {
         XDocument response = await _soapRequestService.SendAsync(Operation, _session);
-        IEnumerable<VaultPropertyDefinitionInfo> properties = VaultPropertyDefinitionInfo.ParseAll(response);
+        IEnumerable<VaultProperty> properties = VaultProperty.ParseAll(response);
 
         return properties;
     }

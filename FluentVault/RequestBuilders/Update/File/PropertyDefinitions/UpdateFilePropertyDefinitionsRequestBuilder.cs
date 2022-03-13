@@ -11,8 +11,8 @@ internal class UpdateFilePropertyDefinitionsRequestBuilder : IUpdateFileProperty
     private readonly VaultSessionCredentials _session;
 
     private readonly List<MasterId> _masterIds = new();
-    private readonly List<PropertyId> _addedPropertyIds = new();
-    private readonly List<PropertyId> _removedPropertyIds = new();
+    private readonly List<VaultPropertyId> _addedPropertyIds = new();
+    private readonly List<VaultPropertyId> _removedPropertyIds = new();
     private readonly List<string> _filenames = new();
     private readonly List<string> _addedPropertyNames = new();
     private readonly List<string> _removedPropertyNames = new();
@@ -42,8 +42,8 @@ internal class UpdateFilePropertyDefinitionsRequestBuilder : IUpdateFileProperty
         return this;
     }
 
-    public IUpdateFilePropertDefinitionsAction AddPropertyById(PropertyId id) => AddPropertiesByIds(new[] { id });
-    public IUpdateFilePropertDefinitionsAction AddPropertiesByIds(IEnumerable<PropertyId> ids)
+    public IUpdateFilePropertDefinitionsAction AddPropertyById(VaultPropertyId id) => AddPropertiesByIds(new[] { id });
+    public IUpdateFilePropertDefinitionsAction AddPropertiesByIds(IEnumerable<VaultPropertyId> ids)
     {
         _addedPropertyIds.AddRange(ids);
         return this;
@@ -56,8 +56,8 @@ internal class UpdateFilePropertyDefinitionsRequestBuilder : IUpdateFileProperty
         return this;
     }
 
-    public IUpdateFilePropertDefinitionsAction RemovePropertyById(PropertyId id) => RemovePropertiesByIds(new[] { id });
-    public IUpdateFilePropertDefinitionsAction RemovePropertiesByIds(IEnumerable<PropertyId> ids)
+    public IUpdateFilePropertDefinitionsAction RemovePropertyById(VaultPropertyId id) => RemovePropertiesByIds(new[] { id });
+    public IUpdateFilePropertDefinitionsAction RemovePropertiesByIds(IEnumerable<VaultPropertyId> ids)
     {
         _removedPropertyIds.AddRange(ids);
         return this;

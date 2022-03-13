@@ -5,9 +5,9 @@ using FluentVault.Extensions;
 namespace FluentVault;
 
 public record VaultLifeCycleTransition(
-    LifeCycleTransitionId Id,
-    LifeCycleStateId FromId,
-    LifeCycleStateId ToId,
+    VaultLifeCycleTransitionId Id,
+    VaultLifeCycleStateId FromId,
+    VaultLifeCycleStateId ToId,
     BumpRevisionState BumpRevision,
     SynchronizePropertiesState SynchronizeProperties,
     EnforceChildState EnforceChildState,
@@ -19,9 +19,9 @@ public record VaultLifeCycleTransition(
     bool UpdateItems)
 {
     internal static VaultLifeCycleTransition Parse(XElement element)
-        => new(LifeCycleTransitionId.ParseFromAttribute(element, "Id"),
-            LifeCycleStateId.ParseFromAttribute(element, "FromId"),
-            LifeCycleStateId.ParseFromAttribute(element, "ToId"),
+        => new(VaultLifeCycleTransitionId.ParseFromAttribute(element, "Id"),
+            VaultLifeCycleStateId.ParseFromAttribute(element, "FromId"),
+            VaultLifeCycleStateId.ParseFromAttribute(element, "ToId"),
             element.ParseAttributeValue("Bump", x => BumpRevisionState.FromName(x)),
             element.ParseAttributeValue("SyncPropOption", x => SynchronizePropertiesState.FromName(x)),
             element.ParseAttributeValue("CldState", x => EnforceChildState.FromName(x)),

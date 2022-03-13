@@ -19,6 +19,6 @@ internal class GetRequestBuilder : IGetRequestBuilder
     public async Task<IEnumerable<VaultLifeCycleDefinition>> LifeCycleDefinitions()
         => await _mediator.Send(new GetAllLifeCycleDefinitionsQuery(_session));
 
-    public async Task<IEnumerable<VaultPropertyDefinitionInfo>> PropertyDefinitionInfos()
+    public async Task<IEnumerable<VaultProperty>> PropertyDefinitionInfos()
         => await _mediator.Send(new GetPropertyDefinitionInfosQuery(_session));
 }

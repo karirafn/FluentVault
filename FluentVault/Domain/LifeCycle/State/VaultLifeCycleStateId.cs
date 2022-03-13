@@ -5,11 +5,11 @@ using FluentVault.Common;
 using FluentVault.Extensions;
 
 namespace FluentVault;
-public class LifeCycleStateId : GenericId<long>
+public class VaultLifeCycleStateId : GenericId<long>
 {
-    public LifeCycleStateId(long value) : base(value) { }
+    public VaultLifeCycleStateId(long value) : base(value) { }
 
-    public static LifeCycleStateId ParseFromAttribute(XElement element, string key)
+    public static VaultLifeCycleStateId ParseFromAttribute(XElement element, string key)
         => new(long.TryParse(element.GetAttributeValue(key), out long value)
             ? value
             : throw new KeyNotFoundException("Failed to parse life cycle state ID."));

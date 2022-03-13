@@ -5,7 +5,7 @@ using FluentVault.Extensions;
 namespace FluentVault;
 
 public record VaultCategoryConfiguration(
-    CategoryId Id,
+    VaultCategoryId Id,
     string Name,
     string SystemName,
     long Color,
@@ -16,7 +16,7 @@ public record VaultCategoryConfiguration(
         => document.ParseAllElements("Cat", ParseCategory);
 
     private static VaultCategoryConfiguration ParseCategory(XElement element)
-        => new(CategoryId.ParseFromElement(element, "Id"),
+        => new(VaultCategoryId.ParseFromElement(element, "Id"),
             element.GetElementValue("Name"),
             element.GetElementValue("SysName"),
             element.ParseElementValue("Color", long.Parse),

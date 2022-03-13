@@ -4,9 +4,9 @@ using FluentVault.Extensions;
 
 namespace FluentVault;
 
-public record VaultFileCategory(CategoryId Id, string Name)
+public record VaultFileCategory(VaultCategoryId Id, string Name)
 {
     internal static VaultFileCategory Parse(XElement element)
-        => new(CategoryId.ParseFromAttribute(element, "CatId"),
+        => new(VaultCategoryId.ParseFromAttribute(element, "CatId"),
             element.GetAttributeValue("CatName"));
 }

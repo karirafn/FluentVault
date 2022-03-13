@@ -12,7 +12,7 @@ internal class UpdateFileLifecycleStateRequestBuilder : IUpdateFileLifecycleStat
 
     private readonly List<MasterId> _masterIds = new();
     private readonly List<string> _filenames = new();
-    private readonly List<LifeCycleStateId> _stateIds = new();
+    private readonly List<VaultLifeCycleStateId> _stateIds = new();
     private string _comment = string.Empty;
 
     public UpdateFileLifecycleStateRequestBuilder(IMediator mediator, VaultSessionCredentials session)
@@ -32,7 +32,7 @@ internal class UpdateFileLifecycleStateRequestBuilder : IUpdateFileLifecycleStat
         return this;
     }
 
-    public IWithComment ToStateWithId(LifeCycleStateId stateId)
+    public IWithComment ToStateWithId(VaultLifeCycleStateId stateId)
     {
         _stateIds.Add(stateId);
         return this;

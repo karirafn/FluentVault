@@ -18,7 +18,7 @@ public class VaultPropertyDefinitionShould
         var document = XDocument.Parse(body);
 
         // Act
-        var result = VaultPropertyDefinitionInfo.ParseAll(document);
+        var result = VaultProperty.ParseAll(document);
 
         // Assert
         result.Should().BeEquivalentTo(expectation);

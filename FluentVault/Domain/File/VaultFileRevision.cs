@@ -5,8 +5,8 @@ using FluentVault.Extensions;
 namespace FluentVault;
 
 public record VaultFileRevision(
-    RevisionId Id,
-    RevisionDefinitionId DefinitionId,
+    VaultRevisionId Id,
+    VaultRevisionDefinitionId DefinitionId,
     string Label,
     long MaximumConsumeFileId,
     long MaximumFileId,
@@ -14,8 +14,8 @@ public record VaultFileRevision(
     long Order)
 {
     internal static VaultFileRevision Parse(XElement element)
-        => new(RevisionId.ParseFromAttribute(element, "RevId"),
-            RevisionDefinitionId.ParseFromAttribute(element, "RevDefId"),
+        => new(VaultRevisionId.ParseFromAttribute(element, "RevId"),
+            VaultRevisionDefinitionId.ParseFromAttribute(element, "RevDefId"),
             element.GetAttributeValue("Label"),
             element.ParseAttributeValue("MaxConsumeFileId", long.Parse),
             element.ParseAttributeValue("MaxFileId", long.Parse),
