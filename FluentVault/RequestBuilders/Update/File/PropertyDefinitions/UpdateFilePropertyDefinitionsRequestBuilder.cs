@@ -10,9 +10,9 @@ internal class UpdateFilePropertyDefinitionsRequestBuilder : IUpdateFileProperty
     private readonly IMediator _mediator;
     private readonly VaultSessionCredentials _session;
 
-    private readonly List<long> _masterIds = new();
-    private readonly List<long> _addedPropertyIds = new();
-    private readonly List<long> _removedPropertyIds = new();
+    private readonly List<MasterId> _masterIds = new();
+    private readonly List<PropertyId> _addedPropertyIds = new();
+    private readonly List<PropertyId> _removedPropertyIds = new();
     private readonly List<string> _filenames = new();
     private readonly List<string> _addedPropertyNames = new();
     private readonly List<string> _removedPropertyNames = new();
@@ -28,8 +28,8 @@ internal class UpdateFilePropertyDefinitionsRequestBuilder : IUpdateFileProperty
         return files;
     }
 
-    public IUpdateFilePropertDefinitionsAction ByFileMasterId(long masterId) => ByFileMasterIds(new[] { masterId });
-    public IUpdateFilePropertDefinitionsAction ByFileMasterIds(IEnumerable<long> masterIds)
+    public IUpdateFilePropertDefinitionsAction ByFileMasterId(MasterId masterId) => ByFileMasterIds(new[] { masterId });
+    public IUpdateFilePropertDefinitionsAction ByFileMasterIds(IEnumerable<MasterId> masterIds)
     {
         _masterIds.AddRange(masterIds);
         return this;
@@ -42,8 +42,8 @@ internal class UpdateFilePropertyDefinitionsRequestBuilder : IUpdateFileProperty
         return this;
     }
 
-    public IUpdateFilePropertDefinitionsAction AddPropertyById(long id) => AddPropertiesByIds(new[] { id });
-    public IUpdateFilePropertDefinitionsAction AddPropertiesByIds(IEnumerable<long> ids)
+    public IUpdateFilePropertDefinitionsAction AddPropertyById(PropertyId id) => AddPropertiesByIds(new[] { id });
+    public IUpdateFilePropertDefinitionsAction AddPropertiesByIds(IEnumerable<PropertyId> ids)
     {
         _addedPropertyIds.AddRange(ids);
         return this;
@@ -56,8 +56,8 @@ internal class UpdateFilePropertyDefinitionsRequestBuilder : IUpdateFileProperty
         return this;
     }
 
-    public IUpdateFilePropertDefinitionsAction RemovePropertyById(long id) => RemovePropertiesByIds(new[] { id });
-    public IUpdateFilePropertDefinitionsAction RemovePropertiesByIds(IEnumerable<long> ids)
+    public IUpdateFilePropertDefinitionsAction RemovePropertyById(PropertyId id) => RemovePropertiesByIds(new[] { id });
+    public IUpdateFilePropertDefinitionsAction RemovePropertiesByIds(IEnumerable<PropertyId> ids)
     {
         _removedPropertyIds.AddRange(ids);
         return this;

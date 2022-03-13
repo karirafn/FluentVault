@@ -4,13 +4,13 @@ namespace FluentVault.Domain.Search;
 
 internal class SearchCondition
 {
-    private readonly long _propertyId;
-    private readonly long _searchOperator;
+    private readonly PropertyId _propertyId;
+    private readonly SearchOperator _searchOperator;
     private readonly string _searchText;
     private readonly SearchPropertyType _propertyType;
     private readonly SearchRule _searchRule;
 
-    public SearchCondition(long propertyId, long searchOperator, object searchValue, SearchPropertyType propertyType, SearchRule serachRule)
+    public SearchCondition(PropertyId propertyId, SearchOperator searchOperator, object searchValue, SearchPropertyType propertyType, SearchRule serachRule)
     {
         (_propertyId, _searchOperator, _propertyType, _searchRule) = (propertyId, searchOperator, propertyType, serachRule);
 

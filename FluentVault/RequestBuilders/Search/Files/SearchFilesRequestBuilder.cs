@@ -17,7 +17,7 @@ internal class SearchFilesRequestBuilder :
     private readonly VaultSessionCredentials _session;
 
     private object _value = new();
-    private long _propertyId;
+    private PropertyId _propertyId;
     private string _propertyName = string.Empty;
     private SearchPropertyType _propertyType = SearchPropertyType.SingleProperty;
     private SearchOperator _operator = SearchOperator.Contains;
@@ -190,7 +190,7 @@ internal class SearchFilesRequestBuilder :
 
     private ISearchFilesAddSearchCondition SetProperty(SearchProperty property)
     {
-        (_propertyId, _propertyType) = (property.Value, SearchPropertyType.SingleProperty);
+        (_propertyId, _propertyType) = (property, SearchPropertyType.SingleProperty);
         return this;
     }
 }
