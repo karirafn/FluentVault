@@ -5,7 +5,7 @@ using FluentVault.Extensions;
 namespace FluentVault;
 
 public record VaultFile(
-    long Id,
+    FileId Id,
     string Filename,
     long MasterId,
     string VersionName,
@@ -45,7 +45,7 @@ public record VaultFile(
         => document.ParseAllElements(FileElementName, ParseVaultFile);
 
     private static VaultFile ParseVaultFile(XElement element)
-        => new(element.ParseAttributeValue("Id", long.Parse),
+        => new(FileId.Parse(element),
             element.GetAttributeValue("Name"),
             element.ParseAttributeValue("MasterId", long.Parse),
             element.GetAttributeValue("VerName"),
