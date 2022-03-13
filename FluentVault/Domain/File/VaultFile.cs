@@ -45,7 +45,7 @@ public record VaultFile(
         => document.ParseAllElements(FileElementName, ParseVaultFile);
 
     private static VaultFile ParseVaultFile(XElement element)
-        => new(FileId.Parse(element),
+        => new(FileId.ParseFromAttribute(element),
             element.GetAttributeValue("Name"),
             element.ParseAttributeValue("MasterId", long.Parse),
             element.GetAttributeValue("VerName"),
