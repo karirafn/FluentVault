@@ -7,7 +7,7 @@ using FluentVault.Extensions;
 namespace FluentVault;
 public class CategoryId : GenericId<long>
 {
-    private CategoryId(long value) : base(value) { }
+    public CategoryId(long value) : base(value) { }
 
     public static CategoryId Parse(XElement element, string key)
         => new(long.TryParse(element.GetElementValue(key), out long value)
