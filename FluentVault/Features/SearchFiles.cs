@@ -10,7 +10,7 @@ namespace FluentVault.Features;
 internal record SearchFilesCommand(
     IEnumerable<IDictionary<string, string>> SearchConditions,
     IEnumerable<IDictionary<string, string>> SortConditions,
-    IEnumerable<long> FolderIds,
+    IEnumerable<VaultFolderId> FolderIds,
     bool RecurseFolders,
     bool LatestOnly,
     string Bookmark,
@@ -31,7 +31,7 @@ internal class SearchFilesHandler : IRequestHandler<SearchFilesCommand, FileSear
         {
             content.AddElementsWithAttributes(ns, "SrchCond", command.SearchConditions);
             content.AddElementsWithAttributes(ns, "SrchSort", command.SortConditions);
-            content.AddNestedElements(ns, "folderIds", "long", command.FolderIds.Select(x => x.ToString()));
+            content.AddNestedElements(ns, "folderIds", "long", command.FolderIds.Select(id => id.ToString()));
             content.AddElement(ns, "recurseFolders", command.RecurseFolders);
             content.AddElement(ns, "latestOnly", command.LatestOnly);
             content.AddElement(ns, "bookmark", command.Bookmark);

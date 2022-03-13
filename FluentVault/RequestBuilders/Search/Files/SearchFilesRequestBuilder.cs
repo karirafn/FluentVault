@@ -17,14 +17,14 @@ internal class SearchFilesRequestBuilder :
     private readonly VaultSessionCredentials _session;
 
     private object _value = new();
-    private VaultPropertyDefinitionId _propertyId;
+    private VaultPropertyDefinitionId? _propertyId;
     private string _propertyName = string.Empty;
     private SearchPropertyType _propertyType = SearchPropertyType.SingleProperty;
     private SearchOperator _operator = SearchOperator.Contains;
     private IEnumerable<VaultProperty> _allProperties = new List<VaultProperty>();
     private bool _recurseFolders = true;
     private bool _latestOnly = true;
-    private readonly List<long> _folderIds = new();
+    private readonly List<VaultFolderId> _folderIds = new();
     private readonly List<SearchCondition> _searchConditions = new();
     private readonly List<SortCondition> _sortConditions = new();
 
@@ -150,8 +150,11 @@ internal class SearchFilesRequestBuilder :
 
     private void AddSearchCondition()
     {
-        SearchCondition searchCondition = new(_propertyId, _operator, _value, _propertyType, SearchRule.Must);
-        _searchConditions.Add(searchCondition);
+        if (_propertyId is not null)
+        {
+            SearchCondition searchCondition = new(_propertyId, _operator, _value, _propertyType, SearchRule.Must);
+            _searchConditions.Add(searchCondition);
+        }
         _propertyType = SearchPropertyType.SingleProperty;
     }
 
