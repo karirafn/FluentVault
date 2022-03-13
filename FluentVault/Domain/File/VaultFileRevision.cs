@@ -14,8 +14,8 @@ public record VaultFileRevision(
     long Order)
 {
     internal static VaultFileRevision Parse(XElement element)
-        => new(VaultRevisionId.ParseFromAttribute(element, "RevId"),
-            VaultRevisionDefinitionId.ParseFromAttribute(element, "RevDefId"),
+        => new(element.ParseAttributeValue("RevId", VaultRevisionId.Parse),
+            element.ParseAttributeValue("RevDefId", VaultRevisionDefinitionId.Parse),
             element.GetAttributeValue("Label"),
             element.ParseAttributeValue("MaxConsumeFileId", long.Parse),
             element.ParseAttributeValue("MaxFileId", long.Parse),

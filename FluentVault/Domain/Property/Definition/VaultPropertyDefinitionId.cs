@@ -1,16 +1,14 @@
-﻿using System.Xml.Linq;
-
+﻿
 using FluentVault.Common;
-using FluentVault.Extensions;
 
 namespace FluentVault;
 public class VaultPropertyDefinitionId : GenericId<long>, IEquatable<VaultPropertyDefinitionId>, IComparable<VaultPropertyDefinitionId>
 {
     public VaultPropertyDefinitionId(long value) : base(value) { }
 
-    public static VaultPropertyDefinitionId ParseFromAttribute(XElement element, string key)
-        => new(long.TryParse(element.GetAttributeValue(key), out long value)
-            ? value
+    public static VaultPropertyDefinitionId Parse(string value)
+        => new(long.TryParse(value, out long id)
+            ? id
             : throw new KeyNotFoundException("Failed to parse property ID."));
 
     public int CompareTo(VaultPropertyDefinitionId? other) => Value.CompareTo(other?.Value);

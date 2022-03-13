@@ -12,9 +12,9 @@ public record VaultPropertyConstraint(
     bool Value)
 {
     internal static VaultPropertyConstraint Parse(XElement element)
-        => new(VaultPropertyConstraintId.ParseFromAttribute(element, "Id"),
-            VaultPropertyDefinitionId.ParseFromAttribute(element, "PropDefId"),
-            VaultCategoryId.ParseFromAttribute(element, "CatId"),
+        => new(element.ParseAttributeValue("Id", VaultPropertyConstraintId.Parse),
+            element.ParseAttributeValue("PropDefId", VaultPropertyDefinitionId.Parse),
+            element.ParseAttributeValue("CatId", VaultCategoryId.Parse),
             element.ParseAttributeValue("PropConstrTyp", x => VaultPropertyConstraintType.FromName(x)),
             element.ParseAttributeValue("Val", bool.Parse));
 }

@@ -19,9 +19,9 @@ public record VaultLifeCycleTransition(
     bool UpdateItems)
 {
     internal static VaultLifeCycleTransition Parse(XElement element)
-        => new(VaultLifeCycleTransitionId.ParseFromAttribute(element, "Id"),
-            VaultLifeCycleStateId.ParseFromAttribute(element, "FromId"),
-            VaultLifeCycleStateId.ParseFromAttribute(element, "ToId"),
+        => new(element.ParseAttributeValue("Id", VaultLifeCycleTransitionId.Parse),
+            element.ParseAttributeValue("FromId", VaultLifeCycleStateId.Parse),
+            element.ParseAttributeValue("ToId", VaultLifeCycleStateId.Parse),
             element.ParseAttributeValue("Bump", x => BumpRevisionState.FromName(x)),
             element.ParseAttributeValue("SyncPropOption", x => SynchronizePropertiesState.FromName(x)),
             element.ParseAttributeValue("CldState", x => EnforceChildState.FromName(x)),

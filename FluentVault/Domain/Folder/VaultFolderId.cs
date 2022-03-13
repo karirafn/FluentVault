@@ -1,16 +1,13 @@
 ﻿
-using System.Xml.Linq;
-
 using FluentVault.Common;
-using FluentVault.Extensions;
 
 namespace FluentVault;
 public class VaultFolderId : GenericId<long>
 {
     public VaultFolderId(long value) : base(value) { }
 
-    public static VaultFolderId ParseFromAttribute(XElement element, string key)
-        => new(long.TryParse(element.GetAttributeValue(key), out long value)
-            ? value
+    public static VaultFolderId Parse(string value)
+        => new(long.TryParse(value, out long id)
+            ? id
             : throw new KeyNotFoundException("Failed to parse folder ID."));
 }

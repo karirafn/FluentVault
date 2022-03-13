@@ -5,7 +5,7 @@ using FluentVault.Extensions;
 namespace FluentVault;
 
 public record ContentSourcePropertyDefinition(
-    long ContentSourceId,
+    VaultContentSourceId ContentSourceId,
     string DisplayName,
     string Moniker,
     AllowedMappingDirection MappingDirection,
@@ -15,7 +15,7 @@ public record ContentSourcePropertyDefinition(
     ContentSourceDefinitionType ContentSourceDefinitionType)
 {
     internal static ContentSourcePropertyDefinition Parse(XElement element)
-        => new(element.ParseAttributeValue("CtntSrcId", long.Parse),
+        => new(element.ParseAttributeValue("CtntSrcId", VaultContentSourceId.Parse),
             element.GetAttributeValue("DispName"),
             element.GetAttributeValue("Moniker"),
             element.ParseAttributeValue("MapDirection", x => AllowedMappingDirection.FromName(x)),

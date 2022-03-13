@@ -7,6 +7,6 @@ namespace FluentVault;
 public record VaultFileCategory(VaultCategoryId Id, string Name)
 {
     internal static VaultFileCategory Parse(XElement element)
-        => new(VaultCategoryId.ParseFromAttribute(element, "CatId"),
+        => new(element.ParseAttributeValue("CatId", VaultCategoryId.Parse),
             element.GetAttributeValue("CatName"));
 }

@@ -21,12 +21,12 @@ public record VaultLifeCycleState(
     IEnumerable<string> Comments)
 {
     internal static VaultLifeCycleState Parse(XElement element)
-        => new(VaultLifeCycleStateId.ParseFromAttribute(element, "ID"),
+        => new(element.ParseAttributeValue("ID", VaultLifeCycleStateId.Parse),
             element.GetAttributeValue("Name"),
             element.GetAttributeValue("DispName"),
             element.GetAttributeValue("Descr"),
             element.ParseAttributeValue("IsDflt", bool.Parse),
-            VaultLifeCycleDefinitionId.ParseFromAttribute(element, "LfCycDefId"),
+            element.ParseAttributeValue("LfCycDefId", VaultLifeCycleDefinitionId.Parse),
             element.ParseAttributeValue("StateBasedSec", bool.Parse),
             element.ParseAttributeValue("ReleasedState", bool.Parse),
             element.ParseAttributeValue("ObsoleteState", bool.Parse),

@@ -16,7 +16,7 @@ public record PropertyDefinition(
     IEnumerable<EntityClassAssociation> EntityClassAssociations)
 {
     internal static PropertyDefinition Parse(XElement element)
-        => new(VaultPropertyDefinitionId.ParseFromAttribute(element, "Id"),
+        => new(element.ParseAttributeValue("Id", VaultPropertyDefinitionId.Parse),
             element.ParseAttributeValue("Typ", x => DataType.FromName(x)),
             element.GetAttributeValue("DispName"),
             element.GetAttributeValue("SysName"),
