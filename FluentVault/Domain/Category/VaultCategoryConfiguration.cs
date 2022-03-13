@@ -4,7 +4,7 @@ using FluentVault.Extensions;
 
 namespace FluentVault;
 
-public record VaultCategory(
+public record VaultCategoryConfiguration(
     long Id,
     string Name,
     string SystemName,
@@ -12,10 +12,10 @@ public record VaultCategory(
     string Description,
     IEnumerable<EntityClass> EntityClasses)
 {
-    internal static IEnumerable<VaultCategory> ParseAll(XDocument document)
+    internal static IEnumerable<VaultCategoryConfiguration> ParseAll(XDocument document)
         => document.ParseAllElements("Cat", ParseCategory);
 
-    private static VaultCategory ParseCategory(XElement element)
+    private static VaultCategoryConfiguration ParseCategory(XElement element)
         => new(element.ParseElementValue("Id", long.Parse),
             element.GetElementValue("Name"),
             element.GetElementValue("SysName"),

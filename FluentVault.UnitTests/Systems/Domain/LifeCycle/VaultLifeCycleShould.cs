@@ -18,7 +18,7 @@ public class VaultLifecycleShould
         var document = XDocument.Parse(body);
 
         // Act
-        var result = VaultLifeCycle.ParseAll(document);
+        var result = VaultLifeCycleDefinition.ParseAll(document);
 
         // Assert
         result.Should().BeEquivalentTo(expectation);

@@ -20,7 +20,7 @@ internal class VaultRequestService : IVaultRequestService
     public async Task<XDocument> SendAsync(string operation, VaultSessionCredentials session, Action<XElement, XNamespace>? contentBuilder = null)
     {
         if (_data.Keys.Any(key => key == operation) is false)
-            throw new KeyNotFoundException($@"Operation ""{operation}"" was not found in SOAP request data collection");
+            throw new KeyNotFoundException($@"Operation ""{operation}"" was not found in Vault request data collection");
 
         HttpRequestMessage requestMessage = GetRequestMessage(operation, session, contentBuilder);
         HttpResponseMessage responseMessage = await _httpClient.SendAsync(requestMessage);

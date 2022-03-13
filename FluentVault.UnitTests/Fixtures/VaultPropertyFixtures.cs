@@ -8,7 +8,7 @@ namespace FluentVault.UnitTests.Fixtures;
 
 internal static partial class VaultResponseFixtures
 {
-    public static (string Body, IEnumerable<VaultPropertyDefinition> Files) GetVaultPropertyFixtures(int count)
+    public static (string Body, IEnumerable<VaultPropertyDefinitionInfo> Files) GetVaultPropertyFixtures(int count)
     {
         Fixture fixture = new();
         fixture.Register(() => AllowedMappingDirection.Read);
@@ -20,10 +20,10 @@ internal static partial class VaultResponseFixtures
         fixture.Register(() => MappingType.Constant);
         fixture.Register(() => PropertyConstraintType.RequiresValue);
 
-        return CreateBody<VaultPropertyDefinition>(fixture, count, "GetPropertyDefinitionInfosByEntityClassId", "http://AutodeskDM/Services/Property/1/7/2020/", CreatePropertyBody);
+        return CreateBody<VaultPropertyDefinitionInfo>(fixture, count, "GetPropertyDefinitionInfosByEntityClassId", "http://AutodeskDM/Services/Property/1/7/2020/", CreatePropertyBody);
     }
 
-    private static string CreatePropertyBody(VaultPropertyDefinition property) => $@"<PropDefInfo>
+    private static string CreatePropertyBody(VaultPropertyDefinitionInfo property) => $@"<PropDefInfo>
                     <PropDef
 						Id=""{property.Definition.Id}""
 						Typ=""{property.Definition.DataType}""

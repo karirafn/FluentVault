@@ -6,7 +6,7 @@ namespace FluentVault.UnitTests.Fixtures;
 
 internal static partial class VaultResponseFixtures
 {
-    public static (string Body, IEnumerable<VaultLifeCycle> Files) GetVaultLifecycleFixtures(int count)
+    public static (string Body, IEnumerable<VaultLifeCycleDefinition> Files) GetVaultLifecycleFixtures(int count)
     {
         Fixture fixture = new();
         fixture.Register(() => RestrictPurgeOption.All);
@@ -19,10 +19,10 @@ internal static partial class VaultResponseFixtures
         fixture.Register(() => FileLinkTypeState.StandardComp);
         fixture.Register(() => FileLinkTypeState.DesignDocs);
 
-        return CreateBody<VaultLifeCycle>(fixture, count, "GetAllLifeCycleDefinitions", "http://AutodeskDM/Services/LifeCycle/1/7/2020/", CreateLifecycleBody);
+        return CreateBody<VaultLifeCycleDefinition>(fixture, count, "GetAllLifeCycleDefinitions", "http://AutodeskDM/Services/LifeCycle/1/7/2020/", CreateLifecycleBody);
     }
 
-    private static string CreateLifecycleBody(VaultLifeCycle lifecycle) => $@"<LfCycDef 
+    private static string CreateLifecycleBody(VaultLifeCycleDefinition lifecycle) => $@"<LfCycDef 
                 Id=""{lifecycle.Id}""
 				Name=""{lifecycle.Name}""
 				SysName=""{lifecycle.SystemName}""

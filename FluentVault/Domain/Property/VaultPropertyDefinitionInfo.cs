@@ -4,16 +4,16 @@ using FluentVault.Extensions;
 
 namespace FluentVault;
 
-public record VaultPropertyDefinition(
+public record VaultPropertyDefinitionInfo(
     PropertyDefinition Definition,
     IEnumerable<PropertyConstraint> Constraints,
     IEnumerable<string> ListValues,
     IEnumerable<EntityClassContentSourcePropertyDefinition> EntityClassContentSourcePropertyDefinitions)
 {
-    internal static IEnumerable<VaultPropertyDefinition> ParseAll(XDocument document)
+    internal static IEnumerable<VaultPropertyDefinitionInfo> ParseAll(XDocument document)
         => document.ParseAllElements("PropDefInfo", ParseProperty);
 
-    internal static VaultPropertyDefinition ParseProperty(XElement element)
+    internal static VaultPropertyDefinitionInfo ParseProperty(XElement element)
         => new(element.ParseElement("PropDef", PropertyDefinition.Parse),
             element.ParseAllElements("PropertyConstraint", PropertyConstraint.Parse),
             element.ParseAllElements("ListVal", x => x.Value),

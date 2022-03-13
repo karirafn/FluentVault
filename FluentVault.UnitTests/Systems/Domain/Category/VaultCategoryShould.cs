@@ -18,7 +18,7 @@ public class VaultCategoryShould
         var document = XDocument.Parse(body);
 
         // Act
-        var result = VaultCategory.ParseAll(document);
+        var result = VaultCategoryConfiguration.ParseAll(document);
 
         // Assert
         result.Should().BeEquivalentTo(expectation);

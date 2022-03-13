@@ -23,7 +23,7 @@ internal class UpdateFilePropertyDefinitionsHandler : IRequestHandler<UpdateFile
 
     private readonly IMediator _mediator;
     private readonly IVaultRequestService _soapRequestService;
-    private IEnumerable<VaultPropertyDefinition> _allProperties = new List<VaultPropertyDefinition>();
+    private IEnumerable<VaultPropertyDefinitionInfo> _allProperties = new List<VaultPropertyDefinitionInfo>();
 
     public UpdateFilePropertyDefinitionsHandler(IMediator mediator, IVaultRequestService soapRequestService)
         => (_mediator, _soapRequestService) = (mediator, soapRequestService);
@@ -70,7 +70,7 @@ internal class UpdateFilePropertyDefinitionsHandler : IRequestHandler<UpdateFile
     private async Task<IEnumerable<long>> GetPropertyIdsFromPropertyNames(IEnumerable<string> names, UpdateFilePropertyDefinitionsCommand command)
     {
         if (!_allProperties.Any())
-            _allProperties = await _mediator.Send(new GetPropertyDefinitionsQuery(command.Session));
+            _allProperties = await _mediator.Send(new GetPropertyDefinitionInfosQuery(command.Session));
 
         return _allProperties.Where(x => names.Contains(x.Definition.DisplayName))
                .Select(x => x.Definition.Id);

@@ -2,7 +2,7 @@
 
 public interface IGetRequestBuilder
 {
-    public Task<IEnumerable<VaultCategory>> Categories();
-    public Task<IEnumerable<VaultLifeCycle>> Lifecycles();
-    public Task<IEnumerable<VaultPropertyDefinition>> Properties();
+    public Task<IEnumerable<VaultCategoryConfiguration>> CategoryConfigurations();
+    public Task<IEnumerable<VaultLifeCycleDefinition>> LifeCycleDefinitions();
+    public Task<IEnumerable<VaultPropertyDefinitionInfo>> PropertyDefinitionInfos();
 }

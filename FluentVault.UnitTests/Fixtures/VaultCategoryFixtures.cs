@@ -7,15 +7,15 @@ namespace FluentVault.UnitTests.Fixtures;
 
 internal static partial class VaultResponseFixtures
 {
-    public static (string Body, IEnumerable<VaultCategory> Files) GetVaultCategoryFixtures(int count)
+    public static (string Body, IEnumerable<VaultCategoryConfiguration> Files) GetVaultCategoryFixtures(int count)
     {
         Fixture fixture = new();
         fixture.Register(() => EntityClass.File);
 
-        return CreateBody<VaultCategory>(fixture, count, "GetCategoryConfigurationsByBehaviorNames", "http://AutodeskDM/Services/Category/1/7/2020/", CreateCategoryBody);
+        return CreateBody<VaultCategoryConfiguration>(fixture, count, "GetCategoryConfigurationsByBehaviorNames", "http://AutodeskDM/Services/Category/1/7/2020/", CreateCategoryBody);
     }
 
-    private static string CreateCategoryBody(VaultCategory category) => $@"<CatCfg>
+    private static string CreateCategoryBody(VaultCategoryConfiguration category) => $@"<CatCfg>
                     <Cat>
 						<Id>{category.Id}</Id>
 						<Name>{category.Name}</Name>

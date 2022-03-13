@@ -4,7 +4,7 @@ using FluentVault.Extensions;
 
 namespace FluentVault;
 
-public record VaultLifeCycle(
+public record VaultLifeCycleDefinition(
     long Id,
     string Name,
     string SystemName,
@@ -14,10 +14,10 @@ public record VaultLifeCycle(
     IEnumerable<VaultLifeCycleState> States,
     IEnumerable<VaultLifeCycleTransition> Transitions)
 {
-    internal static IEnumerable<VaultLifeCycle> ParseAll(XDocument document)
+    internal static IEnumerable<VaultLifeCycleDefinition> ParseAll(XDocument document)
         => document.ParseAllElements("LfCycDef", ParseLifecycle);
 
-    private static VaultLifeCycle ParseLifecycle(XElement element)
+    private static VaultLifeCycleDefinition ParseLifecycle(XElement element)
         => new(element.ParseAttributeValue("Id", long.Parse),
             element.GetAttributeValue("Name"),
             element.GetAttributeValue("SysName"),

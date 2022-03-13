@@ -21,7 +21,7 @@ internal class SearchFilesRequestBuilder :
     private long _searchConditionOperator;
     private string _propertyName = string.Empty;
     private SearchPropertyType _searchConditionPropertyType = SearchPropertyType.SingleProperty;
-    private IEnumerable<VaultPropertyDefinition> _allProperties = new List<VaultPropertyDefinition>();
+    private IEnumerable<VaultPropertyDefinitionInfo> _allProperties = new List<VaultPropertyDefinitionInfo>();
     private bool _recurseFolders = true;
     private bool _latestOnly = true;
     private readonly List<long> _folderIds = new();
@@ -118,7 +118,7 @@ internal class SearchFilesRequestBuilder :
     private async Task SetPropertyValue(string property)
     {
         if (_allProperties.Any() is false)
-            _allProperties = await _mediator.Send(new GetPropertyDefinitionsQuery(_session));
+            _allProperties = await _mediator.Send(new GetPropertyDefinitionInfosQuery(_session));
 
         var selectedProperty = _allProperties.FirstOrDefault(x => x.Definition.DisplayName.Equals(property))
             ?? throw new KeyNotFoundException($@"Property ""{property}"" was not found");
