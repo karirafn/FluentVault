@@ -16,11 +16,11 @@ internal class SearchFilesRequestBuilder :
     private readonly IMediator _mediator;
     private readonly VaultSessionCredentials _session;
 
-    private object _searchConditionValue = new();
-    private long _searchConditionPropertyId;
-    private long _searchConditionOperator;
+    private object _value = new();
+    private long _propertyId;
     private string _propertyName = string.Empty;
-    private SearchPropertyType _searchConditionPropertyType = SearchPropertyType.SingleProperty;
+    private SearchPropertyType _propertyType = SearchPropertyType.SingleProperty;
+    private SearchOperator _operator = SearchOperator.Contains;
     private IEnumerable<VaultPropertyDefinitionInfo> _allProperties = new List<VaultPropertyDefinitionInfo>();
     private bool _recurseFolders = true;
     private bool _latestOnly = true;
@@ -77,22 +77,22 @@ internal class SearchFilesRequestBuilder :
     public ISearchFilesStringProperty ForValueContaining(string value) => SetStringValue(value, SearchOperator.Contains);
     public ISearchFilesStringProperty ForValueNotContaining(string value) => SetStringValue(value, SearchOperator.DoesNotContain);
 
+    public ISearchFilesAddSearchCondition InSystemProperty(BooleanSearchProperty property) => SetProperty(property);
+    public ISearchFilesAddSearchCondition InSystemProperty(DateTimeSearchProperty property) => SetProperty(property);
+    public ISearchFilesAddSearchCondition InSystemProperty(NumericSearchProperty property) => SetProperty(property);
+    public ISearchFilesAddSearchCondition InSystemProperty(StringSearchProperty property) => SetProperty(property);
+
     public ISearchFilesAddSearchCondition InUserProperty(string name)
     {
         _propertyName = name;
         return this;
     }
 
-    public ISearchFilesAddSearchCondition InSystemProperty(SearchBooleanProperties property) => SetProperty((long)property);
-    public ISearchFilesAddSearchCondition InSystemProperty(SearchDateTimeProperty property) => SetProperty((long)property);
-    public ISearchFilesAddSearchCondition InSystemProperty(SearchNumericProperty property) => SetProperty((long)property);
-    public ISearchFilesAddSearchCondition InSystemProperty(SearchStringProperty property) => SetProperty((long)property);
-
     public ISearchFilesAddSearchCondition InAllProperties
     {
         get
         {
-            _searchConditionPropertyType = SearchPropertyType.AllProperties;
+            _propertyType = SearchPropertyType.AllProperties;
             return this;
         }
     }
@@ -101,7 +101,7 @@ internal class SearchFilesRequestBuilder :
     {
         get
         {
-            _searchConditionPropertyType = SearchPropertyType.AllPropertiesAndContent;
+            _propertyType = SearchPropertyType.AllPropertiesAndContent;
             return this;
         }
     }
@@ -122,7 +122,7 @@ internal class SearchFilesRequestBuilder :
 
         var selectedProperty = _allProperties.FirstOrDefault(x => x.Definition.DisplayName.Equals(property))
             ?? throw new KeyNotFoundException($@"Property ""{property}"" was not found");
-        _searchConditionPropertyId = selectedProperty.Definition.Id;
+        _propertyId = selectedProperty.Definition.Id;
     }
 
     private async Task<IEnumerable<VaultFile>> SearchAsync(int maxResultCount)
@@ -150,9 +150,9 @@ internal class SearchFilesRequestBuilder :
 
     private void AddSearchCondition()
     {
-        SearchCondition searchCondition = new(_searchConditionPropertyId, _searchConditionOperator, _searchConditionValue, _searchConditionPropertyType, SearchRule.Must);
+        SearchCondition searchCondition = new(_propertyId, _operator, _value, _propertyType, SearchRule.Must);
         _searchConditions.Add(searchCondition);
-        _searchConditionPropertyType = SearchPropertyType.SingleProperty;
+        _propertyType = SearchPropertyType.SingleProperty;
     }
 
     private ISearchFilesBooleanProperty SetBooleanValue(bool value, SearchOperator @operator)
@@ -186,15 +186,11 @@ internal class SearchFilesRequestBuilder :
     }
 
     private void SetValue(object value, SearchOperator @operator)
-    {
-        _searchConditionValue = value;
-        _searchConditionOperator = (long)@operator;
-    }
+        => (_value, _operator) = (value, @operator);
 
-    private ISearchFilesAddSearchCondition SetProperty(long value)
+    private ISearchFilesAddSearchCondition SetProperty(SearchProperty property)
     {
-        _searchConditionPropertyId = value;
-        _searchConditionPropertyType = SearchPropertyType.SingleProperty;
+        (_propertyId, _propertyType) = (property.Value, SearchPropertyType.SingleProperty);
         return this;
     }
 }

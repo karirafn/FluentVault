@@ -58,7 +58,7 @@ internal class UpdateFilePropertyDefinitionsHandler : IRequestHandler<UpdateFile
         var searchString = string.Join(" OR ", command.Filenames);
         var files = await new SearchFilesRequestBuilder(_mediator, command.Session)
             .ForValueEqualTo(searchString)
-            .InSystemProperty(SearchStringProperty.FileName)
+            .InSystemProperty(StringSearchProperty.FileName)
             .SearchWithoutPaging()
             ?? throw new Exception("Failed to search for filenames");
 
