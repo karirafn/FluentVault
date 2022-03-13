@@ -16,7 +16,7 @@ public record VaultCategoryConfiguration(
         => document.ParseAllElements("Cat", ParseCategory);
 
     private static VaultCategoryConfiguration ParseCategory(XElement element)
-        => new(CategoryId.Parse(element, "Id"),
+        => new(CategoryId.ParseFromElement(element, "Id"),
             element.GetElementValue("Name"),
             element.GetElementValue("SysName"),
             element.ParseElementValue("Color", long.Parse),
