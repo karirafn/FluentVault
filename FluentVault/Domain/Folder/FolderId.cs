@@ -4,7 +4,7 @@ using System.Xml.Linq;
 using FluentVault.Common;
 using FluentVault.Extensions;
 
-namespace FluentVault.Domain.Folder;
+namespace FluentVault;
 public class FolderId : GenericId<long>
 {
     public FolderId(long value) : base(value) { }
