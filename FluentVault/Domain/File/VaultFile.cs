@@ -12,7 +12,7 @@ public record VaultFile(
     long VersionNumber,
     long MaximumCheckInVersionNumber,
     string Comment,
-    DateTime ChecedkInDate,
+    DateTime CheckedInDate,
     DateTime CreatedDate,
     DateTime ModifiedDate,
     long CreateUserId,

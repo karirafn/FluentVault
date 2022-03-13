@@ -21,7 +21,7 @@ internal static partial class VaultResponseFixtures
                     MasterId=""{file.MasterId}""
                     VerNum=""{file.VersionNumber}""
                     MaxCkInVerNum=""{file.MaximumCheckInVersionNumber}""
-                    CkInDate=""{file.ChecedkInDate}""
+                    CkInDate=""{file.CheckedInDate}""
                     Comm=""{file.Comment}""
                     CreateDate=""{file.CreatedDate}""
                     CreateUserId=""{file.CreateUserId}""
