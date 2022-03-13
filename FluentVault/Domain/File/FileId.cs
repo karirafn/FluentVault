@@ -9,8 +9,8 @@ public class FileId : GenericId<long>
 {
     public FileId(long value) : base(value) { }
 
-    public static FileId ParseFromAttribute(XElement element)
-        => new(long.TryParse(element.GetAttributeValue("Id"), out long value)
+    public static FileId ParseFromAttribute(XElement element, string key)
+        => new(long.TryParse(element.GetAttributeValue(key), out long value)
             ? value
             : throw new KeyNotFoundException("Failed to parse category ID."));
 }
