@@ -10,8 +10,8 @@ namespace FluentVault.Features;
 
 internal record UpdateFilePropertyDefinitionsCommand(
     List<MasterId> MasterIds,
-    List<VaultPropertyId> AddedPropertyIds,
-    List<VaultPropertyId> RemovedPropertyIds,
+    List<VaultPropertyDefinitionId> AddedPropertyIds,
+    List<VaultPropertyDefinitionId> RemovedPropertyIds,
     IEnumerable<string> Filenames,
     IEnumerable<string> AddedPropertyNames,
     IEnumerable<string> RemovedPropertyNames,
@@ -67,7 +67,7 @@ internal class UpdateFilePropertyDefinitionsHandler : IRequestHandler<UpdateFile
         return masterIds;
     }
 
-    private async Task<IEnumerable<VaultPropertyId>> GetPropertyIdsFromPropertyNames(IEnumerable<string> names, UpdateFilePropertyDefinitionsCommand command)
+    private async Task<IEnumerable<VaultPropertyDefinitionId>> GetPropertyIdsFromPropertyNames(IEnumerable<string> names, UpdateFilePropertyDefinitionsCommand command)
     {
         if (!_allProperties.Any())
             _allProperties = await _mediator.Send(new GetPropertyDefinitionInfosQuery(command.Session));

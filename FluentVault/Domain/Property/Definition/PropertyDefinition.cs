@@ -5,7 +5,7 @@ using FluentVault.Extensions;
 namespace FluentVault;
 
 public record PropertyDefinition(
-    VaultPropertyId Id,
+    VaultPropertyDefinitionId Id,
     DataType DataType,
     string DisplayName,
     string SystemName,
@@ -16,7 +16,7 @@ public record PropertyDefinition(
     IEnumerable<EntityClassAssociation> EntityClassAssociations)
 {
     internal static PropertyDefinition Parse(XElement element)
-        => new(VaultPropertyId.ParseFromAttribute(element, "Id"),
+        => new(VaultPropertyDefinitionId.ParseFromAttribute(element, "Id"),
             element.ParseAttributeValue("Typ", x => DataType.FromName(x)),
             element.GetAttributeValue("DispName"),
             element.GetAttributeValue("SysName"),

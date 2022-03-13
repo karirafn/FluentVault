@@ -11,8 +11,8 @@ internal class UpdateFilePropertyDefinitionsRequestBuilder : IUpdateFileProperty
     private readonly VaultSessionCredentials _session;
 
     private readonly List<MasterId> _masterIds = new();
-    private readonly List<VaultPropertyId> _addedPropertyIds = new();
-    private readonly List<VaultPropertyId> _removedPropertyIds = new();
+    private readonly List<VaultPropertyDefinitionId> _addedPropertyIds = new();
+    private readonly List<VaultPropertyDefinitionId> _removedPropertyIds = new();
     private readonly List<string> _filenames = new();
     private readonly List<string> _addedPropertyNames = new();
     private readonly List<string> _removedPropertyNames = new();
@@ -42,8 +42,8 @@ internal class UpdateFilePropertyDefinitionsRequestBuilder : IUpdateFileProperty
         return this;
     }
 
-    public IUpdateFilePropertDefinitionsAction AddPropertyById(VaultPropertyId id) => AddPropertiesByIds(new[] { id });
-    public IUpdateFilePropertDefinitionsAction AddPropertiesByIds(IEnumerable<VaultPropertyId> ids)
+    public IUpdateFilePropertDefinitionsAction AddPropertyById(VaultPropertyDefinitionId id) => AddPropertiesByIds(new[] { id });
+    public IUpdateFilePropertDefinitionsAction AddPropertiesByIds(IEnumerable<VaultPropertyDefinitionId> ids)
     {
         _addedPropertyIds.AddRange(ids);
         return this;
@@ -56,8 +56,8 @@ internal class UpdateFilePropertyDefinitionsRequestBuilder : IUpdateFileProperty
         return this;
     }
 
-    public IUpdateFilePropertDefinitionsAction RemovePropertyById(VaultPropertyId id) => RemovePropertiesByIds(new[] { id });
-    public IUpdateFilePropertDefinitionsAction RemovePropertiesByIds(IEnumerable<VaultPropertyId> ids)
+    public IUpdateFilePropertDefinitionsAction RemovePropertyById(VaultPropertyDefinitionId id) => RemovePropertiesByIds(new[] { id });
+    public IUpdateFilePropertDefinitionsAction RemovePropertiesByIds(IEnumerable<VaultPropertyDefinitionId> ids)
     {
         _removedPropertyIds.AddRange(ids);
         return this;

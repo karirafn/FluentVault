@@ -17,7 +17,7 @@ internal class SearchFilesRequestBuilder :
     private readonly VaultSessionCredentials _session;
 
     private object _value = new();
-    private VaultPropertyId _propertyId;
+    private VaultPropertyDefinitionId _propertyId;
     private string _propertyName = string.Empty;
     private SearchPropertyType _propertyType = SearchPropertyType.SingleProperty;
     private SearchOperator _operator = SearchOperator.Contains;

@@ -3,9 +3,9 @@ using Ardalis.SmartEnum;
 
 namespace FluentVault;
 
-public abstract class SearchProperty : SmartEnum<SearchProperty, VaultPropertyId>
+public abstract class SearchProperty : SmartEnum<SearchProperty, VaultPropertyDefinitionId>
 {
-    protected SearchProperty(string name, VaultPropertyId value) : base(name, value) { }
+    protected SearchProperty(string name, VaultPropertyDefinitionId value) : base(name, value) { }
 }
 
 public sealed class BooleanSearchProperty : SearchProperty
@@ -25,7 +25,7 @@ public sealed class BooleanSearchProperty : SearchProperty
     public static readonly BooleanSearchProperty IsTableDriven = new(nameof(IsTableDriven), new(238));
     public static readonly BooleanSearchProperty IsTrueModelState = new(nameof(IsTrueModelState), new(239));
 
-    public BooleanSearchProperty(string name, VaultPropertyId value) : base(name, value) { }
+    public BooleanSearchProperty(string name, VaultPropertyDefinitionId value) : base(name, value) { }
 }
 
 public sealed class DateTimeSearchProperty : SearchProperty
@@ -43,7 +43,7 @@ public sealed class DateTimeSearchProperty : SearchProperty
     public static readonly DateTimeSearchProperty Created = new(nameof(Created), new(73));
     public static readonly DateTimeSearchProperty LatestReleasedDate = new(nameof(LatestReleasedDate), new(240));
 
-    public DateTimeSearchProperty(string name, VaultPropertyId value) : base(name, value) { }
+    public DateTimeSearchProperty(string name, VaultPropertyDefinitionId value) : base(name, value) { }
 }
 
 public sealed class NumericSearchProperty : SearchProperty
@@ -59,7 +59,7 @@ public sealed class NumericSearchProperty : SearchProperty
     public static readonly NumericSearchProperty NumberOfItems = new(nameof(NumberOfItems), new(70));
     public static readonly NumericSearchProperty FileLinkState = new(nameof(FileLinkState), new(76));
 
-    public NumericSearchProperty(string name, VaultPropertyId value) : base(name, value) { }
+    public NumericSearchProperty(string name, VaultPropertyDefinitionId value) : base(name, value) { }
 }
 
 public sealed class StringSearchProperty : SearchProperty
@@ -107,5 +107,5 @@ public sealed class StringSearchProperty : SearchProperty
     public static readonly StringSearchProperty CustomObjectSystemName = new(nameof(CustomObjectSystemName), new(75));
     public static readonly StringSearchProperty LatestApprover = new(nameof(LatestApprover), new(241));
 
-    public StringSearchProperty(string name, VaultPropertyId value) : base(name, value) { }
+    public StringSearchProperty(string name, VaultPropertyDefinitionId value) : base(name, value) { }
 }

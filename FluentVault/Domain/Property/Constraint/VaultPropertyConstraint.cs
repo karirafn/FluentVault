@@ -5,16 +5,16 @@ using FluentVault.Extensions;
 namespace FluentVault;
 
 public record VaultPropertyConstraint(
-    long Id,
-    long PropertyDefinitionId,
-    long CategoryId,
+    VaultPropertyConstraintId Id,
+    VaultPropertyDefinitionId PropertyDefinitionId,
+    VaultCategoryId CategoryId,
     VaultPropertyConstraintType Type,
     bool Value)
 {
     internal static VaultPropertyConstraint Parse(XElement element)
-        => new(element.ParseAttributeValue("Id", long.Parse),
-            element.ParseAttributeValue("PropDefId", long.Parse),
-            element.ParseAttributeValue("CatId", long.Parse),
+        => new(VaultPropertyConstraintId.ParseFromAttribute(element, "Id"),
+            VaultPropertyDefinitionId.ParseFromAttribute(element, "PropDefId"),
+            VaultCategoryId.ParseFromAttribute(element, "CatId"),
             element.ParseAttributeValue("PropConstrTyp", x => VaultPropertyConstraintType.FromName(x)),
             element.ParseAttributeValue("Val", bool.Parse));
 }
