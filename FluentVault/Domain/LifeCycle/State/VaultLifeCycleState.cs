@@ -5,7 +5,7 @@ using FluentVault.Extensions;
 namespace FluentVault;
 
 public record VaultLifeCycleState(
-    long Id,
+    LifeCycleStateId Id,
     string Name,
     string DisplayName,
     string Description,
@@ -21,7 +21,7 @@ public record VaultLifeCycleState(
     IEnumerable<string> Comments)
 {
     internal static VaultLifeCycleState Parse(XElement element)
-        => new(element.ParseAttributeValue("ID", long.Parse),
+        => new(LifeCycleStateId.ParseFromAttribute(element, "ID"),
             element.GetAttributeValue("Name"),
             element.GetAttributeValue("DispName"),
             element.GetAttributeValue("Descr"),
