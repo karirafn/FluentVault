@@ -2,7 +2,7 @@
 using FluentVault.Common;
 
 namespace FluentVault;
-public class VaultLifeCycleStateId : GenericId<long>
+public class VaultLifeCycleStateId : VaultGenericId<long>
 {
     public VaultLifeCycleStateId(long value) : base(value) { }
 

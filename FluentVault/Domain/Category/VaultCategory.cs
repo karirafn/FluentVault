@@ -4,22 +4,22 @@ using FluentVault.Extensions;
 
 namespace FluentVault;
 
-public record VaultCategoryConfiguration(
+public record VaultCategory(
     VaultCategoryId Id,
     string Name,
     string SystemName,
     long Color,
     string Description,
-    IEnumerable<EntityClass> EntityClasses)
+    IEnumerable<VaultEntityClass> EntityClasses)
 {
-    internal static IEnumerable<VaultCategoryConfiguration> ParseAll(XDocument document)
+    internal static IEnumerable<VaultCategory> ParseAll(XDocument document)
         => document.ParseAllElements("Cat", ParseCategory);
 
-    private static VaultCategoryConfiguration ParseCategory(XElement element)
-        => new(element.ParseAttributeValue("Id", VaultCategoryId.Parse),
+    private static VaultCategory ParseCategory(XElement element)
+        => new(element.ParseElementValue("Id", VaultCategoryId.Parse),
             element.GetElementValue("Name"),
             element.GetElementValue("SysName"),
             element.ParseElementValue("Color", long.Parse),
             element.GetElementValue("Descr"),
-            element.ParseAllElementValues("EntClassId", x => EntityClass.FromName(x)));
+            element.ParseAllElementValues("EntClassId", x => VaultEntityClass.FromName(x)));
 }

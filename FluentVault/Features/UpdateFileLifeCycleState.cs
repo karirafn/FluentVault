@@ -10,7 +10,7 @@ namespace FluentVault.Features;
 
 internal record UpdateFileLifeCycleStateCommand(
     IEnumerable<string> FileNames,
-    IEnumerable<MasterId> MasterIds,
+    IEnumerable<VaultMasterId> MasterIds,
     IEnumerable<VaultLifeCycleStateId> StateIds,
     string Comment,
     VaultSessionCredentials Session) : IRequest<VaultFile>;
@@ -28,7 +28,7 @@ internal class UpdateFileLifeCycleStateHandler : IRequestHandler<UpdateFileLifeC
 
     public async Task<VaultFile> Handle(UpdateFileLifeCycleStateCommand command, CancellationToken cancellationToken)
     {
-        List<MasterId> masterIds = command.MasterIds.ToList();
+        List<VaultMasterId> masterIds = command.MasterIds.ToList();
         if (command.FileNames.Any())
         {
             string searchString = string.Join(" OR ", command.FileNames);

@@ -10,7 +10,7 @@ internal class UpdateFileLifecycleStateRequestBuilder : IUpdateFileLifecycleStat
     private readonly IMediator _mediator;
     private readonly VaultSessionCredentials _session;
 
-    private readonly List<MasterId> _masterIds = new();
+    private readonly List<VaultMasterId> _masterIds = new();
     private readonly List<string> _filenames = new();
     private readonly List<VaultLifeCycleStateId> _stateIds = new();
     private string _comment = string.Empty;
@@ -18,8 +18,8 @@ internal class UpdateFileLifecycleStateRequestBuilder : IUpdateFileLifecycleStat
     public UpdateFileLifecycleStateRequestBuilder(IMediator mediator, VaultSessionCredentials session)
         => (_mediator, _session) = (mediator, session);
 
-    public IWithFiles ByMasterId(MasterId masterId) => ByMasterIds(new[] { masterId });
-    public IWithFiles ByMasterIds(IEnumerable<MasterId> masterIds)
+    public IWithFiles ByMasterId(VaultMasterId masterId) => ByMasterIds(new[] { masterId });
+    public IWithFiles ByMasterIds(IEnumerable<VaultMasterId> masterIds)
     {
         _masterIds.AddRange(masterIds);
         return this;

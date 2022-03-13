@@ -7,7 +7,7 @@ namespace FluentVault;
 public record VaultFile(
     VaultFileId Id,
     string Filename,
-    MasterId MasterId,
+    VaultMasterId MasterId,
     string VersionName,
     long VersionNumber,
     long MaximumCheckInVersionNumber,
@@ -47,7 +47,7 @@ public record VaultFile(
     private static VaultFile ParseVaultFile(XElement element)
         => new(element.ParseAttributeValue("Id", VaultFileId.Parse),
             element.GetAttributeValue("Name"),
-            element.ParseAttributeValue("MasterId", MasterId.Parse),
+            element.ParseAttributeValue("MasterId", VaultMasterId.Parse),
             element.GetAttributeValue("VerName"),
             element.ParseAttributeValue("VerNum", long.Parse),
             element.ParseAttributeValue("MaxCkInVerNum", long.Parse),

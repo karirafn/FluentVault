@@ -2,7 +2,7 @@
 using FluentVault.Common;
 
 namespace FluentVault;
-public class VaultPropertyDefinitionId : GenericId<long>, IEquatable<VaultPropertyDefinitionId>, IComparable<VaultPropertyDefinitionId>
+public class VaultPropertyDefinitionId : VaultGenericId<long>, IEquatable<VaultPropertyDefinitionId>, IComparable<VaultPropertyDefinitionId>
 {
     public VaultPropertyDefinitionId(long value) : base(value) { }
 

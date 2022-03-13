@@ -188,7 +188,7 @@ internal class SearchFilesRequestBuilder :
     private void SetValue(object value, SearchOperator @operator)
         => (_value, _operator) = (value, @operator);
 
-    private ISearchFilesAddSearchCondition SetProperty(SearchProperty property)
+    private ISearchFilesAddSearchCondition SetProperty(VaultSearchProperty property)
     {
         (_propertyId, _propertyType) = (property, SearchPropertyType.SingleProperty);
         return this;

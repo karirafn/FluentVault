@@ -3,12 +3,12 @@ using Ardalis.SmartEnum;
 
 namespace FluentVault;
 
-public abstract class SearchProperty : SmartEnum<SearchProperty, VaultPropertyDefinitionId>
+public abstract class VaultSearchProperty : SmartEnum<VaultSearchProperty, VaultPropertyDefinitionId>
 {
-    protected SearchProperty(string name, VaultPropertyDefinitionId value) : base(name, value) { }
+    protected VaultSearchProperty(string name, VaultPropertyDefinitionId value) : base(name, value) { }
 }
 
-public sealed class BooleanSearchProperty : SearchProperty
+public sealed class BooleanSearchProperty : VaultSearchProperty
 {
     public static readonly BooleanSearchProperty LinkedToItem = new(nameof(LinkedToItem), new(13));
     public static readonly BooleanSearchProperty ItemAssignable = new(nameof(ItemAssignable), new(14));
@@ -28,7 +28,7 @@ public sealed class BooleanSearchProperty : SearchProperty
     public BooleanSearchProperty(string name, VaultPropertyDefinitionId value) : base(name, value) { }
 }
 
-public sealed class DateTimeSearchProperty : SearchProperty
+public sealed class DateTimeSearchProperty : VaultSearchProperty
 {
     public static readonly DateTimeSearchProperty DateVersionCreated = new(nameof(DateVersionCreated), new(5));
     public static readonly DateTimeSearchProperty CreateDate = new(nameof(CreateDate), new(7));
@@ -46,7 +46,7 @@ public sealed class DateTimeSearchProperty : SearchProperty
     public DateTimeSearchProperty(string name, VaultPropertyDefinitionId value) : base(name, value) { }
 }
 
-public sealed class NumericSearchProperty : SearchProperty
+public sealed class NumericSearchProperty : VaultSearchProperty
 {
     public static readonly NumericSearchProperty Version = new(nameof(Version), new(2));
     public static readonly NumericSearchProperty NumberOfAttachments = new(nameof(NumberOfAttachments), new(4));
@@ -62,7 +62,7 @@ public sealed class NumericSearchProperty : SearchProperty
     public NumericSearchProperty(string name, VaultPropertyDefinitionId value) : base(name, value) { }
 }
 
-public sealed class StringSearchProperty : SearchProperty
+public sealed class StringSearchProperty : VaultSearchProperty
 {
     public static readonly StringSearchProperty Classification = new(nameof(Classification), new(1));
     public static readonly StringSearchProperty Comment = new(nameof(Comment), new(3));

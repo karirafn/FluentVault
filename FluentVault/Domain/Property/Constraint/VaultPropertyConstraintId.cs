@@ -2,7 +2,7 @@
 using FluentVault.Common;
 
 namespace FluentVault;
-public class VaultPropertyConstraintId : GenericId<long>
+public class VaultPropertyConstraintId : VaultGenericId<long>
 {
     public VaultPropertyConstraintId(long value) : base(value) { }
 

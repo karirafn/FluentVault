@@ -2,7 +2,7 @@
 using FluentVault.Common;
 
 namespace FluentVault;
-public class VaultRevisionId : GenericId<long>
+public class VaultRevisionId : VaultGenericId<long>
 {
     public VaultRevisionId(long value) : base(value) { }
 

@@ -7,9 +7,9 @@ using MediatR;
 namespace FluentVault.Features;
 
 internal record GetCategoryConfigurationsQuery
-    (VaultSessionCredentials Session) : IRequest<IEnumerable<VaultCategoryConfiguration>>;
+    (VaultSessionCredentials Session) : IRequest<IEnumerable<VaultCategory>>;
 
-internal class GetCategoryConfigurationsHandler : IRequestHandler<GetCategoryConfigurationsQuery, IEnumerable<VaultCategoryConfiguration>>
+internal class GetCategoryConfigurationsHandler : IRequestHandler<GetCategoryConfigurationsQuery, IEnumerable<VaultCategory>>
 {
     private const string Operation = "GetCategoryConfigurationsByBehaviorNames";
 
@@ -19,10 +19,10 @@ internal class GetCategoryConfigurationsHandler : IRequestHandler<GetCategoryCon
     public GetCategoryConfigurationsHandler(IVaultRequestService soapRequestService, VaultSessionCredentials session)
         => (_soapRequestService, _session) = (soapRequestService, session);
 
-    public async Task<IEnumerable<VaultCategoryConfiguration>> Handle(GetCategoryConfigurationsQuery query, CancellationToken cancellationToken)
+    public async Task<IEnumerable<VaultCategory>> Handle(GetCategoryConfigurationsQuery query, CancellationToken cancellationToken)
     {
         XDocument response = await _soapRequestService.SendAsync(Operation, _session);
-        IEnumerable<VaultCategoryConfiguration> categories = VaultCategoryConfiguration.ParseAll(response);
+        IEnumerable<VaultCategory> categories = VaultCategory.ParseAll(response);
 
         return categories;
     }

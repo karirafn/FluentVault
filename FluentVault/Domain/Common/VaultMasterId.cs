@@ -2,11 +2,11 @@
 using FluentVault.Common;
 
 namespace FluentVault;
-public class MasterId : GenericId<long>
+public class VaultMasterId : VaultGenericId<long>
 {
-    public MasterId(long value) : base(value) { }
+    public VaultMasterId(long value) : base(value) { }
 
-    public static MasterId Parse(string value)
+    public static VaultMasterId Parse(string value)
         => new(long.TryParse(value, out long id)
             ? id
             : throw new KeyNotFoundException("Failed to parse master ID."));

@@ -13,7 +13,7 @@ internal class GetRequestBuilder : IGetRequestBuilder
     public GetRequestBuilder(IMediator mediator, VaultSessionCredentials session)
         => (_mediator, _session) = (mediator, session);
 
-    public async Task<IEnumerable<VaultCategoryConfiguration>> CategoryConfigurations()
+    public async Task<IEnumerable<VaultCategory>> CategoryConfigurations()
         => await _mediator.Send(new GetCategoryConfigurationsQuery(_session));
 
     public async Task<IEnumerable<VaultLifeCycleDefinition>> LifeCycleDefinitions()

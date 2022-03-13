@@ -11,13 +11,13 @@ internal static partial class VaultResponseFixtures
     public static (string Body, IEnumerable<VaultProperty> Files) GetVaultPropertyFixtures(int count)
     {
         Fixture fixture = new();
-        fixture.Register(() => AllowedMappingDirection.Read);
-        fixture.Register(() => Classification.Standard);
-        fixture.Register(() => ContentSourceDefinitionType.File);
-        fixture.Register(() => DataType.String);
-        fixture.Register(() => EntityClass.File);
-        fixture.Register(() => MappingDirection.Write);
-        fixture.Register(() => MappingType.Constant);
+        fixture.Register(() => VaultAllowedMappingDirection.Read);
+        fixture.Register(() => VaultClassification.Standard);
+        fixture.Register(() => VaultContentSourceDefinitionType.File);
+        fixture.Register(() => VaultDataType.String);
+        fixture.Register(() => VaultEntityClass.File);
+        fixture.Register(() => VaultMappingDirection.Write);
+        fixture.Register(() => VaultMappingType.Constant);
         fixture.Register(() => VaultPropertyConstraintType.RequiresValue);
 
         return CreateBody<VaultProperty>(fixture, count, "GetPropertyDefinitionInfosByEntityClassId", "http://AutodeskDM/Services/Property/1/7/2020/", CreatePropertyBody);
@@ -52,7 +52,7 @@ internal static partial class VaultResponseFixtures
                     </CtntSrcPropDefArray>
                 </PropDefInfo>";
 
-    private static string CreateEntityClassAssociationBody(EntityClassAssociation association)
+    private static string CreateEntityClassAssociationBody(VaultEntityClassAssociation association)
         => $@"<EntClassAssoc EntClassId=""{association.EntityClass}"" MapDirection=""{association.AllowedMappingDirection}""/>";
 
     private static string CreatePropertyConstraintBody(VaultPropertyConstraint constraint)
@@ -66,7 +66,7 @@ Val=""{constraint.Value}""/>";
     private static string CreateListValueBody(string value)
         => $@"<ListVal xsi:type=""xsd:string"">{value}</ListVal>";
 
-    private static string CreateEntityClassContentSourcePropertyDefinitionBosy(EntityClassContentSourcePropertyDefinition definition)
+    private static string CreateEntityClassContentSourcePropertyDefinitionBosy(VaultEntityClassContentSourcePropertyDefinition definition)
         => $@"<EntClassCtntSrcPropDefs EntClassId=""{definition.EntityClass}"">
 <CtntSrcPropDefArray>
 {definition.ContentSourcePropertyDefinitions.Aggregate(new StringBuilder(),
@@ -90,7 +90,7 @@ Val=""{constraint.Value}""/>";
 </CanCreateNewArray>
 </EntClassCtntSrcPropDefs>";
 
-    private static string CreateContentSourcePropertyDefinition(ContentSourcePropertyDefinition definition)
+    private static string CreateContentSourcePropertyDefinition(VaultContentSourcePropertyDefinition definition)
         => $@"<CtntSrcPropDef
 CtntSrcId=""{definition.ContentSourceId}""
 DispName=""{definition.DisplayName}""

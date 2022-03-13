@@ -9,7 +9,7 @@ using MediatR;
 namespace FluentVault.Features;
 
 internal record UpdateFilePropertyDefinitionsCommand(
-    List<MasterId> MasterIds,
+    List<VaultMasterId> MasterIds,
     List<VaultPropertyDefinitionId> AddedPropertyIds,
     List<VaultPropertyDefinitionId> RemovedPropertyIds,
     IEnumerable<string> Filenames,
@@ -53,7 +53,7 @@ internal class UpdateFilePropertyDefinitionsHandler : IRequestHandler<UpdateFile
         return files;
     }
 
-    private async Task<IEnumerable<MasterId>> GetMasterIdsFromFilenames(UpdateFilePropertyDefinitionsCommand command)
+    private async Task<IEnumerable<VaultMasterId>> GetMasterIdsFromFilenames(UpdateFilePropertyDefinitionsCommand command)
     {
         var searchString = string.Join(" OR ", command.Filenames);
         var files = await new SearchFilesRequestBuilder(_mediator, command.Session)

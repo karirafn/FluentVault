@@ -10,7 +10,7 @@ internal class UpdateFilePropertyDefinitionsRequestBuilder : IUpdateFileProperty
     private readonly IMediator _mediator;
     private readonly VaultSessionCredentials _session;
 
-    private readonly List<MasterId> _masterIds = new();
+    private readonly List<VaultMasterId> _masterIds = new();
     private readonly List<VaultPropertyDefinitionId> _addedPropertyIds = new();
     private readonly List<VaultPropertyDefinitionId> _removedPropertyIds = new();
     private readonly List<string> _filenames = new();
@@ -28,8 +28,8 @@ internal class UpdateFilePropertyDefinitionsRequestBuilder : IUpdateFileProperty
         return files;
     }
 
-    public IUpdateFilePropertDefinitionsAction ByFileMasterId(MasterId masterId) => ByFileMasterIds(new[] { masterId });
-    public IUpdateFilePropertDefinitionsAction ByFileMasterIds(IEnumerable<MasterId> masterIds)
+    public IUpdateFilePropertDefinitionsAction ByFileMasterId(VaultMasterId masterId) => ByFileMasterIds(new[] { masterId });
+    public IUpdateFilePropertDefinitionsAction ByFileMasterIds(IEnumerable<VaultMasterId> masterIds)
     {
         _masterIds.AddRange(masterIds);
         return this;
