@@ -6,7 +6,7 @@ namespace FluentVault;
 
 public record VaultFileRevision(
     RevisionId Id,
-    long DefinitionId,
+    RevisionDefinitionId DefinitionId,
     string Label,
     long MaximumConsumeFileId,
     long MaximumFileId,
@@ -15,7 +15,7 @@ public record VaultFileRevision(
 {
     internal static VaultFileRevision Parse(XElement element)
         => new(RevisionId.ParseFromAttribute(element, "RevId"),
-            element.ParseAttributeValue("RevDefId", long.Parse),
+            RevisionDefinitionId.ParseFromAttribute(element, "RevDefId"),
             element.GetAttributeValue("Label"),
             element.ParseAttributeValue("MaxConsumeFileId", long.Parse),
             element.ParseAttributeValue("MaxFileId", long.Parse),
