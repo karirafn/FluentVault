@@ -6,7 +6,7 @@ namespace FluentVault;
 
 public record VaultProperty(
     PropertyDefinition Definition,
-    IEnumerable<PropertyConstraint> Constraints,
+    IEnumerable<VaultPropertyConstraint> Constraints,
     IEnumerable<string> ListValues,
     IEnumerable<EntityClassContentSourcePropertyDefinition> EntityClassContentSourcePropertyDefinitions)
 {
@@ -15,7 +15,7 @@ public record VaultProperty(
 
     internal static VaultProperty ParseProperty(XElement element)
         => new(element.ParseElement("PropDef", PropertyDefinition.Parse),
-            element.ParseAllElements("PropertyConstraint", PropertyConstraint.Parse),
+            element.ParseAllElements("PropertyConstraint", VaultPropertyConstraint.Parse),
             element.ParseAllElements("ListVal", x => x.Value),
             element.ParseAllElements("EntClassCtntSrcPropDefs", EntityClassContentSourcePropertyDefinition.Parse));
 }

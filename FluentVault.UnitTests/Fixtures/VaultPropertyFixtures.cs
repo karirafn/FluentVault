@@ -18,7 +18,7 @@ internal static partial class VaultResponseFixtures
         fixture.Register(() => EntityClass.File);
         fixture.Register(() => MappingDirection.Write);
         fixture.Register(() => MappingType.Constant);
-        fixture.Register(() => PropertyConstraintType.RequiresValue);
+        fixture.Register(() => VaultPropertyConstraintType.RequiresValue);
 
         return CreateBody<VaultProperty>(fixture, count, "GetPropertyDefinitionInfosByEntityClassId", "http://AutodeskDM/Services/Property/1/7/2020/", CreatePropertyBody);
     }
@@ -55,7 +55,7 @@ internal static partial class VaultResponseFixtures
     private static string CreateEntityClassAssociationBody(EntityClassAssociation association)
         => $@"<EntClassAssoc EntClassId=""{association.EntityClass}"" MapDirection=""{association.AllowedMappingDirection}""/>";
 
-    private static string CreatePropertyConstraintBody(PropertyConstraint constraint)
+    private static string CreatePropertyConstraintBody(VaultPropertyConstraint constraint)
         => $@"<PropertyConstraint
 Id=""{constraint.Id}""
 PropDefId=""{constraint.PropertyDefinitionId}""

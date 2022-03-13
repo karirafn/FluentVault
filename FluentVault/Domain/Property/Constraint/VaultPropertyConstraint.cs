@@ -4,17 +4,17 @@ using FluentVault.Extensions;
 
 namespace FluentVault;
 
-public record PropertyConstraint(
+public record VaultPropertyConstraint(
     long Id,
     long PropertyDefinitionId,
     long CategoryId,
-    PropertyConstraintType Type,
+    VaultPropertyConstraintType Type,
     bool Value)
 {
-    internal static PropertyConstraint Parse(XElement element)
+    internal static VaultPropertyConstraint Parse(XElement element)
         => new(element.ParseAttributeValue("Id", long.Parse),
             element.ParseAttributeValue("PropDefId", long.Parse),
             element.ParseAttributeValue("CatId", long.Parse),
-            element.ParseAttributeValue("PropConstrTyp", x => PropertyConstraintType.FromName(x)),
+            element.ParseAttributeValue("PropConstrTyp", x => VaultPropertyConstraintType.FromName(x)),
             element.ParseAttributeValue("Val", bool.Parse));
 }
