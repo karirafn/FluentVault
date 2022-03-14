@@ -5,21 +5,20 @@ using MediatR;
 
 namespace FluentVault.Features;
 
-internal record SignOutCommand() : IRequest;
+internal record SignOutCommand(VaultSessionCredentials Session) : IRequest;
 
 internal class SignOutHandler : IRequestHandler<SignOutCommand>
 {
     private const string Operation = "SignOut";
 
     private readonly IVaultRequestService _vaultRequestService;
-    private readonly VaultSessionCredentials _session;
 
-    public SignOutHandler(IVaultRequestService vaultRequestService, VaultSessionCredentials session)
-        => (_vaultRequestService, _session) = (vaultRequestService, session);
+    public SignOutHandler(IVaultRequestService vaultRequestService)
+        => _vaultRequestService = vaultRequestService;
 
-    public async Task<Unit> Handle(SignOutCommand request, CancellationToken cancellationToken)
+    public async Task<Unit> Handle(SignOutCommand command, CancellationToken cancellationToken)
     {
-        _ = await _vaultRequestService.SendAsync(Operation, _session);
+        _ = await _vaultRequestService.SendAsync(Operation, command.Session);
 
         return Unit.Value;
     }

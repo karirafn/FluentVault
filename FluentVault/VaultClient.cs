@@ -33,7 +33,7 @@ internal class VaultClient : IAsyncDisposable, IVaultClient
 
     async ValueTask IAsyncDisposable.DisposeAsync()
     {
-        await _mediator.Send(new SignOutCommand());
+        await _mediator.Send(new SignOutCommand(_session));
         GC.SuppressFinalize(this);
     }
 }

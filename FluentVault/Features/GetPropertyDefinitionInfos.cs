@@ -13,14 +13,13 @@ internal class GetPropertyDefinitionInfosHandler : IRequestHandler<GetPropertyDe
     private const string Operation = "GetPropertyDefinitionInfosByEntityClassId";
 
     private readonly IVaultRequestService _vaultRequestService;
-    private readonly VaultSessionCredentials _session;
 
-    public GetPropertyDefinitionInfosHandler(IVaultRequestService vaultRequestService, VaultSessionCredentials session)
-        => (_vaultRequestService, _session) = (vaultRequestService, session);
+    public GetPropertyDefinitionInfosHandler(IVaultRequestService vaultRequestService)
+        => _vaultRequestService = vaultRequestService;
 
-    public async Task<IEnumerable<VaultProperty>> Handle(GetPropertyDefinitionInfosQuery request, CancellationToken cancellationToken)
+    public async Task<IEnumerable<VaultProperty>> Handle(GetPropertyDefinitionInfosQuery query, CancellationToken cancellationToken)
     {
-        XDocument response = await _vaultRequestService.SendAsync(Operation, _session);
+        XDocument response = await _vaultRequestService.SendAsync(Operation, query.Session);
         IEnumerable<VaultProperty> properties = VaultProperty.ParseAll(response);
 
         return properties;

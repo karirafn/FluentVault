@@ -14,14 +14,13 @@ internal class GetCategoryConfigurationsHandler : IRequestHandler<GetCategoryCon
     private const string Operation = "GetCategoryConfigurationsByBehaviorNames";
 
     private readonly IVaultRequestService _vaultRequestService;
-    private readonly VaultSessionCredentials _session;
 
-    public GetCategoryConfigurationsHandler(IVaultRequestService vaultRequestService, VaultSessionCredentials session)
-        => (_vaultRequestService, _session) = (vaultRequestService, session);
+    public GetCategoryConfigurationsHandler(IVaultRequestService vaultRequestService)
+        => _vaultRequestService = vaultRequestService;
 
     public async Task<IEnumerable<VaultCategory>> Handle(GetCategoryConfigurationsQuery query, CancellationToken cancellationToken)
     {
-        XDocument response = await _vaultRequestService.SendAsync(Operation, _session);
+        XDocument response = await _vaultRequestService.SendAsync(Operation, query.Session);
         IEnumerable<VaultCategory> categories = VaultCategory.ParseAll(response);
 
         return categories;
