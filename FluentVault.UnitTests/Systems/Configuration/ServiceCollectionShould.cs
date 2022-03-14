@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Net.Http;
+﻿using System.Net.Http;
 
 using FluentAssertions;
 
@@ -8,7 +7,6 @@ using FluentVault.Configuration;
 
 using MediatR;
 
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 using Xunit;
