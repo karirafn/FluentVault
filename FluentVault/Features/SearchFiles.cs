@@ -37,7 +37,7 @@ internal class SearchFilesHandler : IRequestHandler<SearchFilesCommand, FileSear
             content.AddElement(ns, "bookmark", command.Bookmark);
         }
 
-        XDocument response = await _vaultRequestService.SendAsync(Operation, command.Session, contentBuilder);
+        XDocument response = await _vaultRequestService.SendAsync(Operation, command.Session, contentBuilder, cancellationToken);
         var result = FileSearchResult.Parse(response);
 
         return result;

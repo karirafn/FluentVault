@@ -31,7 +31,7 @@ internal class SignInHandler : IRequestHandler<SignInCommand, VaultSessionCreden
             content.AddElement(ns, "userPassword", command.VaultOptions.Password);
         }
 
-        XDocument document = await _vaultRequestService.SendAsync(Operation, new(), contentBuilder);
+        XDocument document = await _vaultRequestService.SendAsync(Operation, new(), contentBuilder, cancellationToken);
 
         string t = document.GetElementValue("Ticket");
         string u = document.GetElementValue("UserId");

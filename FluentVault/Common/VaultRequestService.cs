@@ -17,13 +17,13 @@ internal class VaultRequestService : IVaultRequestService
         _data = VaultRequestDataCollection.SoapRequestData.ToDictionary(x => x.Operation);
     }
 
-    public async Task<XDocument> SendAsync(string operation, VaultSessionCredentials session, Action<XElement, XNamespace>? contentBuilder = null)
+    public async Task<XDocument> SendAsync(string operation, VaultSessionCredentials session, Action<XElement, XNamespace>? contentBuilder = null, CancellationToken cancellationToken = default)
     {
         if (_data.Keys.Any(key => key == operation) is false)
             throw new KeyNotFoundException($@"Operation ""{operation}"" was not found in Vault request data collection");
 
         HttpRequestMessage requestMessage = GetRequestMessage(operation, session, contentBuilder);
-        HttpResponseMessage responseMessage = await _httpClient.SendAsync(requestMessage);
+        HttpResponseMessage responseMessage = await _httpClient.SendAsync(requestMessage, cancellationToken);
 
         if (responseMessage.StatusCode != HttpStatusCode.OK)
             throw new HttpRequestException("Invalid HTTP response", null, responseMessage.StatusCode);

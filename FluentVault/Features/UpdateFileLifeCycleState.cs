@@ -48,7 +48,7 @@ internal class UpdateFileLifeCycleStateHandler : IRequestHandler<UpdateFileLifeC
             content.AddElement(ns, "comment", command.Comment);
         };
 
-        XDocument document = await _vaultRequestService.SendAsync(Operation, command.Session, contentBuilder);
+        XDocument document = await _vaultRequestService.SendAsync(Operation, command.Session, contentBuilder, cancellationToken);
         VaultFile file = VaultFile.ParseSingle(document);
 
         return file;

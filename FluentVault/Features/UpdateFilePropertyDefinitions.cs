@@ -47,7 +47,7 @@ internal class UpdateFilePropertyDefinitionsHandler : IRequestHandler<UpdateFile
             content.AddElement(ns, "comment", "Add/Remove properties");
         };
 
-        XDocument response = await _vaultRequestService.SendAsync(Operation, command.Session, contentBuilder);
+        XDocument response = await _vaultRequestService.SendAsync(Operation, command.Session, contentBuilder, cancellationToken);
         var files = VaultFile.ParseAll(response);
 
         return files;

@@ -19,7 +19,7 @@ internal class GetAllLifeCycleDefinitionsHandler : IRequestHandler<GetAllLifeCyc
 
     public async Task<IEnumerable<VaultLifeCycleDefinition>> Handle(GetAllLifeCycleDefinitionsQuery query, CancellationToken cancellationToken)
     {
-        XDocument response = await _vaultRequestService.SendAsync(Operation, query.Session);
+        XDocument response = await _vaultRequestService.SendAsync(Operation, query.Session, cancellationToken: cancellationToken);
         IEnumerable<VaultLifeCycleDefinition> lifeCycles = VaultLifeCycleDefinition.ParseAll(response);
 
         return lifeCycles;

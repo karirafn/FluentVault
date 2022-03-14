@@ -19,7 +19,7 @@ internal class GetPropertyDefinitionInfosHandler : IRequestHandler<GetPropertyDe
 
     public async Task<IEnumerable<VaultProperty>> Handle(GetPropertyDefinitionInfosQuery query, CancellationToken cancellationToken)
     {
-        XDocument response = await _vaultRequestService.SendAsync(Operation, query.Session);
+        XDocument response = await _vaultRequestService.SendAsync(Operation, query.Session, cancellationToken: cancellationToken);
         IEnumerable<VaultProperty> properties = VaultProperty.ParseAll(response);
 
         return properties;
