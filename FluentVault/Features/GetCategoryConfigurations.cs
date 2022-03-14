@@ -13,15 +13,15 @@ internal class GetCategoryConfigurationsHandler : IRequestHandler<GetCategoryCon
 {
     private const string Operation = "GetCategoryConfigurationsByBehaviorNames";
 
-    private readonly IVaultRequestService _soapRequestService;
+    private readonly IVaultRequestService _vaultRequestService;
     private readonly VaultSessionCredentials _session;
 
-    public GetCategoryConfigurationsHandler(IVaultRequestService soapRequestService, VaultSessionCredentials session)
-        => (_soapRequestService, _session) = (soapRequestService, session);
+    public GetCategoryConfigurationsHandler(IVaultRequestService vaultRequestService, VaultSessionCredentials session)
+        => (_vaultRequestService, _session) = (vaultRequestService, session);
 
     public async Task<IEnumerable<VaultCategory>> Handle(GetCategoryConfigurationsQuery query, CancellationToken cancellationToken)
     {
-        XDocument response = await _soapRequestService.SendAsync(Operation, _session);
+        XDocument response = await _vaultRequestService.SendAsync(Operation, _session);
         IEnumerable<VaultCategory> categories = VaultCategory.ParseAll(response);
 
         return categories;

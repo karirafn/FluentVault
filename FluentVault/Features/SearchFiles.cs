@@ -20,10 +20,10 @@ internal class SearchFilesHandler : IRequestHandler<SearchFilesCommand, FileSear
 {
     private const string Operation = "FindFilesBySearchConditions";
 
-    private readonly IVaultRequestService _soapRequestService;
+    private readonly IVaultRequestService _vaultRequestService;
 
-    public SearchFilesHandler(IVaultRequestService soapRequestService)
-        => _soapRequestService = soapRequestService;
+    public SearchFilesHandler(IVaultRequestService vaultRequestService)
+        => _vaultRequestService = vaultRequestService;
 
     public async Task<FileSearchResult> Handle(SearchFilesCommand command, CancellationToken cancellationToken)
     {
@@ -37,7 +37,7 @@ internal class SearchFilesHandler : IRequestHandler<SearchFilesCommand, FileSear
             content.AddElement(ns, "bookmark", command.Bookmark);
         }
 
-        XDocument response = await _soapRequestService.SendAsync(Operation, command.Session, contentBuilder);
+        XDocument response = await _vaultRequestService.SendAsync(Operation, command.Session, contentBuilder);
         var result = FileSearchResult.Parse(response);
 
         return result;

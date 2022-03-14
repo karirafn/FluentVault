@@ -22,11 +22,11 @@ internal class UpdateFilePropertyDefinitionsHandler : IRequestHandler<UpdateFile
     private const string Operation = "UpdateFilePropertyDefinitions";
 
     private readonly IMediator _mediator;
-    private readonly IVaultRequestService _soapRequestService;
+    private readonly IVaultRequestService _vaultRequestService;
     private IEnumerable<VaultProperty> _allProperties = new List<VaultProperty>();
 
-    public UpdateFilePropertyDefinitionsHandler(IMediator mediator, IVaultRequestService soapRequestService)
-        => (_mediator, _soapRequestService) = (mediator, soapRequestService);
+    public UpdateFilePropertyDefinitionsHandler(IMediator mediator, IVaultRequestService vaultRequestService)
+        => (_mediator, _vaultRequestService) = (mediator, vaultRequestService);
 
     public async Task<IEnumerable<VaultFile>> Handle(UpdateFilePropertyDefinitionsCommand command, CancellationToken cancellationToken)
     {
@@ -47,7 +47,7 @@ internal class UpdateFilePropertyDefinitionsHandler : IRequestHandler<UpdateFile
             content.AddElement(ns, "comment", "Add/Remove properties");
         };
 
-        XDocument response = await _soapRequestService.SendAsync(Operation, command.Session, contentBuilder);
+        XDocument response = await _vaultRequestService.SendAsync(Operation, command.Session, contentBuilder);
         var files = VaultFile.ParseAll(response);
 
         return files;

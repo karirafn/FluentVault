@@ -12,15 +12,15 @@ internal class GetAllLifeCycleDefinitionsHandler : IRequestHandler<GetAllLifeCyc
 {
     private const string Operation = "GetAllLifeCycleDefinitions";
 
-    private readonly IVaultRequestService _soapRequestService;
+    private readonly IVaultRequestService _vaultRequestService;
     private readonly VaultSessionCredentials _session;
 
-    public GetAllLifeCycleDefinitionsHandler(IVaultRequestService soapRequestService, VaultSessionCredentials session)
-        => (_soapRequestService, _session) = (soapRequestService, session);
+    public GetAllLifeCycleDefinitionsHandler(IVaultRequestService vaultRequestService, VaultSessionCredentials session)
+        => (_vaultRequestService, _session) = (vaultRequestService, session);
 
     public async Task<IEnumerable<VaultLifeCycleDefinition>> Handle(GetAllLifeCycleDefinitionsQuery query, CancellationToken cancellationToken)
     {
-        XDocument response = await _soapRequestService.SendAsync(Operation, _session);
+        XDocument response = await _vaultRequestService.SendAsync(Operation, _session);
         IEnumerable<VaultLifeCycleDefinition> lifeCycles = VaultLifeCycleDefinition.ParseAll(response);
 
         return lifeCycles;

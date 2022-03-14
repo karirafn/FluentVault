@@ -3,7 +3,6 @@
 using FluentValidation;
 
 using FluentVault.Common;
-using FluentVault.Domain;
 using FluentVault.Extensions;
 
 using MediatR;
@@ -15,10 +14,10 @@ internal class SignInHandler : IRequestHandler<SignInCommand, VaultSessionCreden
 {
     private const string Operation = "SignIn";
 
-    private readonly IVaultRequestService _soapRequestService;
+    private readonly IVaultRequestService _vaultRequestService;
 
-    public SignInHandler(IVaultRequestService soapRequestService)
-        => _soapRequestService = soapRequestService;
+    public SignInHandler(IVaultRequestService vaultRequestService)
+        => _vaultRequestService = vaultRequestService;
 
     public async Task<VaultSessionCredentials> Handle(SignInCommand command, CancellationToken cancellationToken)
     {
@@ -32,7 +31,7 @@ internal class SignInHandler : IRequestHandler<SignInCommand, VaultSessionCreden
             content.AddElement(ns, "userPassword", command.VaultOptions.Password);
         }
 
-        XDocument document = await _soapRequestService.SendAsync(Operation, new(), contentBuilder);
+        XDocument document = await _vaultRequestService.SendAsync(Operation, new(), contentBuilder);
 
         string t = document.GetElementValue("Ticket");
         string u = document.GetElementValue("UserId");
