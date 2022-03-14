@@ -5,7 +5,7 @@ using MediatR;
 
 using Microsoft.Extensions.DependencyInjection;
 
-namespace FluentVault.Configuration;
+namespace FluentVault;
 
 public static class ConfigureServices
 {
