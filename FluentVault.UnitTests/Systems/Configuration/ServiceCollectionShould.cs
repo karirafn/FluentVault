@@ -22,20 +22,15 @@ public class ServiceCollectionShould
 
     public ServiceCollectionShould()
     {
-        IDictionary<string, string> settings = new Dictionary<string, string>
-        {
-            ["VaultOptions:Server"] = Server,
-            ["VaultOptions:Database"] = "database",
-            ["VaultOptions:Username"] = "username",
-            ["VaultOptions:Password"] = "password",
-            ["VaultOptions:AutoLogin"] = "false",
-        };
-        IConfiguration configuration = new ConfigurationBuilder()
-            .AddInMemoryCollection(settings)
-            .Build();
-
         ServiceCollection services = new();
-        services.AddFluentVault(configuration);
+        services.AddFluentVault(options =>
+        {
+            options.Server = "server";
+            options.Database = "database";
+            options.Password = "password";
+            options.Username = "username";
+            options.AutoLogin = false;
+        });
         _provider = services.BuildServiceProvider();
     }
 
