@@ -1,5 +1,4 @@
-﻿using FluentVault.Domain;
-using FluentVault.Features;
+﻿using FluentVault.Features;
 
 using MediatR;
 
@@ -13,7 +12,6 @@ internal class UpdateFileLifecycleStateRequestBuilder : IUpdateFileLifecycleStat
     private readonly List<VaultMasterId> _masterIds = new();
     private readonly List<string> _filenames = new();
     private readonly List<VaultLifeCycleStateId> _stateIds = new();
-    private string _comment = string.Empty;
 
     public UpdateFileLifecycleStateRequestBuilder(IMediator mediator, VaultSessionCredentials session)
         => (_mediator, _session) = (mediator, session);
@@ -40,7 +38,7 @@ internal class UpdateFileLifecycleStateRequestBuilder : IUpdateFileLifecycleStat
 
     public async Task<VaultFile> WithComment(string comment)
     {
-        UpdateFileLifeCycleStateCommand command = new(_filenames, _masterIds, _stateIds, _comment, _session);
+        UpdateFileLifeCycleStateCommand command = new(_filenames, _masterIds, _stateIds, comment, _session);
         VaultFile response = await _mediator.Send(command);
 
         return response;
