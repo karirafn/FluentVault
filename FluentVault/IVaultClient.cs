@@ -1,8 +1,6 @@
-﻿using FluentVault.Domain;
+﻿namespace FluentVault;
 
-namespace FluentVault;
-
-internal interface IVaultClient
+public interface IVaultClient
 {
     Task<VaultSessionCredentials> SignIn();
     IGetRequestBuilder Get { get; }
