@@ -35,7 +35,7 @@ internal class UpdateFileLifeCycleStateHandler : IRequestHandler<UpdateFileLifeC
             var response = await new SearchFilesRequestBuilder(_mediator, command.Session)
                 .ForValueEqualTo(searchString)
                 .InSystemProperty(StringSearchProperty.FileName)
-                .hWithoutPaging();
+                .WithoutPaging();
 
             masterIds.AddRange(response.Select(x => x.MasterId));
             command = command with { MasterIds = masterIds };
