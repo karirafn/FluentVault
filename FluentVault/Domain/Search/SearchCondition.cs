@@ -26,7 +26,7 @@ internal class SearchCondition
     public IDictionary<string, string> Attributes => new Dictionary<string, string>
     {
         ["PropDefId"] = _propertyId.ToString(),
-        ["SrchOper"] = _searchOperator.ToString(),
+        ["SrchOper"] = _searchOperator.Value.ToString(),
         ["SrchTxt"] = _searchText,
         ["PropTyp"] = _propertyType.Name,
         ["SrchRule"] = _searchRule.ToString(),
