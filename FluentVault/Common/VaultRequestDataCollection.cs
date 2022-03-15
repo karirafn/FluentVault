@@ -49,21 +49,21 @@ internal class VaultRequestDataCollection
         new(
           operation: "UpdateFilePropertyDefinitions",
           version: "v26",
-          service: "AuthService",
+          service: "DocumentService",
           command: "Connectivity.Explorer.DocumentPS.ChangeLifecycleStateCommand",
           @namespace: "Services/Document/1/7/2020"
         ),
         new(
           operation: "SignIn",
           version: "Filestore/v26_2",
-          service: "DocumentService",
-          command: "",
+          service: "AuthService",
+          command: "Connectivity.Application.VaultBase.SignInCommand",
           @namespace: "Filestore/Auth/1/8/2021"
         ),
         new(
           operation: "SignOut",
           version: "Filestore/v26",
-          service: "DocumentService",
+          service: "AuthService",
           command: "Connectivity.Application.VaultBase.SignOutCommand",
           @namespace: "Filestore/Auth/1/7/2020"
         )

@@ -3,7 +3,6 @@
 using FluentAssertions;
 
 using FluentVault.Common;
-using FluentVault.Configuration;
 
 using MediatR;
 

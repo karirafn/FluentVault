@@ -43,7 +43,7 @@ internal class VaultRequestService : IVaultRequestService
 
         HttpRequestMessage requestMessage = new(HttpMethod.Post, uri);
         requestMessage.Content = requestContent;
-        requestMessage.Headers.Add("SOAPAction", soapAction);
+        requestMessage.Headers.Add("SOAPAction", $@"""{soapAction}""");
 
         return requestMessage;
     }
@@ -58,7 +58,7 @@ internal class VaultRequestService : IVaultRequestService
 
     private XDocument GetRequestBody(string operation, VaultSessionCredentials session, Action<XElement, XNamespace>? contentBuilder)
     {
-        XNamespace ns = _data[operation].Namespace;
+        XNamespace ns = $"{_data[operation].Namespace}/";
         XElement content = new(ns + operation);
 
         if (contentBuilder is not null)
