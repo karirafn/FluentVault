@@ -7,7 +7,7 @@ public class VaultOptionsFixture
     public VaultOptionsFixture()
     {
         IConfigurationRoot configuration = new ConfigurationBuilder()
-            .AddUserSecrets<VaultOptions>()
+            .AddUserSecrets<VaultOptionsFixture>()
             .Build();
 
         Options = new()
