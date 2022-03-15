@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Net.Http;
 
-namespace FluentVault.IntegrationTests.Helpers;
+namespace FluentVault.IntegrationTests.Fixtures;
 public class VaultHttpClientFactory : IHttpClientFactory
 {
     public HttpClient CreateClient(string name)

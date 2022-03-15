@@ -1,11 +1,10 @@
-﻿using System.Net.Http;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 using FluentAssertions;
 
 using FluentVault.Common;
 using FluentVault.Features;
-using FluentVault.IntegrationTests.Helpers;
+using FluentVault.IntegrationTests.Fixtures;
 
 using Xunit;
 
@@ -17,15 +16,8 @@ public class SignInHandlerShould
     public async Task SignIn()
     {
         // Arrange
-        VaultOptions options = new()
-        {
-            Server = "ska-vaultpro",
-            Database = "skaginn3xpro",
-            Username = "admin",
-            Password = ""
-        };
-        IHttpClientFactory factory = new VaultHttpClientFactory();
-        VaultRequestService service = new(factory);
+        IVaultRequestService service = new VaultRequestServiceFixture().VaultRequestService;
+        VaultOptions options = new VaultOptionsFixture().Options;
         SignInHandler handler = new(service);
         SignInCommand command = new(options);
 
