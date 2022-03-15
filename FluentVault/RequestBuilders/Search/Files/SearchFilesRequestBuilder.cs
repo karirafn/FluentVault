@@ -31,13 +31,13 @@ internal class SearchFilesRequestBuilder :
     public SearchFilesRequestBuilder(IMediator mediator, VaultSessionCredentials session)
         => (_mediator, _session) = (mediator, session);
 
-    public async Task<IEnumerable<VaultFile>> SearchWithoutPaging()
+    public async Task<IEnumerable<VaultFile>> hWithoutPaging()
     {
         IEnumerable<VaultFile> files = await SearchAsync(int.MaxValue);
         return files;
     }
 
-    public async Task<IEnumerable<VaultFile>> SearchWithPaging(int maxResultCount = 200)
+    public async Task<IEnumerable<VaultFile>> WithPaging(int maxResultCount = 200)
     {
         IEnumerable<VaultFile> files = await SearchAsync(maxResultCount);
         return files;
@@ -45,7 +45,7 @@ internal class SearchFilesRequestBuilder :
 
     public async Task<VaultFile?> SearchSingleAsync()
     {
-        IEnumerable<VaultFile> files = await SearchWithPaging();
+        IEnumerable<VaultFile> files = await WithPaging();
         return files.FirstOrDefault();
     }
 
