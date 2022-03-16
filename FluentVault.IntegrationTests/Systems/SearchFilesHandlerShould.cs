@@ -13,7 +13,7 @@ using FluentVault.IntegrationTests.Fixtures;
 using Xunit;
 
 namespace FluentVault.IntegrationTests.Systems;
-public class SearchFilesShould
+public class SearchFilesHandlerShould
 {
     [Fact]
     public async Task FindFiles()
