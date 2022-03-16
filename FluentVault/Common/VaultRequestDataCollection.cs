@@ -33,6 +33,13 @@ internal class VaultRequestDataCollection
           @namespace: "Services/Property/1/7/2020"
         ),
         new(
+          operation: "GetUserInfosByUserIds",
+          version: "v26",
+          service: "AdminService",
+          command: "Connectivity.Explorer.Admin.SecurityCommand",
+          @namespace: "Services/Admin/1/7/2020"
+        ),
+        new(
           operation: "FindFilesBySearchConditions",
           version: "v26",
           service: "DocumentService",
