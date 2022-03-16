@@ -13,7 +13,7 @@ public record VaultPropertyDefinition(
     bool IsUsedInBasicSearch,
     bool IsSystemProperty,
     long UsageCount,
-    IEnumerable<VaultEntityClassAssociation> EntityClassAssociations)
+    IEnumerable<VaultPropertyEntityClassAssociation> EntityClassAssociations)
 {
     internal static VaultPropertyDefinition Parse(XElement element)
         => new(element.ParseAttributeValue("Id", VaultPropertyDefinitionId.Parse),
@@ -24,5 +24,5 @@ public record VaultPropertyDefinition(
             element.ParseAttributeValue("IsBasicSrch", bool.Parse),
             element.ParseAttributeValue("IsSys", bool.Parse),
             element.ParseAttributeValue("UsageCount", long.Parse),
-            element.ParseAllElements("EntClassAssoc", VaultEntityClassAssociation.Parse));
+            element.ParseAllElements("EntClassAssoc", VaultPropertyEntityClassAssociation.Parse));
 }

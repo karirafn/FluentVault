@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
 
@@ -10,18 +11,17 @@ using FluentVault.UnitTests.Fixtures;
 using Xunit;
 
 namespace FluentVault.UnitTests.Systems.Domain.File;
-
 public class VaultFileShould
 {
     [Fact]
     public void ParseSingleFileFromXDocument()
     {
         // Arrange
-        var (body, expectation) = VaultResponseFixtures.GetVaultFileFixtures(1);
-        var document = XDocument.Parse(body);
+        (string body, IEnumerable<VaultFile> expectation) = VaultResponseFixtures.GetVaultFileFixtures(1);
+        XDocument document = XDocument.Parse(body);
 
         // Act
-        var result = VaultFile.ParseSingle(document);
+        VaultFile result = VaultFile.ParseSingle(document);
 
         // Assert
         result.Should().BeEquivalentTo(expectation.Single(), options => options
@@ -34,11 +34,11 @@ public class VaultFileShould
     {
         // Arrange
         int fileCount = 3;
-        var (body, expectation) = VaultResponseFixtures.GetVaultFileFixtures(fileCount);
-        var document = XDocument.Parse(body);
+        (string body, IEnumerable<VaultFile> expectation) = VaultResponseFixtures.GetVaultFileFixtures(fileCount);
+        XDocument document = XDocument.Parse(body);
 
         // Act
-        var result = VaultFile.ParseAll(document);
+        IEnumerable<VaultFile> result = VaultFile.ParseAll(document);
 
         // Assert
         result.Should().HaveCount(fileCount);

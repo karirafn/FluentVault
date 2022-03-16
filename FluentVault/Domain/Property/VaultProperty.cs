@@ -8,7 +8,7 @@ public record VaultProperty(
     VaultPropertyDefinition Definition,
     IEnumerable<VaultPropertyConstraint> Constraints,
     IEnumerable<string> ListValues,
-    IEnumerable<VaultEntityClassContentSourcePropertyDefinition> EntityClassContentSourcePropertyDefinitions)
+    IEnumerable<VaultPropertyEntityClassContentSourcePropertyDefinition> EntityClassContentSourcePropertyDefinitions)
 {
     internal static IEnumerable<VaultProperty> ParseAll(XDocument document)
         => document.ParseAllElements("PropDefInfo", ParseProperty);
@@ -17,5 +17,5 @@ public record VaultProperty(
         => new(element.ParseElement("PropDef", VaultPropertyDefinition.Parse),
             element.ParseAllElements("PropertyConstraint", VaultPropertyConstraint.Parse),
             element.ParseAllElements("ListVal", x => x.Value),
-            element.ParseAllElements("EntClassCtntSrcPropDefs", VaultEntityClassContentSourcePropertyDefinition.Parse));
+            element.ParseAllElements("EntClassCtntSrcPropDefs", VaultPropertyEntityClassContentSourcePropertyDefinition.Parse));
 }

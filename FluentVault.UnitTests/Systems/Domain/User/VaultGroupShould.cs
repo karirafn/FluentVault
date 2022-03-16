@@ -11,14 +11,14 @@ namespace FluentVault.UnitTests.Systems.Domain.User;
 public class VaultGroupShould
 {
     [Fact]
-    public void ParseVaultGroupFromXDocument()
+    public void ParseVaultGroupFromXElement()
     {
         // Arrange
-        var (body, expectation) = VaultResponseFixtures.GetVaultGroupFixture();
-        var element = XElement.Parse(body);
+        (string body, VaultGroup expectation) = VaultResponseFixtures.GetVaultGroupFixture();
+        XElement element = XElement.Parse(body);
 
         // Act
-        var result = VaultGroup.Parse(element);
+        VaultGroup result = VaultGroup.Parse(element);
 
         // Assert
         result.Should().BeEquivalentTo(expectation);

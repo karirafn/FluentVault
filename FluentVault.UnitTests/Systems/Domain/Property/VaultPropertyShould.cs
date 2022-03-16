@@ -8,7 +8,7 @@ using Xunit;
 
 namespace FluentVault.UnitTests.Systems.Domain.Property;
 
-public class VaultPropertyDefinitionShould
+public class VaultPropertyShould
 {
     [Fact]
     public void ParsePropertyDefinitionsFromXDocument()

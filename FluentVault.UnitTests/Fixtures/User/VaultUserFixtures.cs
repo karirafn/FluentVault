@@ -8,6 +8,7 @@ internal static partial class VaultResponseFixtures
     {
         Fixture fixture = new();
         fixture.Register(() => VaultAuthenticationType.ActiveDirectory);
+
         VaultUser user = fixture.Create<VaultUser>();
         string body = CreateUserBody(user);
 

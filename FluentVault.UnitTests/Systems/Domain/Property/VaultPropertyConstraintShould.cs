@@ -8,17 +8,17 @@ using FluentVault.UnitTests.Fixtures;
 using Xunit;
 
 namespace FluentVault.UnitTests.Systems.Domain.User;
-public class VaultUserShould
+public class VaultPropertyConstraintShould
 {
     [Fact]
-    public void ParseVaultUserFromXElement()
+    public void ParseVaultPropertyConstraintFromXElement()
     {
         // Arrange
-        (string body, VaultUser expectation) = VaultResponseFixtures.GetVaultUserFixture();
+        (string body, VaultPropertyConstraint expectation) = VaultResponseFixtures.GetVaultPropertyConstraintFixture();
         XElement element = XElement.Parse(body);
 
         // Act
-        VaultUser result = VaultUser.Parse(element);
+        VaultPropertyConstraint result = VaultPropertyConstraint.Parse(element);
 
         // Assert
         result.Should().BeEquivalentTo(expectation);

@@ -43,22 +43,8 @@ internal static partial class VaultResponseFixtures
                     IsOnSite=""{file.IsOnSite}""
                     DesignVisAttmtStatus=""{file.DesignVisualAttachmentStatus}""
                     ControlledByChangeOrder=""{file.IsControlledByChangeOrder}"">                                                          
-                    <FileRev
-                        RevId=""{file.Revision?.Id}""
-                        Label=""{file.Revision?.Label}""
-                        MaxConsumeFileId=""{file.Revision?.MaximumConsumeFileId}""
-                        MaxFileId=""{file.Revision?.MaximumFileId}""
-                        RevDefId=""{file.Revision?.DefinitionId}""
-                        MaxRevId=""{file.Revision?.MaximumRevisionId}""
-                        Order=""{file.Revision?.Order}""/>
-                    <FileLfCyc
-                        LfCycStateId=""{file.Lifecycle?.StateId}""
-                        LfCycDefId=""{file.Lifecycle?.DefinitionId}""
-                        LfCycStateName=""{file.Lifecycle?.StateName}""
-                        Consume=""{file.Lifecycle?.IsReleased}""
-                        Obsolete=""{file.Lifecycle?.IsObsolete}""/>
-                    <Cat
-                        CatId=""{file.Category?.Id}""
-                        CatName=""{file.Category?.Name}""/>
+                    {CreateFileRevisionBody(file.Revision)}
+                    {CreateFileLifeCycleBody(file.LifeCycle)}
+                    {CreateFileCategoryBody(file.Category)}
                 </File>";
 }

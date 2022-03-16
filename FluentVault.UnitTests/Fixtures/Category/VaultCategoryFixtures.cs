@@ -15,17 +15,15 @@ internal static partial class VaultResponseFixtures
         return CreateBody<VaultCategory>(fixture, count, "GetCategoryConfigurationsByBehaviorNames", "http://AutodeskDM/Services/Category/1/7/2020/", CreateCategoryBody);
     }
 
-    private static string CreateCategoryBody(VaultCategory category) => $@"<CatCfg>
-                    <Cat>
-						<Id>{category.Id}</Id>
-						<Name>{category.Name}</Name>
-						<SysName>{category.SystemName}</SysName>
-						<Color>{category.Color}</Color>
-						<Descr>{category.Description}</Descr>
-						<EntClassIdArray>
-							{CreateElementArray(category.EntityClasses.Select(x => x.Name), "EntClassId")}
-						</EntClassIdArray>
-					</Cat>
-                </CatCfg>";
-
+    private static string CreateCategoryBody(VaultCategory category)
+        => $@"<CatCfg>
+<Cat>
+<Id>{category.Id}</Id>
+<Name>{category.Name}</Name>
+<SysName>{category.SystemName}</SysName>
+<Color>{category.Color}</Color>
+<Descr>{category.Description}</Descr>
+{CreateNestedElementArray("EntClassIdArray", "EntClassId", category.EntityClasses.Select(x => x.Name))}
+</Cat>
+</CatCfg>";
 }

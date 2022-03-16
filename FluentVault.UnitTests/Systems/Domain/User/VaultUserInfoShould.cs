@@ -1,4 +1,5 @@
 ﻿
+using System.Collections.Generic;
 using System.Xml.Linq;
 
 using FluentAssertions;
@@ -14,11 +15,11 @@ public class VaultUserInfoShould
     public void ParseVaultUserInfoFromXDocument()
     {
         // Arrange
-        var (body, expectation) = VaultResponseFixtures.GetVaultUserInfoFixture(5);
-        var element = XDocument.Parse(body);
+        (string body, IEnumerable<VaultUserInfo> expectation) = VaultResponseFixtures.GetVaultUserInfoFixture(5);
+        XDocument element = XDocument.Parse(body);
 
         // Act
-        var result = VaultUserInfo.ParseAll(element);
+        IEnumerable<VaultUserInfo> result = VaultUserInfo.ParseAll(element);
 
         // Assert
         result.Should().BeEquivalentTo(expectation);

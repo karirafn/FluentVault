@@ -30,13 +30,25 @@ internal partial class VaultResponseFixtures
     </s:Body>
 </s:Envelope>";
 
-    private static string CreateEntityBody<T>(IEnumerable<T> entities, Func<T, string> createBody)
-        => entities.Aggregate(new StringBuilder(),
-            (builder, entity) => builder.Append(createBody(entity)))
-        .ToString();
+    private static StringBuilder CreateEntityBody<T>(IEnumerable<T> entities, Func<T, string> createBody)
+        => entities.Aggregate(new StringBuilder(), (builder, entity) => builder.Append(createBody(entity)));
 
-    private static string CreateElementArray(IEnumerable<string> comments, string name)
-        => comments.Aggregate(new StringBuilder(),
-            (builder, comment) => builder.Append($@"<{name}>{comment}</{name}>"))
-        .ToString();
+    private static StringBuilder CreateNestedElementArray(string parentName, string childName, IEnumerable<string> values)
+        => CreateElement(parentName, CreateElementArray(childName, values));
+
+    private static StringBuilder CreateElementArray(string name, IEnumerable<string> values)
+        => values.Aggregate(new StringBuilder(), (builder, value) => builder.Append(CreateElement(name, value)));
+
+    private static StringBuilder CreateElement(string name, StringBuilder builder)
+        => CreateElement(name, builder.ToString());
+
+    private static StringBuilder CreateElement(string name, string value)
+        => new StringBuilder()
+            .Append('<')
+            .Append(name)
+            .Append('>')
+            .Append(value)
+            .Append("</")
+            .Append(name)
+            .Append('>');
 }

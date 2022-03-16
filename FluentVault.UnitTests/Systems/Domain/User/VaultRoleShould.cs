@@ -11,14 +11,14 @@ namespace FluentVault.UnitTests.Systems.Domain.User;
 public class VaultRoleShould
 {
     [Fact]
-    public void ParseVaultRoleFromXDocument()
+    public void ParseVaultRoleFromXElement()
     {
         // Arrange
-        var (body, expectation) = VaultResponseFixtures.GetVaultRoleFixture();
-        var element = XElement.Parse(body);
+        (string body, VaultRole expectation) = VaultResponseFixtures.GetVaultRoleFixture();
+        XElement element = XElement.Parse(body);
 
         // Act
-        var result = VaultRole.Parse(element);
+        VaultRole result = VaultRole.Parse(element);
 
         // Assert
         result.Should().BeEquivalentTo(expectation);

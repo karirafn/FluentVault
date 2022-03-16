@@ -4,10 +4,11 @@ using AutoFixture;
 namespace FluentVault.UnitTests.Fixtures;
 internal static partial class VaultResponseFixtures
 {
-    public static (string Body, VaultGroup group) GetVaultGroupFixture()
+    public static (string Body, VaultGroup Group) GetVaultGroupFixture()
     {
         Fixture fixture = new();
         fixture.Register(() => VaultAuthenticationType.ActiveDirectory);
+
         VaultGroup group = fixture.Create<VaultGroup>();
         string body = CreateGroupBody(group);
 
