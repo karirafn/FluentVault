@@ -106,6 +106,12 @@ internal class SearchFilesRequestBuilder :
         }
     }
 
+    public ISearchFilesAddSearchCondition GetAllVersions()
+    {
+        _latestOnly = false;
+        return this;
+    }
+
     public ISearchFilesRequestBuilder And
     {
         get
