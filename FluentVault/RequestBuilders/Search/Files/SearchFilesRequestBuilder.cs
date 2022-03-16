@@ -31,7 +31,7 @@ internal class SearchFilesRequestBuilder :
     public SearchFilesRequestBuilder(IMediator mediator, VaultSessionCredentials session)
         => (_mediator, _session) = (mediator, session);
 
-    public async Task<IEnumerable<VaultFile>> hWithoutPaging()
+    public async Task<IEnumerable<VaultFile>> WithoutPaging()
     {
         IEnumerable<VaultFile> files = await SearchAsync(int.MaxValue);
         return files;
@@ -104,6 +104,12 @@ internal class SearchFilesRequestBuilder :
             _propertyType = SearchPropertyType.AllPropertiesAndContent;
             return this;
         }
+    }
+
+    public ISearchFilesAddSearchCondition GetAllVersions()
+    {
+        _latestOnly = false;
+        return this;
     }
 
     public ISearchFilesRequestBuilder And

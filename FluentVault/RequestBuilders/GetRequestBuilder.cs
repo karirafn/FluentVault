@@ -1,5 +1,4 @@
-﻿using FluentVault.Domain;
-using FluentVault.Features;
+﻿using FluentVault.Features;
 
 using MediatR;
 
@@ -21,4 +20,7 @@ internal class GetRequestBuilder : IGetRequestBuilder
 
     public async Task<IEnumerable<VaultProperty>> PropertyDefinitionInfos()
         => await _mediator.Send(new GetPropertyDefinitionInfosQuery(_session));
+
+    public async Task<IEnumerable<VaultUserInfo>> UserInfos(IEnumerable<VaultUserId> ids)
+        => await _mediator.Send(new GetUserInfosByIserIdsQuery(ids, _session));
 }

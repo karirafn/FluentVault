@@ -51,6 +51,14 @@ internal static class XDocumentGeneratingExtensions
             parent.AddElementWithAttributes(ns, childName, attributes);
     }
 
+    internal static void AddNestedElementsWithAttributes(this XElement parent, XNamespace ns, string rootName, string childName, IEnumerable<IDictionary<string, string>> attributeSets)
+    {
+        XElement root = new(ns + rootName);
+        root.AddElementsWithAttributes(ns, childName, attributeSets);
+
+        parent.Add(root);
+    }
+
     internal static XDocument AddRequestBody(this XDocument document, VaultSessionCredentials session, XElement content)
     {
         XElement envelope = document.AddEnvelope();

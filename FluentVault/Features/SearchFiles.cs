@@ -29,8 +29,8 @@ internal class SearchFilesHandler : IRequestHandler<SearchFilesCommand, FileSear
     {
         void contentBuilder(XElement content, XNamespace ns)
         {
-            content.AddElementsWithAttributes(ns, "SrchCond", command.SearchConditions);
-            content.AddElementsWithAttributes(ns, "SrchSort", command.SortConditions);
+            content.AddNestedElementsWithAttributes(ns, "conditions", "SrchCond", command.SearchConditions);
+            content.AddNestedElementsWithAttributes(ns, "sortConditions", "SrchSort", command.SortConditions);
             content.AddNestedElements(ns, "folderIds", "long", command.FolderIds.Select(id => id.ToString()));
             content.AddElement(ns, "recurseFolders", command.RecurseFolders);
             content.AddElement(ns, "latestOnly", command.LatestOnly);

@@ -59,7 +59,7 @@ internal class UpdateFilePropertyDefinitionsHandler : IRequestHandler<UpdateFile
         var files = await new SearchFilesRequestBuilder(_mediator, command.Session)
             .ForValueEqualTo(searchString)
             .InSystemProperty(StringSearchProperty.FileName)
-            .hWithoutPaging()
+            .WithoutPaging()
             ?? throw new Exception("Failed to search for filenames");
 
         var masterIds = files.Select(x => x.MasterId);
