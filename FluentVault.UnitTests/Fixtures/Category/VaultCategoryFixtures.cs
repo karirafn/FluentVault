@@ -23,10 +23,7 @@ internal static partial class VaultResponseFixtures
 <SysName>{category.SystemName}</SysName>
 <Color>{category.Color}</Color>
 <Descr>{category.Description}</Descr>
-<EntClassIdArray>
-{CreateElementArray(category.EntityClasses.Select(x => x.Name), "EntClassId")}
-</EntClassIdArray>
+{CreateNestedElementArray("EntClassIdArray", "EntClassId", category.EntityClasses.Select(x => x.Name))}
 </Cat>
 </CatCfg>";
-
 }

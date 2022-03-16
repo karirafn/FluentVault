@@ -8,6 +8,7 @@ internal static partial class VaultResponseFixtures
     {
         Fixture fixture = new();
         fixture.Register(() => VaultAuthenticationType.ActiveDirectory);
+
         VaultGroup group = fixture.Create<VaultGroup>();
         string body = CreateGroupBody(group);
 

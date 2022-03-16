@@ -7,7 +7,6 @@ internal static partial class VaultResponseFixtures
     public static (string Body, VaultFileRevision Revision) GetVaultFileRevisionFixture()
     {
         Fixture fixture = new();
-        fixture.Register(() => VaultAuthenticationType.ActiveDirectory);
         VaultFileRevision revision = fixture.Create<VaultFileRevision>();
         string body = CreateFileRevisionBody(revision);
 

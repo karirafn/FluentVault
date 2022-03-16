@@ -1,103 +1,48 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 using AutoFixture;
 
 namespace FluentVault.UnitTests.Fixtures;
-
 internal static partial class VaultResponseFixtures
 {
     public static (string Body, IEnumerable<VaultProperty> Files) GetVaultPropertyFixtures(int count)
     {
         Fixture fixture = new();
-        fixture.Register(() => VaultAllowedMappingDirection.Read);
-        fixture.Register(() => VaultClassification.Standard);
-        fixture.Register(() => VaultContentSourceDefinitionType.File);
+        fixture.Register(() => VaultPropertyAllowedMappingDirection.Read);
+        fixture.Register(() => VaultPropertyClassification.Standard);
+        fixture.Register(() => VaultPropertyContentSourceDefinitionType.File);
         fixture.Register(() => VaultDataType.String);
         fixture.Register(() => VaultEntityClass.File);
-        fixture.Register(() => VaultMappingDirection.Write);
-        fixture.Register(() => VaultMappingType.Constant);
+        fixture.Register(() => VaultPropertyMappingDirection.Write);
+        fixture.Register(() => VaultPropertyMappingType.Constant);
         fixture.Register(() => VaultPropertyConstraintType.RequiresValue);
 
-        return CreateBody<VaultProperty>(fixture, count, "GetPropertyDefinitionInfosByEntityClassId", "http://AutodeskDM/Services/Property/1/7/2020/", CreatePropertyBody);
+        return CreateBody<VaultProperty>(fixture, count, "GetPropertyDefinitionInfosByEntityClassId", "http://AutodeskDM/Services/Property/1/7/2020/", CreateVaultPropertyBody);
     }
 
-    private static string CreatePropertyBody(VaultProperty property) => $@"<PropDefInfo>
-                    <PropDef
-						Id=""{property.Definition.Id}""
-						Typ=""{property.Definition.DataType}""
-						DispName=""{property.Definition.DisplayName}""
-						SysName=""{property.Definition.SystemName}""
-						IsAct=""{property.Definition.IsActive}""
-						IsBasicSrch=""{property.Definition.IsUsedInBasicSearch}""
-						IsSys=""{property.Definition.IsSystemProperty}""
-						UsageCount=""{property.Definition.UsageCount}"">
-						<EntClassAssocArray>
-                            {property.Definition.EntityClassAssociations.Aggregate(new StringBuilder(),
-                                (builder, association) => builder.Append(CreateEntityClassAssociationBody(association)))};
-						</EntClassAssocArray>
-					</PropDef>
-                    <ListValArray>
-                        {property.ListValues.Aggregate(new StringBuilder(),
-                            (builder, value) => builder.Append(CreateListValueBody(value)))}
-                    </ListValArray>
-                    <PropConstrArray>
-                        {property.Constraints.Aggregate(new StringBuilder(),
-                            (builder, constraint) => builder.Append(CreatePropertyConstraintBody(constraint)))}
-                    </PropConstrArray>
-                    <CtntSrcPropDefArray>
-                        {property.EntityClassContentSourcePropertyDefinitions.Aggregate(new StringBuilder(),
-                            (builder, definition) => builder.Append(CreateEntityClassContentSourcePropertyDefinitionBosy(definition)))}
-                    </CtntSrcPropDefArray>
-                </PropDefInfo>";
-
-    private static string CreateEntityClassAssociationBody(VaultEntityClassAssociation association)
-        => $@"<EntClassAssoc EntClassId=""{association.EntityClass}"" MapDirection=""{association.AllowedMappingDirection}""/>";
-
-    private static string CreatePropertyConstraintBody(VaultPropertyConstraint constraint)
-        => $@"<PropertyConstraint
-Id=""{constraint.Id}""
-PropDefId=""{constraint.PropertyDefinitionId}""
-CatId=""{constraint.CategoryId}""
-PropConstrTyp=""{constraint.Type}""
-Val=""{constraint.Value}""/>";
-
-    private static string CreateListValueBody(string value)
-        => $@"<ListVal xsi:type=""xsd:string"">{value}</ListVal>";
-
-    private static string CreateEntityClassContentSourcePropertyDefinitionBosy(VaultEntityClassContentSourcePropertyDefinition definition)
-        => $@"<EntClassCtntSrcPropDefs EntClassId=""{definition.EntityClass}"">
-<CtntSrcPropDefArray>
-{definition.ContentSourcePropertyDefinitions.Aggregate(new StringBuilder(),
-    (builder, definition) => builder.Append(CreateContentSourcePropertyDefinition(definition)))}
-</CtntSrcPropDefArray>
-<MapTypArray>
-{definition.MappingTypes.Aggregate(new StringBuilder(),
-    (builder, type) => builder.Append($@"<MapTyp>{type}</MapTyp>"))}
-</MapTypArray>
-<PriorityArray>
-{definition.Prioroties.Aggregate(new StringBuilder(),
-    (builder, priority) => builder.Append($@"<Priority>{priority}</Priority>"))}
-</PriorityArray>
-<MapDirectionArray>
-{definition.MappingDirections.Aggregate(new StringBuilder(),
-    (builder, direction) => builder.Append($@"<MapDirection>{direction}</MapDirection>"))}
-</MapDirectionArray>
-<CanCreateNewArray>
-{definition.CanCreateNew.Aggregate(new StringBuilder(),
-    (builder, value) => builder.Append($@"<CreateNew>{value}</CreateNew>"))}
-</CanCreateNewArray>
-</EntClassCtntSrcPropDefs>";
-
-    private static string CreateContentSourcePropertyDefinition(VaultContentSourcePropertyDefinition definition)
-        => $@"<CtntSrcPropDef
-CtntSrcId=""{definition.ContentSourceId}""
-DispName=""{definition.DisplayName}""
-Moniker=""{definition.Moniker}""
-MapDirection=""{definition.MappingDirection}""
-CanCreateNew=""{definition.CanCreateNew}""
-Classification=""{definition.Classification}""
-Typ=""{definition.DataType}""
-CtntSrcDefTyp=""{definition.ContentSourceDefinitionType}""/>";
+    private static string CreateVaultPropertyBody(VaultProperty property)
+        => $@"<PropDefInfo>
+                <PropDef
+				    Id=""{property.Definition.Id}""
+				    Typ=""{property.Definition.DataType}""
+				    DispName=""{property.Definition.DisplayName}""
+				    SysName=""{property.Definition.SystemName}""
+				    IsAct=""{property.Definition.IsActive}""
+				    IsBasicSrch=""{property.Definition.IsUsedInBasicSearch}""
+				    IsSys=""{property.Definition.IsSystemProperty}""
+				    UsageCount=""{property.Definition.UsageCount}"">
+				    <EntClassAssocArray>
+                        {CreateEntityBody(property.Definition.EntityClassAssociations, CreateVaultPropertyEntityClassAssociationBody)}
+				    </EntClassAssocArray>
+			    </PropDef>
+                <ListValArray>
+                    {CreateEntityBody(property.ListValues, value => $@"<ListVal xsi:type=""xsd:string"">{value}</ListVal>")}
+                </ListValArray>
+                <PropConstrArray>
+                    {CreateEntityBody(property.Constraints, CreateVaultPropertyConstraintBody)}
+                </PropConstrArray>
+                <CtntSrcPropDefArray>
+                    {CreateEntityBody(property.EntityClassContentSourcePropertyDefinitions, CreateVaultPropertyEntityClassContentSourcePropertyDefinitionBody)}
+                </CtntSrcPropDefArray>
+            </PropDefInfo>";
 }
