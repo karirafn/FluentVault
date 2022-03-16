@@ -7,7 +7,6 @@ internal class VaultRequestServiceFixture
 {
     public VaultRequestServiceFixture()
     {
-        
         IHttpClientFactory factory = new VaultHttpClientFactory();
         VaultRequestService = new VaultRequestService(factory);
     }
