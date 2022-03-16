@@ -33,7 +33,7 @@ public record VaultFile(
     bool IsControlledByChangeOrder,
     string DesignVisualAttachmentStatus,
     VaultFileRevision Revision,
-    VaultFileLifeCycle Lifecycle,
+    VaultFileLifeCycle LifeCycle,
     VaultFileCategory Category)
 {
     private const string FileElementName = "File";

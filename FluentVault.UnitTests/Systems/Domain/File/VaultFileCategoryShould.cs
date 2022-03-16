@@ -8,17 +8,17 @@ using FluentVault.UnitTests.Fixtures;
 using Xunit;
 
 namespace FluentVault.UnitTests.Systems.Domain.User;
-public class VaultUserShould
+public class VaultFileCategoryShould
 {
     [Fact]
-    public void ParseVaultUserFromXElement()
+    public void ParseVaultFileCategoryFromXElement()
     {
         // Arrange
-        (string body, VaultUser expectation) = VaultResponseFixtures.GetVaultUserFixture();
+        (string body, VaultFileCategory expectation) = VaultResponseFixtures.GetVaultFileCategoryFixture();
         XElement element = XElement.Parse(body);
 
         // Act
-        VaultUser result = VaultUser.Parse(element);
+        VaultFileCategory result = VaultFileCategory.Parse(element);
 
         // Assert
         result.Should().BeEquivalentTo(expectation);
