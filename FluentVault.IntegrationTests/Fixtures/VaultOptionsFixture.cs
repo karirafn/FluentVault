@@ -17,7 +17,6 @@ public class VaultOptionsFixture
             Username = configuration.GetValue<string>(nameof(VaultOptions.Username)),
             Password = configuration.GetValue<string>(nameof(VaultOptions.Password)),
         };
-
     }
 
     public VaultOptions Options { get; }
