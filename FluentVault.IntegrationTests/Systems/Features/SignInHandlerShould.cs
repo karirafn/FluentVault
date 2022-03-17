@@ -16,7 +16,7 @@ public class SignInHandlerShould : IAsyncLifetime
     private readonly SignInCommand _command;
     private readonly SignInHandler _sut;
     private readonly VaultOptions _options;
-    private VaultSessionCredentials? _session;
+    private VaultSessionCredentials _session;
 
     public SignInHandlerShould()
     {
@@ -24,10 +24,11 @@ public class SignInHandlerShould : IAsyncLifetime
         _sut = new(_service);
         _options = new VaultOptionsFixture().Options;
         _command = new(_options);
+        _session = new();
     }
 
     public async Task InitializeAsync() => await Task.CompletedTask;
-    async Task IAsyncLifetime.DisposeAsync() => await new SignOutHandler(_service).Handle(new SignOutCommand(_session ?? new()), default);
+    async Task IAsyncLifetime.DisposeAsync() => await new SignOutHandler(_service).Handle(new SignOutCommand(_session), default);
 
     [Fact]
     public async Task SignIn()
