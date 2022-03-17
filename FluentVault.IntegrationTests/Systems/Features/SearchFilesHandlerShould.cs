@@ -37,8 +37,7 @@ public class SearchFilesHandlerShould : IAsyncLifetime
         // Arrange
         var searchConditions = new SearchCondition[]
         {
-            new(StringSearchProperty.FileExtension.Value, SearchOperator.IsEqualTo, "ipt", SearchPropertyType.SingleProperty, SearchRule.Must),
-            new(StringSearchProperty.State.Value, SearchOperator.IsEqualTo, "Invalid", SearchPropertyType.SingleProperty, SearchRule.Must)
+            new(StringSearchProperty.FileExtension.Value, SearchOperator.IsEqualTo, "ipt", SearchPropertyType.SingleProperty, SearchRule.Must)
         }.Select(x => x.Attributes);
 
         IEnumerable<IDictionary<string, string>> sortConditions = new List<SortCondition>().Select(x => x.Attributes);
