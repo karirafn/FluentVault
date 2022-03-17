@@ -8,7 +8,7 @@ using Xunit;
 
 namespace FluentVault.IntegrationTests.Systems.Features;
 
-public class SignInHandlerShould : BaseHandlerTest
+public class SignInHandlerShould : BaseIntegrationTest
 {
     private readonly SignInCommand _command = new(_options);
     private readonly SignInHandler _sut = new(_service);

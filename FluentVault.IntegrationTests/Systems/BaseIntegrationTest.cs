@@ -6,8 +6,8 @@ using FluentVault.IntegrationTests.Fixtures;
 
 using Xunit;
 
-namespace FluentVault.IntegrationTests.Systems.Features;
-public abstract class BaseHandlerTest : IAsyncLifetime
+namespace FluentVault.IntegrationTests.Systems;
+public abstract class BaseIntegrationTest : IAsyncLifetime
 {
     internal static readonly IVaultRequestService _service = new VaultRequestServiceFixture().VaultRequestService;
     protected static readonly VaultOptions _options = new VaultOptionsFixture().Options;

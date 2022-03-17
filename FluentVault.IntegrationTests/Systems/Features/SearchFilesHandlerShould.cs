@@ -12,7 +12,7 @@ using FluentVault.IntegrationTests.Fixtures;
 using Xunit;
 
 namespace FluentVault.IntegrationTests.Systems.Features;
-public class SearchFilesHandlerShould : BaseHandlerTest
+public class SearchFilesHandlerShould : BaseSessionTest
 {
     private static readonly VaultTestData _testData = new();
     private static readonly IEnumerable<IDictionary<string, string>> _sortConditions = new List<SortCondition>().Select(x => x.Attributes);
