@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 
 using FluentAssertions;
 
-using FluentVault.Common;
 using FluentVault.Domain.Search;
 using FluentVault.Features;
 using FluentVault.IntegrationTests.Fixtures;
@@ -13,7 +12,7 @@ using FluentVault.IntegrationTests.Fixtures;
 using Xunit;
 
 namespace FluentVault.IntegrationTests.Systems.Features;
-public class SearchFilesHandlerShould : IAsyncLifetime
+public class SearchFilesHandlerShould : BaseHandlerTest
 {
     private static readonly VaultTestData _testData = new();
     private static readonly IEnumerable<IDictionary<string, string>> _sortConditions = new List<SortCondition>().Select(x => x.Attributes);
@@ -21,23 +20,9 @@ public class SearchFilesHandlerShould : IAsyncLifetime
     private static readonly bool _recurseFolders = true;
     private static readonly bool _latestOnly = true;
     private static readonly string _bookmark = string.Empty;
+    private static readonly SearchFilesHandler _sut = new(_service);
 
-    private readonly IVaultRequestService _service;
-    private readonly VaultOptions _options;
-    private readonly SearchFilesHandler _sut;
-
-    private VaultSessionCredentials _session;
-
-    public SearchFilesHandlerShould()
-    {
-        _service = new VaultRequestServiceFixture().VaultRequestService;
-        _sut = new(_service);
-        _options = new VaultOptionsFixture().Options;
-        _session = new();
-    }
-
-    public async Task InitializeAsync() => _session = await new SignInHandler(_service).Handle(new SignInCommand(_options), default);
-    async Task IAsyncLifetime.DisposeAsync() => await new SignOutHandler(_service).Handle(new SignOutCommand(_session ?? new()), default);
+    public override async Task InitializeAsync() => _session = await new SignInHandler(_service).Handle(new SignInCommand(_options), default);
 
     [Fact]
     public async Task FindFiles()
