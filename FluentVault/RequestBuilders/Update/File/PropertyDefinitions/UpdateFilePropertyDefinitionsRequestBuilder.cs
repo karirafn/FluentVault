@@ -1,5 +1,4 @@
-﻿using FluentVault.Domain;
-using FluentVault.Features;
+﻿using FluentVault.Features;
 
 using MediatR;
 
@@ -8,7 +7,6 @@ namespace FluentVault.Requests.Update.File.PropertyDefinitions;
 internal class UpdateFilePropertyDefinitionsRequestBuilder : IUpdateFilePropertyDefinitionsRequestBuilder, IUpdateFilePropertDefinitionsAction
 {
     private readonly IMediator _mediator;
-    private readonly VaultSessionCredentials _session;
 
     private readonly List<VaultMasterId> _masterIds = new();
     private readonly List<VaultPropertyDefinitionId> _addedPropertyIds = new();
@@ -17,12 +15,12 @@ internal class UpdateFilePropertyDefinitionsRequestBuilder : IUpdateFileProperty
     private readonly List<string> _addedPropertyNames = new();
     private readonly List<string> _removedPropertyNames = new();
 
-    public UpdateFilePropertyDefinitionsRequestBuilder(IMediator mediator, VaultSessionCredentials session)
-        => (_mediator, _session) = (mediator, session);
+    public UpdateFilePropertyDefinitionsRequestBuilder(IMediator mediator)
+        => _mediator = mediator;
 
     public async Task<IEnumerable<VaultFile>> ExecuteAsync()
     {
-        var command = new UpdateFilePropertyDefinitionsCommand(_masterIds, _addedPropertyIds, _removedPropertyIds, _filenames, _addedPropertyNames, _removedPropertyNames, _session);
+        var command = new UpdateFilePropertyDefinitionsCommand(_masterIds, _addedPropertyIds, _removedPropertyIds, _filenames, _addedPropertyNames, _removedPropertyNames);
         var files = await _mediator.Send(command);
         
         return files;

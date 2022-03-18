@@ -1,23 +1,24 @@
 ﻿
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 
 namespace FluentVault.IntegrationTests.Fixtures;
 public class VaultOptionsFixture
 {
+    private readonly IConfigurationRoot _configuration;
+
     public VaultOptionsFixture()
     {
-        IConfigurationRoot configuration = new ConfigurationBuilder()
+        _configuration = new ConfigurationBuilder()
             .AddUserSecrets<VaultOptionsFixture>()
             .Build();
-
-        Options = new()
-        {
-            Server = configuration.GetValue<string>(nameof(VaultOptions.Server)),
-            Database = configuration.GetValue<string>(nameof(VaultOptions.Database)),
-            Username = configuration.GetValue<string>(nameof(VaultOptions.Username)),
-            Password = configuration.GetValue<string>(nameof(VaultOptions.Password)),
-        };
     }
 
-    public VaultOptions Options { get; }
+    public IOptions<VaultOptions> Create() => Options.Create(new VaultOptions
+    {
+        Server = _configuration.GetValue<string>(nameof(VaultOptions.Server)),
+        Database = _configuration.GetValue<string>(nameof(VaultOptions.Database)),
+        Username = _configuration.GetValue<string>(nameof(VaultOptions.Username)),
+        Password = _configuration.GetValue<string>(nameof(VaultOptions.Password)),
+    });
 }

@@ -6,20 +6,20 @@ using MediatR;
 
 namespace FluentVault.Features;
 
-internal record GetAllLifeCycleDefinitionsQuery(VaultSessionCredentials Session) : IRequest<IEnumerable<VaultLifeCycleDefinition>>;
+internal record GetAllLifeCycleDefinitionsQuery() : IRequest<IEnumerable<VaultLifeCycleDefinition>>;
 
 internal class GetAllLifeCycleDefinitionsHandler : IRequestHandler<GetAllLifeCycleDefinitionsQuery, IEnumerable<VaultLifeCycleDefinition>>
 {
     private const string Operation = "GetAllLifeCycleDefinitions";
 
-    private readonly IVaultRequestService _vaultRequestService;
+    private readonly IVaultService _vaultRequestService;
 
-    public GetAllLifeCycleDefinitionsHandler(IVaultRequestService vaultRequestService)
+    public GetAllLifeCycleDefinitionsHandler(IVaultService vaultRequestService)
         => _vaultRequestService = vaultRequestService;
 
     public async Task<IEnumerable<VaultLifeCycleDefinition>> Handle(GetAllLifeCycleDefinitionsQuery query, CancellationToken cancellationToken)
     {
-        XDocument response = await _vaultRequestService.SendAsync(Operation, query.Session, cancellationToken: cancellationToken);
+        XDocument response = await _vaultRequestService.SendAsync(Operation, canSignIn: true, cancellationToken: cancellationToken);
         IEnumerable<VaultLifeCycleDefinition> lifeCycles = VaultLifeCycleDefinition.ParseAll(response);
 
         return lifeCycles;

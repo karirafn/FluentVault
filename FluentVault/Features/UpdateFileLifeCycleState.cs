@@ -12,8 +12,7 @@ internal record UpdateFileLifeCycleStateCommand(
     IEnumerable<string> FileNames,
     IEnumerable<VaultMasterId> MasterIds,
     IEnumerable<VaultLifeCycleStateId> StateIds,
-    string Comment,
-    VaultSessionCredentials Session) : IRequest<VaultFile>;
+    string Comment) : IRequest<VaultFile>;
 
 
 internal class UpdateFileLifeCycleStateHandler : IRequestHandler<UpdateFileLifeCycleStateCommand, VaultFile>
@@ -21,9 +20,9 @@ internal class UpdateFileLifeCycleStateHandler : IRequestHandler<UpdateFileLifeC
     private const string Operation = "UpdateFileLifeCycleStates";
 
     private readonly IMediator _mediator;
-    private readonly IVaultRequestService _vaultRequestService;
+    private readonly IVaultService _vaultRequestService;
 
-    public UpdateFileLifeCycleStateHandler(IMediator mediator, IVaultRequestService soapRequestService)
+    public UpdateFileLifeCycleStateHandler(IMediator mediator, IVaultService soapRequestService)
         => (_mediator, _vaultRequestService) = (mediator, soapRequestService);
 
     public async Task<VaultFile> Handle(UpdateFileLifeCycleStateCommand command, CancellationToken cancellationToken)
@@ -32,7 +31,7 @@ internal class UpdateFileLifeCycleStateHandler : IRequestHandler<UpdateFileLifeC
         if (command.FileNames.Any())
         {
             string searchString = string.Join(" OR ", command.FileNames);
-            var response = await new SearchFilesRequestBuilder(_mediator, command.Session)
+            var response = await new SearchFilesRequestBuilder(_mediator)
                 .ForValueEqualTo(searchString)
                 .InSystemProperty(StringSearchProperty.FileName)
                 .WithoutPaging();
@@ -48,7 +47,7 @@ internal class UpdateFileLifeCycleStateHandler : IRequestHandler<UpdateFileLifeC
             content.AddElement(ns, "comment", command.Comment);
         };
 
-        XDocument document = await _vaultRequestService.SendAsync(Operation, command.Session, contentBuilder, cancellationToken);
+        XDocument document = await _vaultRequestService.SendAsync(Operation, canSignIn: true, contentBuilder, cancellationToken);
         VaultFile file = VaultFile.ParseSingle(document);
 
         return file;

@@ -3,32 +3,41 @@ using System.Net.Http.Headers;
 using System.Xml.Linq;
 
 using FluentVault.Extensions;
+using FluentVault.Features;
+
+using Microsoft.Extensions.Options;
 
 namespace FluentVault.Common;
 
-internal class VaultRequestService : IVaultRequestService
+internal class VaultService : IVaultService, IAsyncDisposable
 {
     private readonly HttpClient _httpClient;
     private readonly IDictionary<string, VaultRequestData> _data;
+    private readonly VaultOptions _options;
+    private VaultSessionCredentials _session = new();
 
-    public VaultRequestService(IHttpClientFactory httpClientFactory)
+    public VaultService(IHttpClientFactory httpClientFactory, IOptions<VaultOptions> options)
     {
         _httpClient = httpClientFactory.CreateClient("Vault");
         _data = VaultRequestDataCollection.SoapRequestData.ToDictionary(x => x.Operation);
+        _options = options.Value;
     }
 
-    public async Task<XDocument> SendAsync(string operation, VaultSessionCredentials session, Action<XElement, XNamespace>? contentBuilder = null, CancellationToken cancellationToken = default)
+    public async Task<XDocument> SendAsync(string operation, bool canSignIn, Action<XElement, XNamespace>? contentBuilder = null, CancellationToken cancellationToken = default)
     {
+        if (canSignIn && _session.IsValid == false)
+            _session = await new SignInHandler(this).Handle(new SignInCommand(_options), cancellationToken);
+
         if (_data.Keys.Any(key => key == operation) is false)
             throw new KeyNotFoundException($@"Operation ""{operation}"" was not found in Vault request data collection");
 
-        HttpRequestMessage requestMessage = GetRequestMessage(operation, session, contentBuilder);
+        HttpRequestMessage requestMessage = GetRequestMessage(operation, _session, contentBuilder);
         HttpResponseMessage responseMessage = await _httpClient.SendAsync(requestMessage, cancellationToken);
 
         if (responseMessage.StatusCode != HttpStatusCode.OK)
             throw new HttpRequestException("Invalid HTTP response", null, responseMessage.StatusCode);
 
-        string responseContent = await responseMessage.Content.ReadAsStringAsync();
+        string responseContent = await responseMessage.Content.ReadAsStringAsync(cancellationToken);
         XDocument document = XDocument.Parse(responseContent);
 
         return document;
@@ -67,5 +76,13 @@ internal class VaultRequestService : IVaultRequestService
         XDocument requestBody = new XDocument().AddRequestBody(session, content);
 
         return requestBody;
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (_session.IsValid)
+            await new SignOutHandler(this).Handle(new SignOutCommand(), default);
+
+        GC.SuppressFinalize(this);
     }
 }

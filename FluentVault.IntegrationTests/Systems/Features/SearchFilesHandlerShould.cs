@@ -12,7 +12,7 @@ using FluentVault.IntegrationTests.Fixtures;
 using Xunit;
 
 namespace FluentVault.IntegrationTests.Systems.Features;
-public class SearchFilesHandlerShould : BaseSessionTest
+public class SearchFilesHandlerShould : IClassFixture<VaultFixture>
 {
     private static readonly VaultTestData _testData = new();
     private static readonly IEnumerable<IDictionary<string, string>> _sortConditions = new List<SortCondition>().Select(x => x.Attributes);
@@ -20,9 +20,12 @@ public class SearchFilesHandlerShould : BaseSessionTest
     private static readonly bool _recurseFolders = true;
     private static readonly bool _latestOnly = true;
     private static readonly string _bookmark = string.Empty;
-    private static readonly SearchFilesHandler _sut = new(_service);
+    private readonly SearchFilesHandler _sut;
 
-    public override async Task InitializeAsync() => _session = await new SignInHandler(_service).Handle(new SignInCommand(_options), default);
+    public SearchFilesHandlerShould(VaultFixture fixture)
+    {
+        _sut = new SearchFilesHandler(fixture.Service);
+    }
 
     [Fact]
     public async Task FindFiles()
@@ -34,7 +37,7 @@ public class SearchFilesHandlerShould : BaseSessionTest
         }.Select(x => x.Attributes);
 
         
-        SearchFilesCommand command = new(searchConditions, _sortConditions, _folderIds, _recurseFolders, _latestOnly, _bookmark, _session);
+        SearchFilesCommand command = new(searchConditions, _sortConditions, _folderIds, _recurseFolders, _latestOnly, _bookmark);
 
         // Act
         var results = await _sut.Handle(command, default);
@@ -54,7 +57,7 @@ public class SearchFilesHandlerShould : BaseSessionTest
         }.Select(x => x.Attributes);
 
         var latestOnly = false;
-        SearchFilesCommand command = new(searchConditions, _sortConditions, _folderIds, _recurseFolders, latestOnly, _bookmark, _session);
+        SearchFilesCommand command = new(searchConditions, _sortConditions, _folderIds, _recurseFolders, latestOnly, _bookmark);
 
         // Act
         FileSearchResult results = await _sut.Handle(command, default);

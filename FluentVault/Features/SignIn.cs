@@ -14,9 +14,9 @@ internal class SignInHandler : IRequestHandler<SignInCommand, VaultSessionCreden
 {
     private const string Operation = "SignIn";
 
-    private readonly IVaultRequestService _vaultRequestService;
+    private readonly IVaultService _vaultRequestService;
 
-    public SignInHandler(IVaultRequestService vaultRequestService)
+    public SignInHandler(IVaultService vaultRequestService)
         => _vaultRequestService = vaultRequestService;
 
     public async Task<VaultSessionCredentials> Handle(SignInCommand command, CancellationToken cancellationToken)
@@ -31,7 +31,7 @@ internal class SignInHandler : IRequestHandler<SignInCommand, VaultSessionCreden
             content.AddElement(ns, "userPassword", command.VaultOptions.Password);
         }
 
-        XDocument document = await _vaultRequestService.SendAsync(Operation, new(), contentBuilder, cancellationToken);
+        XDocument document = await _vaultRequestService.SendAsync(Operation, canSignIn: false, contentBuilder, cancellationToken);
 
         string t = document.GetElementValue("Ticket");
         string u = document.GetElementValue("UserId");

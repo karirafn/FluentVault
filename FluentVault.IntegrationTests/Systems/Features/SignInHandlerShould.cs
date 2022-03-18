@@ -3,15 +3,22 @@
 using FluentAssertions;
 
 using FluentVault.Features;
+using FluentVault.IntegrationTests.Fixtures;
 
 using Xunit;
 
 namespace FluentVault.IntegrationTests.Systems.Features;
 
-public class SignInHandlerShould : BaseIntegrationTest
+public class SignInHandlerShould : IClassFixture<VaultFixture>
 {
-    private readonly SignInCommand _command = new(_options);
-    private readonly SignInHandler _sut = new(_service);
+    private readonly SignInCommand _command;
+    private readonly SignInHandler _sut;
+
+    public SignInHandlerShould(VaultFixture fixture)
+    {
+        _sut = new(fixture.Service);
+        _command = new(fixture.Options.Value);
+    }
 
     [Fact]
     public async Task SignIn()
@@ -19,10 +26,10 @@ public class SignInHandlerShould : BaseIntegrationTest
         // Arrange
 
         // Act
-        _session = await _sut.Handle(_command, default);
+        VaultSessionCredentials session = await _sut.Handle(_command, default);
 
         // Assert
-        _session.Ticket.Should().NotBeEmpty();
-        _session.UserId.Should().BeGreaterThan(0);
+        session.Ticket.Should().NotBeEmpty();
+        session.UserId.Should().BeGreaterThan(0);
     }
 }

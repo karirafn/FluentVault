@@ -6,19 +6,27 @@ using FluentAssertions;
 using FluentVault.IntegrationTests.Fixtures;
 using FluentVault.Requests.Search.Files;
 
+using MediatR;
+
 using Xunit;
 
 namespace FluentVault.IntegrationTests.Systems.RequestBuilders;
-public class SearchFilesRequestBuilderShould : BaseRequestBuilderTest
+public class SearchFilesRequestBuilderShould : IClassFixture<VaultFixture>
 {
     private static readonly VaultTestData _testData = new();
+    private readonly IMediator _mediator;
+
+    public SearchFilesRequestBuilderShould(VaultFixture fixture)
+    {
+        _mediator = fixture.Mediator;
+    }
 
     // This test will fail if the Vault has no part files
     [Fact]
     public async Task FindFiles()
     {
         // Arrange
-        SearchFilesRequestBuilder sut = new(_mediator, _session);
+        SearchFilesRequestBuilder sut = new(_mediator);
 
         // Act
         IEnumerable<VaultFile> result = await sut
@@ -35,7 +43,7 @@ public class SearchFilesRequestBuilderShould : BaseRequestBuilderTest
     public async Task FindMultipleVersions_WhenCallingCetAllVersions()
     {
         // Arrange
-        SearchFilesRequestBuilder sut = new(_mediator, _session);
+        SearchFilesRequestBuilder sut = new(_mediator);
 
         // Act
         IEnumerable<VaultFile> result = await sut
