@@ -30,7 +30,7 @@ public class AddFluentVaultShould
 
     [Fact]
     public void RegisterSoapRequestService()
-        => _services.Should().Contain(x => x.ServiceType == typeof(IVaultRequestService));
+        => _services.Should().Contain(x => x.ServiceType == typeof(IVaultService));
 
     [Fact]
     public void RegisterHttpClientFactory()

@@ -7,15 +7,15 @@ using MediatR;
 
 namespace FluentVault.Features;
 
-internal record GetUserInfosByIserIdsQuery(IEnumerable<VaultUserId> UserIds, VaultSessionCredentials Session) : IRequest<IEnumerable<VaultUserInfo>>;
+internal record GetUserInfosByIserIdsQuery(IEnumerable<VaultUserId> UserIds) : IRequest<IEnumerable<VaultUserInfo>>;
 
 internal class GetUserInfosByUserIdsHandler : IRequestHandler<GetUserInfosByIserIdsQuery, IEnumerable<VaultUserInfo>>
 {
     private const string Operation = "GetUserInfosByUserIds";
 
-    private readonly IVaultRequestService _vaultRequestService;
+    private readonly IVaultService _vaultRequestService;
 
-    public GetUserInfosByUserIdsHandler(IVaultRequestService vaultRequestService)
+    public GetUserInfosByUserIdsHandler(IVaultService vaultRequestService)
         => _vaultRequestService = vaultRequestService;
 
     public async Task<IEnumerable<VaultUserInfo>> Handle(GetUserInfosByIserIdsQuery query, CancellationToken cancellationToken)
@@ -23,7 +23,7 @@ internal class GetUserInfosByUserIdsHandler : IRequestHandler<GetUserInfosByIser
         void contentBuilder(XElement content, XNamespace ns)
             => content.AddNestedElements(ns, "userIdArray", "long", query.UserIds.Select(id => id.ToString()));
 
-        XDocument response = await _vaultRequestService.SendAsync(Operation, query.Session, contentBuilder, cancellationToken);
+        XDocument response = await _vaultRequestService.SendAsync(Operation, canSignIn: true, contentBuilder, cancellationToken);
         IEnumerable<VaultUserInfo> result = VaultUserInfo.ParseAll(response);
 
         return result;

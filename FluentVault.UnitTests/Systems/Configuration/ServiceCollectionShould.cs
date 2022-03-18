@@ -33,7 +33,7 @@ public class ServiceCollectionShould
 
     [Fact]
     public void ReturnSoapRequestService()
-        => _provider.GetRequiredService<IVaultRequestService>()
+        => _provider.GetRequiredService<IVaultService>()
             .Should()
             .NotBeNull();
 

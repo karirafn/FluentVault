@@ -14,7 +14,6 @@ internal class SearchFilesRequestBuilder :
     ISearchFilesAddSearchCondition
 {
     private readonly IMediator _mediator;
-    private readonly VaultSessionCredentials _session;
 
     private object _value = new();
     private VaultPropertyDefinitionId? _propertyId;
@@ -28,8 +27,8 @@ internal class SearchFilesRequestBuilder :
     private readonly List<SearchCondition> _searchConditions = new();
     private readonly List<SortCondition> _sortConditions = new();
 
-    public SearchFilesRequestBuilder(IMediator mediator, VaultSessionCredentials session)
-        => (_mediator, _session) = (mediator, session);
+    public SearchFilesRequestBuilder(IMediator mediator)
+        => _mediator = mediator;
 
     public async Task<IEnumerable<VaultFile>> WithoutPaging()
     {
@@ -124,7 +123,7 @@ internal class SearchFilesRequestBuilder :
     private async Task SetPropertyValue(string property)
     {
         if (_allProperties.Any() is false)
-            _allProperties = await _mediator.Send(new GetPropertyDefinitionInfosQuery(_session));
+            _allProperties = await _mediator.Send(new GetPropertyDefinitionInfosQuery());
 
         var selectedProperty = _allProperties.FirstOrDefault(x => x.Definition.DisplayName.Equals(property))
             ?? throw new KeyNotFoundException($@"Property ""{property}"" was not found");
@@ -145,7 +144,7 @@ internal class SearchFilesRequestBuilder :
 
         do
         {
-            var command = new SearchFilesCommand(searchConditionAttributes, sortConditionAttributes, _folderIds, _recurseFolders, _latestOnly, bookmark, _session);
+            var command = new SearchFilesCommand(searchConditionAttributes, sortConditionAttributes, _folderIds, _recurseFolders, _latestOnly, bookmark);
             var result = await _mediator.Send(command);
             files.AddRange(result.Files);
             bookmark = result.Bookmark;

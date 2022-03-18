@@ -7,14 +7,13 @@ namespace FluentVault.Requests.Update.File.LifecycleState;
 internal class UpdateFileLifecycleStateRequestBuilder : IUpdateFileLifecycleStateRequestBuilder, IWithFiles, IWithComment
 {
     private readonly IMediator _mediator;
-    private readonly VaultSessionCredentials _session;
 
     private readonly List<VaultMasterId> _masterIds = new();
     private readonly List<string> _filenames = new();
     private readonly List<VaultLifeCycleStateId> _stateIds = new();
 
-    public UpdateFileLifecycleStateRequestBuilder(IMediator mediator, VaultSessionCredentials session)
-        => (_mediator, _session) = (mediator, session);
+    public UpdateFileLifecycleStateRequestBuilder(IMediator mediator)
+        => _mediator = mediator;
 
     public IWithFiles ByMasterId(VaultMasterId masterId) => ByMasterIds(new[] { masterId });
     public IWithFiles ByMasterIds(IEnumerable<VaultMasterId> masterIds)
@@ -38,7 +37,7 @@ internal class UpdateFileLifecycleStateRequestBuilder : IUpdateFileLifecycleStat
 
     public async Task<VaultFile> WithComment(string comment)
     {
-        UpdateFileLifeCycleStateCommand command = new(_filenames, _masterIds, _stateIds, comment, _session);
+        UpdateFileLifeCycleStateCommand command = new(_filenames, _masterIds, _stateIds, comment);
         VaultFile response = await _mediator.Send(command);
 
         return response;

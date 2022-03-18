@@ -7,20 +7,19 @@ namespace FluentVault.RequestBuilders;
 internal class GetRequestBuilder : IGetRequestBuilder
 {
     private readonly IMediator _mediator;
-    private readonly VaultSessionCredentials _session;
 
-    public GetRequestBuilder(IMediator mediator, VaultSessionCredentials session)
-        => (_mediator, _session) = (mediator, session);
+    public GetRequestBuilder(IMediator mediator)
+        => _mediator = mediator;
 
     public async Task<IEnumerable<VaultCategory>> CategoryConfigurations()
-        => await _mediator.Send(new GetCategoryConfigurationsQuery(_session));
+        => await _mediator.Send(new GetCategoryConfigurationsQuery());
 
     public async Task<IEnumerable<VaultLifeCycleDefinition>> LifeCycleDefinitions()
-        => await _mediator.Send(new GetAllLifeCycleDefinitionsQuery(_session));
+        => await _mediator.Send(new GetAllLifeCycleDefinitionsQuery());
 
     public async Task<IEnumerable<VaultProperty>> PropertyDefinitionInfos()
-        => await _mediator.Send(new GetPropertyDefinitionInfosQuery(_session));
+        => await _mediator.Send(new GetPropertyDefinitionInfosQuery());
 
     public async Task<IEnumerable<VaultUserInfo>> UserInfos(IEnumerable<VaultUserId> ids)
-        => await _mediator.Send(new GetUserInfosByIserIdsQuery(ids, _session));
+        => await _mediator.Send(new GetUserInfosByIserIdsQuery(ids));
 }
