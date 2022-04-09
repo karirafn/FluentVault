@@ -8,55 +8,32 @@ namespace FluentVault.Common;
 
 internal class VaultRequest
 {
-    private readonly string _version;
-    private readonly string _service;
-    private readonly string _command;
-    private readonly string _namespace;
-
-    internal VaultRequest(string operation, string version, string service, string command, string @namespace)
+    public VaultRequest(string operation, string version, string service, string command, string @namespace)
     {
-        (Operation, _version, _service, _command, _namespace) = (operation, version, service, command, @namespace);
-        new SoapRequestDataValidator().ValidateAndThrow(this);
-    }
+        Operation = operation;
+        StringBuilder namespaceBuilder = new StringBuilder().Append("http://AutodeskDM/").Append(@namespace);
+        Namespace = namespaceBuilder.ToString();
 
-    internal string Operation { get; init; }
-
-    internal string SoapAction
-        => new StringBuilder()
-            .Append(NamespaceBuilder)
+        SoapAction = new StringBuilder()
+            .Append(namespaceBuilder)
             .Append('/')
-            .Append(_service)
+            .Append(service)
             .Append('/')
-            .Append(Operation)
+            .Append(operation)
             .ToString();
 
-    internal string Uri
-        => new StringBuilder()
+        Uri = new StringBuilder()
             .Append("AutodeskDM/Services/")
-            .Append(_version)
+            .Append(version)
             .Append('/')
-            .Append(_service)
+            .Append(service)
             .Append(".svc")
-            .AppendRequestCommand(Operation, _command)
+            .AppendRequestCommand(operation, command)
             .ToString();
-
-    internal string Namespace
-        => NamespaceBuilder.ToString();
-
-    private StringBuilder NamespaceBuilder
-        => new StringBuilder()
-            .Append("http://AutodeskDM/")
-            .Append(_namespace);
-
-    private class SoapRequestDataValidator : AbstractValidator<VaultRequest>
-    {
-        public SoapRequestDataValidator()
-        {
-            RuleFor(x => x.Operation).Matches(@"^(Get|Find|Update|Sign)[A-Z]\w+$");
-            RuleFor(x => x._version).Matches(@"^(Filestore\/)?v\d{2}(_\d)?$");
-            RuleFor(x => x._service).Matches(@"^\w+Service(Extensions)?$");
-            RuleFor(x => x._command).Matches(@"^$|^\w+\.\w+\.\w+\.\w+$");
-            RuleFor(x => x._namespace).Matches(@"^(Services|Filestore)\/\w+\/\b([1-9]|12[1-9]|3[01])\b\/\b([0-9]|1[02])\b\/\d{4}$");
-        }
     }
+
+    public string Operation { get; init; }
+    public string SoapAction { get; init; }
+    public string Uri { get; init; }
+    public string Namespace { get; init; }
 }
