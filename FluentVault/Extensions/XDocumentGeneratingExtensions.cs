@@ -59,6 +59,30 @@ internal static class XDocumentGeneratingExtensions
         parent.Add(root);
     }
 
+    internal static XDocument AddResponseBody(this XDocument document, string operation, XNamespace @namespace, XElement content)
+    {
+        XElement response = new(@namespace + $"{operation}Response");
+        XElement result = new(@namespace + $"{operation}Result");
+
+        result.Add(content);
+        response.Add(result);
+        document.AddRequestBody(new(), response);
+
+        return document;
+    }
+
+    internal static XDocument AddResponseBody(this XDocument document, string operation, XNamespace @namespace, IEnumerable<XElement> content)
+    {
+        XElement response = new(@namespace + $"{operation}Response");
+        XElement result = new(@namespace + $"{operation}Result");
+
+        content.ToList().ForEach(x => result.Add(x));
+        response.Add(result);
+        document.AddRequestBody(new(), response);
+
+        return document;
+    }
+
     internal static XDocument AddRequestBody(this XDocument document, VaultSessionCredentials session, XElement content)
     {
         XElement envelope = document.AddEnvelope();
@@ -71,7 +95,7 @@ internal static class XDocumentGeneratingExtensions
         return document;
     }
 
-    private static XElement AddBody(this XElement element)
+    internal static XElement AddBody(this XElement element)
     {
         XElement body = new(_envelope + "Body");
         body.AddXmlSchema();
@@ -81,7 +105,7 @@ internal static class XDocumentGeneratingExtensions
         return body;
     }
 
-    private static XElement AddSecurityHeader(this XElement element, VaultSessionCredentials session)
+    internal static XElement AddSecurityHeader(this XElement element, VaultSessionCredentials session)
     {
         XElement securityHeader = new(_autodesk + "SecurityHeader");
         XElement ticket = new(_autodesk + "Ticket", session.Ticket);
@@ -96,7 +120,7 @@ internal static class XDocumentGeneratingExtensions
         return securityHeader;
     }
 
-    private static XElement AddHeader(this XElement element)
+    internal static XElement AddHeader(this XElement element)
     {
         XElement header = new(_envelope + "Header");
 
@@ -105,7 +129,7 @@ internal static class XDocumentGeneratingExtensions
         return header;
     }
 
-    private static XElement AddEnvelope(this XDocument document)
+    internal static XElement AddEnvelope(this XDocument document)
     {
         XElement envelope = new(_envelope + "Envelope");
         envelope.AddNamespace(XNamespace.Xmlns + "s", _envelope);
@@ -115,12 +139,12 @@ internal static class XDocumentGeneratingExtensions
         return envelope;
     }
 
-    private static void AddXmlSchema(this XElement element)
+    internal static void AddXmlSchema(this XElement element)
     {
         element.AddNamespace(XNamespace.Xmlns + "xsd", _xsd);
         element.AddNamespace(XNamespace.Xmlns + "xsi", _xsi);
     }
 
-    private static void AddNamespace(this XElement element, XName name, XNamespace ns)
+    internal static void AddNamespace(this XElement element, XName name, XNamespace ns)
         => element.Add(new XAttribute(name, ns.NamespaceName));
 }
