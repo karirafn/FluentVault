@@ -1,8 +1,9 @@
-﻿using System.Xml.Linq;
+﻿using System.Collections.Generic;
+using System.Xml.Linq;
 
 using FluentAssertions;
 
-using FluentVault.TestFixtures;
+using FluentVault.TestFixtures.LifeCycle;
 
 using Xunit;
 
@@ -10,15 +11,18 @@ namespace FluentVault.UnitTests.Systems.Domain.LifeCycle;
 
 public class VaultLifecycleShould
 {
+    private static readonly VaultLifeCycleDefinitionFixture _fixture = new();
+
     [Fact]
     public void ParseLifeCyclesFromXDocument()
     {
         // Arrange
-        var (body, expectation) = VaultResponseFixtures.GetVaultLifecycleFixtures(5);
-        var document = XDocument.Parse(body);
+        int count = 5;
+        IEnumerable<VaultLifeCycleDefinition> expectation = _fixture.CreateMany(count);
+        XDocument document = _fixture.ParseXDocument(expectation);
 
         // Act
-        var result = VaultLifeCycleDefinition.ParseAll(document);
+        IEnumerable<VaultLifeCycleDefinition> result = VaultLifeCycleDefinition.ParseAll(document);
 
         // Assert
         result.Should().BeEquivalentTo(expectation);
