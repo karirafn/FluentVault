@@ -3,19 +3,21 @@ using System.Xml.Linq;
 
 using FluentAssertions;
 
-using FluentVault.TestFixtures;
+using FluentVault.TestFixtures.User;
 
 using Xunit;
 
 namespace FluentVault.UnitTests.Systems.Domain.User;
 public class VaultGroupShould
 {
+    private static readonly VaultGroupFixture _fixture = new(string.Empty);
+
     [Fact]
     public void ParseVaultGroupFromXElement()
     {
         // Arrange
-        (string body, VaultGroup expectation) = VaultResponseFixtures.GetVaultGroupFixture();
-        XElement element = XElement.Parse(body);
+        VaultGroup expectation = _fixture.Create();
+        XElement element = _fixture.ParseXElement(expectation);
 
         // Act
         VaultGroup result = VaultGroup.Parse(element);
