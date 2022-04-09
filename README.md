@@ -1,5 +1,7 @@
 # FluentVault
 ![Dotnet](https://github.com/karirafn/fluentvault/actions/workflows/dotnet.yml/badge.svg)
+[![NuGet](https://img.shields.io/nuget/dt/fluentvault.svg)](https://www.nuget.org/packages/fluentvault)
+
 A wrapper for Autodesk Vault's API using the fluent syntax.
 
 ## Using FluentVault
