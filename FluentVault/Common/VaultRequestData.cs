@@ -1,62 +1,97 @@
-﻿using System.Text;
+﻿namespace FluentVault.Common;
 
-using FluentValidation;
-
-using FluentVault.Extensions;
-
-namespace FluentVault.Common;
-
-internal class VaultRequestData
+internal class VaultRequestData : IVaultRequestData
 {
-    private readonly string _version;
-    private readonly string _service;
-    private readonly string _command;
-    private readonly string _namespace;
+    private readonly IDictionary<string, VaultRequest> _data;
 
-    internal VaultRequestData(string operation, string version, string service, string command, string @namespace)
+    public VaultRequestData()
     {
-        (Operation, _version, _service, _command, _namespace) = (operation, version, service, command, @namespace);
-        new SoapRequestDataValidator().ValidateAndThrow(this);
+        _data = SoapRequestData.ToDictionary(x => x.Operation);
     }
 
-    internal string Operation { get; init; }
+    public VaultRequest Get(string operation)
+        => _data.TryGetValue(operation, out var vaultRequestData)
+        ? vaultRequestData
+        : throw new KeyNotFoundException($@"Operation ""{operation}"" was not found in Vault request data collection");
 
-    internal string SoapAction
-        => new StringBuilder()
-            .Append(NamespaceBuilder)
-            .Append('/')
-            .Append(_service)
-            .Append('/')
-            .Append(Operation)
-            .ToString();
-
-    internal string Uri
-        => new StringBuilder()
-            .Append("AutodeskDM/Services/")
-            .Append(_version)
-            .Append('/')
-            .Append(_service)
-            .Append(".svc")
-            .AppendRequestCommand(Operation, _command)
-            .ToString();
-
-    internal string Namespace
-        => NamespaceBuilder.ToString();
-
-    private StringBuilder NamespaceBuilder
-        => new StringBuilder()
-            .Append("http://AutodeskDM/")
-            .Append(_namespace);
-
-    private class SoapRequestDataValidator : AbstractValidator<VaultRequestData>
+    private static IEnumerable<VaultRequest> SoapRequestData => new VaultRequest[]
     {
-        public SoapRequestDataValidator()
-        {
-            RuleFor(x => x.Operation).Matches(@"^(Get|Find|Update|Sign)[A-Z]\w+$");
-            RuleFor(x => x._version).Matches(@"^(Filestore\/)?v\d{2}(_\d)?$");
-            RuleFor(x => x._service).Matches(@"^\w+Service(Extensions)?$");
-            RuleFor(x => x._command).Matches(@"^$|^\w+\.\w+\.\w+\.\w+$");
-            RuleFor(x => x._namespace).Matches(@"^(Services|Filestore)\/\w+\/\b([1-9]|12[1-9]|3[01])\b\/\b([0-9]|1[02])\b\/\d{4}$");
-        }
-    }
+        new(
+          operation: "GetAllLifeCycleDefinitions",
+          version: "v26",
+          service: "LifeCycleService",
+          command: "Connectivity.Explorer.Admin.AdminToolsCommand",
+          @namespace: "Services/LifeCycle/1/7/2020"
+        ),
+        new(
+          operation: "GetBehaviorConfigurationsByNames",
+          version: "v26",
+          service: "BehaviorService",
+          command: "Connectivity.Explorer.Admin.AdminToolsCommand",
+          @namespace: "Services/Behavior/1/7/2020"
+        ),
+        new(
+          operation: "GetCategoryConfigurationsByBehaviorNames",
+          version: "v26",
+          service: "CategoryService",
+          command: "Connectivity.Explorer.Admin.AdminToolsCommand",
+          @namespace: "Services/Category/1/7/2020"
+        ),
+        new(
+          operation: "GetLatestFileByMasterId",
+          version: "v26",
+          service: "DocumentService",
+          command: "Connectivity.Explorer.Document.FileSendUrlCommand",
+          @namespace: "Services/Document/1/7/2020"
+        ),
+        new(
+          operation: "GetPropertyDefinitionInfosByEntityClassId",
+          version: "v26",
+          service: "PropertyService",
+          command: "Connectivity.Explorer.Admin.AdminToolsCommand",
+          @namespace: "Services/Property/1/7/2020"
+        ),
+        new(
+          operation: "GetUserInfosByUserIds",
+          version: "v26",
+          service: "AdminService",
+          command: "Connectivity.Explorer.Admin.SecurityCommand",
+          @namespace: "Services/Admin/1/7/2020"
+        ),
+        new(
+          operation: "FindFilesBySearchConditions",
+          version: "v26",
+          service: "DocumentService",
+          command: "",
+          @namespace: "Services/Document/1/7/2020"
+        ),
+        new(
+          operation: "UpdateFileLifeCycleStates",
+          version: "v26",
+          service: "DocumentServiceExtensions",
+          command: "Connectivity.Explorer.DocumentPS.ChangeLifecycleStateCommand",
+          @namespace: "Services/DocumentExtensions/1/7/2020"
+        ),
+        new(
+          operation: "UpdateFilePropertyDefinitions",
+          version: "v26",
+          service: "DocumentService",
+          command: "Connectivity.Explorer.DocumentPS.ChangeLifecycleStateCommand",
+          @namespace: "Services/Document/1/7/2020"
+        ),
+        new(
+          operation: "SignIn",
+          version: "Filestore/v26_2",
+          service: "AuthService",
+          command: "Connectivity.Application.VaultBase.SignInCommand",
+          @namespace: "Filestore/Auth/1/8/2021"
+        ),
+        new(
+          operation: "SignOut",
+          version: "Filestore/v26",
+          service: "AuthService",
+          command: "Connectivity.Application.VaultBase.SignOutCommand",
+          @namespace: "Filestore/Auth/1/7/2020"
+        )
+    };
 }

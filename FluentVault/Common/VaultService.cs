@@ -13,10 +13,10 @@ internal class VaultService : IVaultService, IAsyncDisposable
 {
     private readonly HttpClient _httpClient;
     private readonly VaultOptions _options;
-    private readonly IVaultRequestDataCollection _data;
+    private readonly IVaultRequestData _data;
     private VaultSessionCredentials _session = new();
 
-    public VaultService(IHttpClientFactory httpClientFactory, IOptions<VaultOptions> options, IVaultRequestDataCollection data)
+    public VaultService(IHttpClientFactory httpClientFactory, IOptions<VaultOptions> options, IVaultRequestData data)
     {
         _httpClient = httpClientFactory.CreateClient("Vault");
         _options = options.Value;
@@ -42,7 +42,7 @@ internal class VaultService : IVaultService, IAsyncDisposable
 
     private HttpRequestMessage GetRequestMessage(string operation, VaultSessionCredentials session, Action<XElement, XNamespace>? contentBuilder)
     {
-        VaultRequestData data = _data.Get(operation);
+        VaultRequest data = _data.Get(operation);
         string uri = data.Uri;
         string soapAction = data.SoapAction;
         XDocument requestBody = GetRequestBody(data.Operation, data.Namespace, session, contentBuilder);
