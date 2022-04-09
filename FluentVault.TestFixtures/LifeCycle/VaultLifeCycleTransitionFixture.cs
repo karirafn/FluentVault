@@ -11,13 +11,7 @@ public class VaultLifeCycleTransitionFixture : VaultEntityFixture<VaultLifeCycle
     }
 
     public XElement ParseXElement(IEnumerable<VaultLifeCycleTransition> transitions)
-    {
-        XElement root = new(Namespace + "TransArray");
-        foreach (var transition in transitions)
-            root.Add(ParseXElement(transition));
-
-        return root;
-    }
+        => ParseXElement("TransArray", transitions);
 
     public override XElement ParseXElement(VaultLifeCycleTransition transition)
     {

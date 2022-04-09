@@ -11,13 +11,7 @@ public class VaultLifeCycleStateFixture : VaultEntityFixture<VaultLifeCycleState
     }
 
     public XElement ParseXElement(IEnumerable<VaultLifeCycleState> states)
-    {
-        XElement root = new(Namespace + "StateArray");
-        foreach (VaultLifeCycleState state in states)
-            root.Add(ParseXElement(state));
-
-        return root;
-    }
+        => ParseXElement("StateArray", states);
 
     public override XElement ParseXElement(VaultLifeCycleState state)
     {
