@@ -8,9 +8,9 @@ internal class SortCondition
     public SortCondition(long propertyId, bool sortAscending)
         => (_propertyId, _sortAscending) = (propertyId, sortAscending);
 
-    public IDictionary<string, string> Attributes => new Dictionary<string, string>
+    public IDictionary<string, object> Attributes => new Dictionary<string, object>
     {
-        ["PropDefId"] = _propertyId.ToString(),
-        ["SortAsc"] = _sortAscending.ToString().ToLower(),
+        ["PropDefId"] = _propertyId,
+        ["SortAsc"] = _sortAscending,
     };
 }

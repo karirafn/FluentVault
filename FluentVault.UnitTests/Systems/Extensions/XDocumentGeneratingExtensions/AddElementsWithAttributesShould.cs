@@ -18,7 +18,7 @@ public class AddElementsWithAttributesShould
         string parentName = "Parent";
         string childName = "Child";
         XNamespace ns = "Namespace";
-        List<Dictionary<string, string>> attributeSets = new()
+        List<Dictionary<string, object>> attributeSets = new()
         {
             new() { ["A"] = "1", ["B"] = "2", },
             new() { ["A"] = "3", ["B"] = "4", }

@@ -18,7 +18,7 @@ public class AddElementWithAttributesShould
         string parentName = "Parent";
         string childName = "Child";
         XNamespace ns = "Namespace";
-        Dictionary<string, string> attributes = new()
+        Dictionary<string, object> attributes = new()
         {
             ["A"] = "1",
             ["B"] = "2",

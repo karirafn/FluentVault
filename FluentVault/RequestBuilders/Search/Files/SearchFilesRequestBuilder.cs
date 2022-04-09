@@ -139,8 +139,8 @@ internal class SearchFilesRequestBuilder :
 
         List<VaultFile> files = new();
         string bookmark = string.Empty;
-        var searchConditionAttributes = _searchConditions.Select(x => x.Attributes);
-        var sortConditionAttributes = _sortConditions.Select(x => x.Attributes);
+        IEnumerable<IDictionary<string, object>> searchConditionAttributes = _searchConditions.Select(x => x.Attributes);
+        IEnumerable<IDictionary<string, object>> sortConditionAttributes = _sortConditions.Select(x => x.Attributes);
 
         do
         {

@@ -17,7 +17,7 @@ public class AddAttributesShould
         // Arrange
         string elementName = "Element";
         XElement element = new(elementName);
-        Dictionary<string, string> attributes = new() { ["A"] = "1", ["B"] = "2", };
+        Dictionary<string, object> attributes = new() { ["A"] = "1", ["B"] = "2", };
         string expectation = @"<Element A=""1"" B=""2"" />";
 
         // Act

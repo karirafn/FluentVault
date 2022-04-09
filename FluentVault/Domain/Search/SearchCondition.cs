@@ -23,12 +23,12 @@ internal class SearchCondition
         };
     }
 
-    public IDictionary<string, string> Attributes => new Dictionary<string, string>
+    public IDictionary<string, object> Attributes => new Dictionary<string, object>
     {
-        ["PropDefId"] = _propertyId.ToString(),
-        ["SrchOper"] = _searchOperator.Value.ToString(),
+        ["PropDefId"] = _propertyId,
+        ["SrchOper"] = _searchOperator.Value,
         ["SrchTxt"] = _searchText,
         ["PropTyp"] = _propertyType.Name,
-        ["SrchRule"] = _searchRule.ToString(),
+        ["SrchRule"] = _searchRule,
     };
 }

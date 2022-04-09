@@ -15,7 +15,7 @@ namespace FluentVault.IntegrationTests.Systems.Features;
 public class SearchFilesHandlerShould : IClassFixture<VaultFixture>
 {
     private static readonly VaultTestData _testData = new();
-    private static readonly IEnumerable<IDictionary<string, string>> _sortConditions = new List<SortCondition>().Select(x => x.Attributes);
+    private static readonly IEnumerable<IDictionary<string, object>> _sortConditions = new List<SortCondition>().Select(x => x.Attributes);
     private static readonly VaultFolderId[] _folderIds = Array.Empty<VaultFolderId>();
     private static readonly bool _recurseFolders = true;
     private static readonly bool _latestOnly = true;

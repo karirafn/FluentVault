@@ -9,25 +9,25 @@ internal static class XDocumentGeneratingExtensions
     private static readonly XNamespace _envelope = "http://schemas.xmlsoap.org/soap/envelope/";
     private static readonly XNamespace _autodesk = "http://AutodeskDM/Services";
 
-    internal static void AddAttribute(this XElement element, XName name, string value)
+    internal static void AddAttribute(this XElement element, XName name, object value)
         => element.Add(new XAttribute(name, value));
 
-    internal static void AddAttributes(this XElement element, IDictionary<string, string> attributes)
+    internal static void AddAttributes(this XElement element, IDictionary<string, object> attributes)
     {
-        foreach (KeyValuePair<string, string> attribute in attributes)
+        foreach (KeyValuePair<string, object> attribute in attributes)
             element.AddAttribute(attribute.Key, attribute.Value);
     }
 
     internal static void AddElement(this XElement parent, XNamespace ns, string childName, object childValue)
         => parent.Add(new XElement(ns + childName, childValue));
 
-    internal static void AddElements(this XElement parent, XNamespace ns, string childName, IEnumerable<string> childValues)
+    internal static void AddElements(this XElement parent, XNamespace ns, string childName, IEnumerable<object> childValues)
     {
         foreach (var childValue in childValues)
             parent.AddElement(ns, childName, childValue);
     }
 
-    internal static void AddNestedElements(this XElement parent, XNamespace ns, string childName, string nestedName, IEnumerable<string> nestedValues)
+    internal static void AddNestedElements(this XElement parent, XNamespace ns, string childName, string nestedName, IEnumerable<object> nestedValues)
     {
         XElement child = new(ns + childName);
 
@@ -37,7 +37,7 @@ internal static class XDocumentGeneratingExtensions
         parent.Add(child);
     }
 
-    internal static void AddElementWithAttributes(this XElement parent, XNamespace ns, string childName, IDictionary<string, string> attributes)
+    internal static void AddElementWithAttributes(this XElement parent, XNamespace ns, string childName, IDictionary<string, object> attributes)
     {
         XElement child = new(ns + childName);
         child.AddAttributes(attributes);
@@ -45,13 +45,13 @@ internal static class XDocumentGeneratingExtensions
         parent.Add(child);
     }
 
-    internal static void AddElementsWithAttributes(this XElement parent, XNamespace ns, string childName, IEnumerable<IDictionary<string, string>> attributeSets)
+    internal static void AddElementsWithAttributes(this XElement parent, XNamespace ns, string childName, IEnumerable<IDictionary<string, object>> attributeSets)
     {
-        foreach (IDictionary<string, string> attributes in attributeSets)
+        foreach (IDictionary<string, object> attributes in attributeSets)
             parent.AddElementWithAttributes(ns, childName, attributes);
     }
 
-    internal static void AddNestedElementsWithAttributes(this XElement parent, XNamespace ns, string rootName, string childName, IEnumerable<IDictionary<string, string>> attributeSets)
+    internal static void AddNestedElementsWithAttributes(this XElement parent, XNamespace ns, string rootName, string childName, IEnumerable<IDictionary<string, object>> attributeSets)
     {
         XElement root = new(ns + rootName);
         root.AddElementsWithAttributes(ns, childName, attributeSets);
