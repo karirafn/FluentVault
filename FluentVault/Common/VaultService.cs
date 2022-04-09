@@ -12,24 +12,21 @@ namespace FluentVault.Common;
 internal class VaultService : IVaultService, IAsyncDisposable
 {
     private readonly HttpClient _httpClient;
-    private readonly IDictionary<string, VaultRequestData> _data;
     private readonly VaultOptions _options;
+    private readonly IVaultRequestDataCollection _data;
     private VaultSessionCredentials _session = new();
 
-    public VaultService(IHttpClientFactory httpClientFactory, IOptions<VaultOptions> options)
+    public VaultService(IHttpClientFactory httpClientFactory, IOptions<VaultOptions> options, IVaultRequestDataCollection data)
     {
         _httpClient = httpClientFactory.CreateClient("Vault");
-        _data = VaultRequestDataCollection.SoapRequestData.ToDictionary(x => x.Operation);
         _options = options.Value;
+        _data = data;
     }
 
     public async Task<XDocument> SendAsync(string operation, bool canSignIn, Action<XElement, XNamespace>? contentBuilder = null, CancellationToken cancellationToken = default)
     {
         if (canSignIn && _session.IsValid == false)
             _session = await new SignInHandler(this).Handle(new SignInCommand(_options), cancellationToken);
-
-        if (_data.Keys.Any(key => key == operation) is false)
-            throw new KeyNotFoundException($@"Operation ""{operation}"" was not found in Vault request data collection");
 
         HttpRequestMessage requestMessage = GetRequestMessage(operation, _session, contentBuilder);
         HttpResponseMessage responseMessage = await _httpClient.SendAsync(requestMessage, cancellationToken);
@@ -45,9 +42,10 @@ internal class VaultService : IVaultService, IAsyncDisposable
 
     private HttpRequestMessage GetRequestMessage(string operation, VaultSessionCredentials session, Action<XElement, XNamespace>? contentBuilder)
     {
-        string uri = _data[operation].Uri;
-        string soapAction = _data[operation].SoapAction;
-        XDocument requestBody = GetRequestBody(operation, session, contentBuilder);
+        VaultRequestData data = _data.Get(operation);
+        string uri = data.Uri;
+        string soapAction = data.SoapAction;
+        XDocument requestBody = GetRequestBody(data.Operation, data.Namespace, session, contentBuilder);
         StringContent requestContent = GetRequestContent(requestBody);
 
         HttpRequestMessage requestMessage = new(HttpMethod.Post, uri);
@@ -65,9 +63,9 @@ internal class VaultService : IVaultService, IAsyncDisposable
         return requestContent;
     }
 
-    private XDocument GetRequestBody(string operation, VaultSessionCredentials session, Action<XElement, XNamespace>? contentBuilder)
+    private static XDocument GetRequestBody(string operation, string @namespace, VaultSessionCredentials session, Action<XElement, XNamespace>? contentBuilder)
     {
-        XNamespace ns = $"{_data[operation].Namespace}/";
+        XNamespace ns = $"{@namespace}/";
         XElement content = new(ns + operation);
 
         if (contentBuilder is not null)

@@ -1,8 +1,20 @@
 ﻿namespace FluentVault.Common;
 
-internal class VaultRequestDataCollection
+internal class VaultRequestDataCollection : IVaultRequestDataCollection
 {
-    public static IEnumerable<VaultRequestData> SoapRequestData => new VaultRequestData[]
+    private readonly IDictionary<string, VaultRequestData> _data;
+
+    public VaultRequestDataCollection()
+    {
+        _data = SoapRequestData.ToDictionary(x => x.Operation);
+    }
+
+    public VaultRequestData Get(string operation)
+        => _data.TryGetValue(operation, out var vaultRequestData)
+        ? vaultRequestData
+        : throw new KeyNotFoundException($@"Operation ""{operation}"" was not found in Vault request data collection");
+
+    private static IEnumerable<VaultRequestData> SoapRequestData => new VaultRequestData[]
     {
         new(
           operation: "GetAllLifeCycleDefinitions",
@@ -24,6 +36,13 @@ internal class VaultRequestDataCollection
           service: "CategoryService",
           command: "Connectivity.Explorer.Admin.AdminToolsCommand",
           @namespace: "Services/Category/1/7/2020"
+        ),
+        new(
+          operation: "GetLatestFileByMasterId",
+          version: "v26",
+          service: "DocumentService",
+          command: "Connectivity.Explorer.Document.FileSendUrlCommand",
+          @namespace: "Services/Document/1/7/2020"
         ),
         new(
           operation: "GetPropertyDefinitionInfosByEntityClassId",
