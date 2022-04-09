@@ -1,5 +1,7 @@
 ﻿using System.Xml.Linq;
 
+using FluentVault.Extensions;
+
 namespace FluentVault.TestFixtures.File;
 public class VaultFileRevisionFixture : VaultEntityFixture<VaultFileRevision>
 {
@@ -8,13 +10,13 @@ public class VaultFileRevisionFixture : VaultEntityFixture<VaultFileRevision>
     public override XElement ParseXElement(VaultFileRevision revision)
     {
         XElement element = new(Namespace + "FileRev");
-        element.Add(new XAttribute("RevId", revision.Id));
-        element.Add(new XAttribute("Label", revision.Label));
-        element.Add(new XAttribute("MaxConsumeFileId", revision.MaximumConsumeFileId));
-        element.Add(new XAttribute("MaxFileId", revision.MaximumFileId));
-        element.Add(new XAttribute("RevDefId", revision.DefinitionId));
-        element.Add(new XAttribute("MaxRevId", revision.MaximumRevisionId));
-        element.Add(new XAttribute("Order", revision.Order));
+        element.AddAttribute("RevId", revision.Id);
+        element.AddAttribute("Label", revision.Label);
+        element.AddAttribute("MaxConsumeFileId", revision.MaximumConsumeFileId);
+        element.AddAttribute("MaxFileId", revision.MaximumFileId);
+        element.AddAttribute("RevDefId", revision.DefinitionId);
+        element.AddAttribute("MaxRevId", revision.MaximumRevisionId);
+        element.AddAttribute("Order", revision.Order);
 
         return element;
     }

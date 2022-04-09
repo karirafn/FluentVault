@@ -1,5 +1,7 @@
 ﻿using System.Xml.Linq;
 
+using FluentVault.Extensions;
+
 namespace FluentVault.TestFixtures.File;
 public class VaultFileCategoryFixture : VaultEntityFixture<VaultFileCategory>
 {
@@ -8,8 +10,8 @@ public class VaultFileCategoryFixture : VaultEntityFixture<VaultFileCategory>
     public override XElement ParseXElement(VaultFileCategory category)
     {
         XElement element = new(Namespace + "Cat");
-        element.Add(new XAttribute("CatId", category.Id));
-        element.Add(new XAttribute("CatName", category.Name));
+        element.AddAttribute("CatId", category.Id);
+        element.AddAttribute("CatName", category.Name);
 
         return element;
     }

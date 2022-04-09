@@ -1,6 +1,8 @@
 ﻿
 using System.Xml.Linq;
 
+using FluentVault.Extensions;
+
 namespace FluentVault.TestFixtures.File;
 public class VaultFileFixture : VaultEntityRequestFixture<VaultFile>
 {
@@ -12,33 +14,33 @@ public class VaultFileFixture : VaultEntityRequestFixture<VaultFile>
     public override XElement ParseXElement(VaultFile file)
     {
         XElement element = new(Namespace + "File");
-        element.Add(new XAttribute("Id", file.Id));
-        element.Add(new XAttribute("Name", file.Filename));
-        element.Add(new XAttribute("VerName", file.VersionName));
-        element.Add(new XAttribute("MasterId", file.MasterId));
-        element.Add(new XAttribute("VerNum", file.VersionNumber));
-        element.Add(new XAttribute("MaxCkInVerNum", file.MaximumCheckInVersionNumber));
-        element.Add(new XAttribute("CkInDate", file.CheckedInDate));
-        element.Add(new XAttribute("Comm", file.Comment));
-        element.Add(new XAttribute("CreateDate", file.CreatedDate));
-        element.Add(new XAttribute("CreateUserId", file.CreateUserId));
-        element.Add(new XAttribute("Cksum", file.CheckSum));
-        element.Add(new XAttribute("FileSize", file.FileSize));
-        element.Add(new XAttribute("ModDate", file.ModifiedDate));
-        element.Add(new XAttribute("CreateUserName", file.CreateUserName));
-        element.Add(new XAttribute("CheckedOut", file.IsCheckedOut));
-        element.Add(new XAttribute("FolderId", file.FolderId));
-        element.Add(new XAttribute("CkOutSpec", file.CheckedOutPath));
-        element.Add(new XAttribute("CkOutMach", file.CheckedOutMachine));
-        element.Add(new XAttribute("CkOutUserId", file.CheckedOutUserId));
-        element.Add(new XAttribute("FileClass", file.FileClass));
-        element.Add(new XAttribute("Locked", file.IsLocked));
-        element.Add(new XAttribute("Hidden", file.IsHidden));
-        element.Add(new XAttribute("Cloaked", file.IsCloaked));
-        element.Add(new XAttribute("FileStatus", file.FileStatus));
-        element.Add(new XAttribute("IsOnSite", file.IsOnSite));
-        element.Add(new XAttribute("DesignVisAttmtStatus", file.DesignVisualAttachmentStatus));
-        element.Add(new XAttribute("ControlledByChangeOrder", file.IsControlledByChangeOrder));
+        element.AddAttribute("Id", file.Id);
+        element.AddAttribute("Name", file.Filename);
+        element.AddAttribute("VerName", file.VersionName);
+        element.AddAttribute("MasterId", file.MasterId);
+        element.AddAttribute("VerNum", file.VersionNumber);
+        element.AddAttribute("MaxCkInVerNum", file.MaximumCheckInVersionNumber);
+        element.AddAttribute("CkInDate", file.CheckedInDate);
+        element.AddAttribute("Comm", file.Comment);
+        element.AddAttribute("CreateDate", file.CreatedDate);
+        element.AddAttribute("CreateUserId", file.CreateUserId);
+        element.AddAttribute("Cksum", file.CheckSum);
+        element.AddAttribute("FileSize", file.FileSize);
+        element.AddAttribute("ModDate", file.ModifiedDate);
+        element.AddAttribute("CreateUserName", file.CreateUserName);
+        element.AddAttribute("CheckedOut", file.IsCheckedOut);
+        element.AddAttribute("FolderId", file.FolderId);
+        element.AddAttribute("CkOutSpec", file.CheckedOutPath);
+        element.AddAttribute("CkOutMach", file.CheckedOutMachine);
+        element.AddAttribute("CkOutUserId", file.CheckedOutUserId);
+        element.AddAttribute("FileClass", file.FileClass);
+        element.AddAttribute("Locked", file.IsLocked);
+        element.AddAttribute("Hidden", file.IsHidden);
+        element.AddAttribute("Cloaked", file.IsCloaked);
+        element.AddAttribute("FileStatus", file.FileStatus);
+        element.AddAttribute("IsOnSite", file.IsOnSite);
+        element.AddAttribute("DesignVisAttmtStatus", file.DesignVisualAttachmentStatus);
+        element.AddAttribute("ControlledByChangeOrder", file.IsControlledByChangeOrder);
         element.Add(new VaultFileRevisionFixture(Namespace).ParseXElement(file.Revision));
         element.Add(new VaultFileLifeCycleFixture(Namespace).ParseXElement(file.LifeCycle));
         element.Add(new VaultFileCategoryFixture(Namespace).ParseXElement(file.Category));

@@ -1,5 +1,7 @@
 ﻿using System.Xml.Linq;
 
+using FluentVault.Extensions;
+
 namespace FluentVault.TestFixtures.File;
 public class VaultFileLifeCycleFixture : VaultEntityFixture<VaultFileLifeCycle>
 {
@@ -8,11 +10,11 @@ public class VaultFileLifeCycleFixture : VaultEntityFixture<VaultFileLifeCycle>
     public override XElement ParseXElement(VaultFileLifeCycle lifeCycle)
     {
         XElement element = new(Namespace + "FileLfCyc");
-        element.Add(new XAttribute("LfCycStateId", lifeCycle.StateId));
-        element.Add(new XAttribute("LfCycDefId", lifeCycle.DefinitionId));
-        element.Add(new XAttribute("LfCycStateName", lifeCycle.StateName));
-        element.Add(new XAttribute("Consume", lifeCycle.IsReleased));
-        element.Add(new XAttribute("Obsolete", lifeCycle.IsObsolete));
+        element.AddAttribute("LfCycStateId", lifeCycle.StateId);
+        element.AddAttribute("LfCycDefId", lifeCycle.DefinitionId);
+        element.AddAttribute("LfCycStateName", lifeCycle.StateName);
+        element.AddAttribute("Consume", lifeCycle.IsReleased);
+        element.AddAttribute("Obsolete", lifeCycle.IsObsolete);
 
         return element;
     }
