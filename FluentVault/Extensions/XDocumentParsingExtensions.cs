@@ -8,10 +8,10 @@ internal static class XDocumentParsingExtensions
         => container.GetSingleElementByName(name).Value;
 
     internal static T ParseElementValue<T>(this XElement element, string name, Func<string, T> parse)
-        => parse(element.GetElementValue(name));
+        => ParseValue(name, element.GetElementValue(name), parse);
 
     internal static T ParseAttributeValue<T>(this XElement element, string name, Func<string, T> parse)
-        => parse(element.GetAttributeValue(name));
+        => ParseValue(name, element.GetAttributeValue(name), parse);
 
     internal static T ParseElement<T>(this XContainer container, string name, Func<XElement, T> parse)
         => parse(container.GetSingleElementByName(name));
@@ -32,4 +32,10 @@ internal static class XDocumentParsingExtensions
 
     private static IEnumerable<XElement> GetAllElementsByName(this XContainer container, string name)
         => container.Descendants().Where(x => x.Name.LocalName.Equals(name));
+
+    private static T ParseValue<T>(string name, string value, Func<string, T> parse)
+    {
+        try { return parse(value); }
+        catch (Exception e) { throw new FormatException(@$"Failed to parse ""{name}"" to type ""{typeof(T)}""", e.InnerException); }
+    }
 }
