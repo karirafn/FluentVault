@@ -3,19 +3,21 @@ using System.Xml.Linq;
 
 using FluentAssertions;
 
-using FluentVault.TestFixtures;
+using FluentVault.TestFixtures.Property;
 
 using Xunit;
 
 namespace FluentVault.UnitTests.Systems.Domain.User;
 public class VaultPropertyEntityClassAssociationShould
 {
+    private static readonly VaultPropertyEntityClassAssociationFixture _fixture = new(string.Empty);
+
     [Fact]
     public void ParseVaultEntityClassAssociationFromXElement()
     {
         // Arrange
-        (string body, VaultPropertyEntityClassAssociation expectation) = VaultResponseFixtures.GetVaultPropertyEntityClassAssociationFixture();
-        XElement element = XElement.Parse(body);
+        VaultPropertyEntityClassAssociation expectation = _fixture.Create();
+        XElement element = _fixture.ParseXElement(expectation);
 
         // Act
         VaultPropertyEntityClassAssociation result = VaultPropertyEntityClassAssociation.Parse(element);

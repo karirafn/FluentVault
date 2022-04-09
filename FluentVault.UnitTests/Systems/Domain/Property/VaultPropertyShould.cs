@@ -1,8 +1,9 @@
-﻿using System.Xml.Linq;
+﻿using System.Collections.Generic;
+using System.Xml.Linq;
 
 using FluentAssertions;
 
-using FluentVault.TestFixtures;
+using FluentVault.TestFixtures.Property;
 
 using Xunit;
 
@@ -10,15 +11,19 @@ namespace FluentVault.UnitTests.Systems.Domain.Property;
 
 public class VaultPropertyShould
 {
+    private static readonly VaultPropertyFixture _fixture = new();
+
+
     [Fact]
     public void ParsePropertyDefinitionsFromXDocument()
     {
         // Arrange
-        var (body, expectation) = VaultResponseFixtures.GetVaultPropertyFixtures(5);
-        var document = XDocument.Parse(body);
+        int count = 5;
+        IEnumerable<VaultProperty> expectation = _fixture.CreateMany(count);
+        XDocument document = _fixture.ParseXDocument(expectation);
 
         // Act
-        var result = VaultProperty.ParseAll(document);
+        IEnumerable<VaultProperty> result = VaultProperty.ParseAll(document);
 
         // Assert
         result.Should().BeEquivalentTo(expectation);

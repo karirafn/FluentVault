@@ -3,19 +3,21 @@ using System.Xml.Linq;
 
 using FluentAssertions;
 
-using FluentVault.TestFixtures;
+using FluentVault.TestFixtures.Property;
 
 using Xunit;
 
 namespace FluentVault.UnitTests.Systems.Domain.User;
 public class VaultPropertyConstraintShould
 {
+    private static readonly VaultPropertyConstraintFixture _fixture = new(string.Empty);
+
     [Fact]
     public void ParseVaultPropertyConstraintFromXElement()
     {
         // Arrange
-        (string body, VaultPropertyConstraint expectation) = VaultResponseFixtures.GetVaultPropertyConstraintFixture();
-        XElement element = XElement.Parse(body);
+        VaultPropertyConstraint expectation = _fixture.Create();
+        XElement element = _fixture.ParseXElement(expectation);
 
         // Act
         VaultPropertyConstraint result = VaultPropertyConstraint.Parse(element);

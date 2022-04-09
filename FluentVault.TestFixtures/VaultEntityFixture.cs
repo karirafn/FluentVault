@@ -15,5 +15,14 @@ public abstract class VaultEntityFixture<T>
 
     public T Create() => Fixture.Create<T>();
     public IEnumerable<T> CreateMany(int count) => Fixture.CreateMany<T>(count);
+    protected XElement ParseXElement(string rootName, IEnumerable<T> entities)
+    {
+        XElement element = new(Namespace + rootName);
+        foreach (T entity in entities)
+            element.Add(ParseXElement(entity));
+
+        return element;
+    }
+
     public abstract XElement ParseXElement(T entity);
 }
