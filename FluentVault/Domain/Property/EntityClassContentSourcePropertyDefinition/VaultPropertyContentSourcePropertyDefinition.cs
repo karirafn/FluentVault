@@ -4,7 +4,7 @@ using FluentVault.Extensions;
 
 namespace FluentVault;
 
-public record VaultProeprtyContentSourcePropertyDefinition(
+public record VaultPropertyContentSourcePropertyDefinition(
     VaultPropertyContentSourceId ContentSourceId,
     string DisplayName,
     string Moniker,
@@ -14,7 +14,7 @@ public record VaultProeprtyContentSourcePropertyDefinition(
     VaultDataType DataType,
     VaultPropertyContentSourceDefinitionType ContentSourceDefinitionType)
 {
-    internal static VaultProeprtyContentSourcePropertyDefinition Parse(XElement element)
+    internal static VaultPropertyContentSourcePropertyDefinition Parse(XElement element)
         => new(element.ParseAttributeValue("CtntSrcId", VaultPropertyContentSourceId.Parse),
             element.GetAttributeValue("DispName"),
             element.GetAttributeValue("Moniker"),

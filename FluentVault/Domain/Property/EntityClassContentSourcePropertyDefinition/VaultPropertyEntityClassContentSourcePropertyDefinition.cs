@@ -6,7 +6,7 @@ namespace FluentVault;
 
 public record VaultPropertyEntityClassContentSourcePropertyDefinition(
     VaultEntityClass EntityClass,
-    IEnumerable<VaultProeprtyContentSourcePropertyDefinition> ContentSourcePropertyDefinitions,
+    IEnumerable<VaultPropertyContentSourcePropertyDefinition> ContentSourcePropertyDefinitions,
     IEnumerable<VaultPropertyMappingType> MappingTypes,
     IEnumerable<long> Prioroties,
     IEnumerable<VaultPropertyMappingDirection> MappingDirections,
@@ -14,7 +14,7 @@ public record VaultPropertyEntityClassContentSourcePropertyDefinition(
 {
     internal static VaultPropertyEntityClassContentSourcePropertyDefinition Parse(XElement element)
         => new(element.ParseAttributeValue("EntClassId", x => VaultEntityClass.FromName(x)),
-            element.ParseAllElements("CtntSrcPropDef", VaultProeprtyContentSourcePropertyDefinition.Parse),
+            element.ParseAllElements("CtntSrcPropDef", VaultPropertyContentSourcePropertyDefinition.Parse),
             element.ParseAllElementValues("MapTyp", x => VaultPropertyMappingType.FromName(x)),
             element.ParseAllElementValues("Priority", long.Parse),
             element.ParseAllElementValues("MapDirection", x => VaultPropertyMappingDirection.FromName(x)),
