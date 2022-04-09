@@ -30,9 +30,4 @@ internal class GetLatestFileByMasterIdHandler : IRequestHandler<GetLatestFileByM
 
         return file;
     }
-
-    internal Task Handle(GetLatestFileByMasterIdQuery query, object cancellationToken)
-    {
-        throw new NotImplementedException();
-    }
 }
