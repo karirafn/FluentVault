@@ -27,3 +27,12 @@ public class MyClass
     }
 }
 ```
+
+Example request
+
+```c#
+var response = _vaultClient.Search.Files
+    .ForValueContaining("part.ipt")
+    .InSystemProperty(StringSearchProperty.FileName)
+    .WithPaging();
+```
