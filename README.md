@@ -3,7 +3,7 @@
 [![NuGet](https://img.shields.io/nuget/dt/fluentvault.svg)](https://www.nuget.org/packages/fluentvault)
 [![NuGet](https://img.shields.io/nuget/vpre/fluentvault.svg)](https://www.nuget.org/packages/fluentvault)
 
-A wrapper for Autodesk Vault's API using the fluent syntax.
+A fluent syntax wrapper for SOAP requests to Autodesk Vault.
 
 ## Using FluentVault
 Register FluentVault into the dependency injection container.
