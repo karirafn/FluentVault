@@ -1,8 +1,9 @@
-﻿using System.Xml.Linq;
+﻿using System.Collections.Generic;
+using System.Xml.Linq;
 
 using FluentAssertions;
 
-using FluentVault.TestFixtures;
+using FluentVault.TestFixtures.Category;
 
 using Xunit;
 
@@ -10,15 +11,18 @@ namespace FluentVault.UnitTests.Systems.Domain.Category;
 
 public class VaultCategoryShould
 {
+    private static readonly VaultCategoryFixture _fixture = new();
+
     [Fact]
     public void ParseCategoriesFromXDocument()
     {
         // Arrange
-        var (body, expectation) = VaultResponseFixtures.GetVaultCategoryFixtures(5);
-        var document = XDocument.Parse(body);
+        int count = 5;
+        IEnumerable<VaultCategory> expectation = _fixture.CreateMany(count);
+        XDocument document = _fixture.ParseXDocument(expectation);
 
         // Act
-        var result = VaultCategory.ParseAll(document);
+        IEnumerable<VaultCategory> result = VaultCategory.ParseAll(document);
 
         // Assert
         result.Should().BeEquivalentTo(expectation);
