@@ -3,19 +3,21 @@ using System.Xml.Linq;
 
 using FluentAssertions;
 
-using FluentVault.TestFixtures;
+using FluentVault.TestFixtures.File;
 
 using Xunit;
 
 namespace FluentVault.UnitTests.Systems.Domain.User;
 public class VaultFileLifeCycleShould
 {
+    private static readonly VaultFileLifeCycleFixture _fixture = new(string.Empty);
+
     [Fact]
     public void ParseVaultFileLifeCycleFromXElement()
     {
         // Arrange
-        (string body, VaultFileLifeCycle expectation) = VaultResponseFixtures.GetVaultFileLifeCycleFixture();
-        XElement element = XElement.Parse(body);
+        VaultFileLifeCycle expectation = _fixture.Create();
+        XElement element = _fixture.ParseXElement(expectation);
 
         // Act
         VaultFileLifeCycle result = VaultFileLifeCycle.Parse(element);

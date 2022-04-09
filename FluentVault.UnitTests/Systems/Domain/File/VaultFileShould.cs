@@ -1,30 +1,31 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Xml.Linq;
 
 using FluentAssertions;
 using FluentAssertions.Extensions;
 
-using FluentVault.TestFixtures;
+using FluentVault.TestFixtures.File;
 
 using Xunit;
 
 namespace FluentVault.UnitTests.Systems.Domain.File;
 public class VaultFileShould
 {
+    private static readonly VaultFileFixture _fixture = new();
+
     [Fact]
     public void ParseSingleFileFromXDocument()
     {
         // Arrange
-        (string body, IEnumerable<VaultFile> expectation) = VaultResponseFixtures.GetVaultFileFixtures(1);
-        XDocument document = XDocument.Parse(body);
+        VaultFile expectation = _fixture.Create();
+        XDocument document = _fixture.ParseXDocument(expectation);
 
         // Act
         VaultFile result = VaultFile.ParseSingle(document);
 
         // Assert
-        result.Should().BeEquivalentTo(expectation.Single(), options => options
+        result.Should().BeEquivalentTo(expectation, options => options
                 .Using<DateTime>(ctx => ctx.Subject.Should().BeCloseTo(ctx.Expectation, 1.Seconds()))
                 .WhenTypeIs<DateTime>());
     }
@@ -33,9 +34,9 @@ public class VaultFileShould
     public void ParseAllFilesFromXDocument()
     {
         // Arrange
-        int fileCount = 3;
-        (string body, IEnumerable<VaultFile> expectation) = VaultResponseFixtures.GetVaultFileFixtures(fileCount);
-        XDocument document = XDocument.Parse(body);
+        int fileCount = 2;
+        IEnumerable<VaultFile> expectation = _fixture.CreateMany(fileCount);
+        XDocument document = _fixture.ParseXDocument(expectation);
 
         // Act
         IEnumerable<VaultFile> result = VaultFile.ParseAll(document);
