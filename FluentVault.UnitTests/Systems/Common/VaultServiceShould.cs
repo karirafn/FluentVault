@@ -46,7 +46,7 @@ public class VaultServiceShould
     public async Task ThrowHttpResponseException_WhenResponseStatusCodeIsNotOk()
     {
         // Arrange
-        string operation = VaultRequestDataCollection.SoapRequestData.First().Operation;
+        string operation = VaultRequestData.SoapRequestData.First().Operation;
         HttpResponseMessage response = new(HttpStatusCode.NotFound);
         Mock<HttpMessageHandler> handler = new();
         handler.Protected()
