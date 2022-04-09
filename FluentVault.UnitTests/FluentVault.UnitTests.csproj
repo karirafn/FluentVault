@@ -25,6 +25,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\FluentVault.TestFixtures\FluentVault.TestFixtures.csproj" />
     <ProjectReference Include="..\FluentVault\FluentVault.csproj" />
   </ItemGroup>
 
