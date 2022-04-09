@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Text;
 
 using AutoFixture;
 
-namespace FluentVault.UnitTests.Fixtures;
-
-internal partial class VaultResponseFixtures
+namespace FluentVault.TestFixtures;
+public partial class VaultResponseFixtures
 {
     private static (string Body, IEnumerable<T> Files) CreateBody<T>(Fixture fixture, int count, string type, string typeNamespace, Func<T, string> createInnerBody)
     {

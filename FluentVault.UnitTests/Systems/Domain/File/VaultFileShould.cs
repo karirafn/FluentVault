@@ -6,7 +6,7 @@ using System.Xml.Linq;
 using FluentAssertions;
 using FluentAssertions.Extensions;
 
-using FluentVault.UnitTests.Fixtures;
+using FluentVault.TestFixtures;
 
 using Xunit;
 

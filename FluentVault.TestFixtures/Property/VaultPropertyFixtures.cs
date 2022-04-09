@@ -1,9 +1,8 @@
-﻿using System.Collections.Generic;
-
+﻿
 using AutoFixture;
 
-namespace FluentVault.UnitTests.Fixtures;
-internal static partial class VaultResponseFixtures
+namespace FluentVault.TestFixtures;
+public static partial class VaultResponseFixtures
 {
     public static (string Body, IEnumerable<VaultProperty> Files) GetVaultPropertyFixtures(int count)
     {

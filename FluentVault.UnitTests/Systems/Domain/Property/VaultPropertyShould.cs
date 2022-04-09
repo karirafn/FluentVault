@@ -2,7 +2,7 @@
 
 using FluentAssertions;
 
-using FluentVault.UnitTests.Fixtures;
+using FluentVault.TestFixtures;
 
 using Xunit;
 

@@ -36,7 +36,8 @@ public class VaultServiceShould
     {
         // Arrange
         string requestName = "This request name is definitely invalid.";
-        VaultService sut = new(_httpClientFactory.Object, _options);
+        VaultRequestData requestData = _fixture.Create<VaultRequestData>();
+        VaultService sut = new(_httpClientFactory.Object, _options, requestData);
 
         // Assert
         await Assert.ThrowsAsync<KeyNotFoundException>(() => sut.SendAsync(requestName, canSignIn: false));
@@ -46,21 +47,28 @@ public class VaultServiceShould
     public async Task ThrowHttpResponseException_WhenResponseStatusCodeIsNotOk()
     {
         // Arrange
-        string operation = VaultRequestData.SoapRequestData.First().Operation;
         HttpResponseMessage response = new(HttpStatusCode.NotFound);
+        VaultRequest request = _fixture.Create<VaultRequest>();
+        Mock<IVaultRequestData> requestData = new();
         Mock<HttpMessageHandler> handler = new();
+
+        requestData.Setup(x => x.Get(It.IsAny<string>())).Returns(request);
+
         handler.Protected()
             .Setup<Task<HttpResponseMessage>>(
                 "SendAsync",
                 ItExpr.IsAny<HttpRequestMessage>(),
                 ItExpr.IsAny<CancellationToken>())
             .ReturnsAsync(response);
+
         HttpClient httpClient = new(handler.Object) { BaseAddress = new Uri("http://server") };
+
         _httpClientFactory.Setup(x => x.CreateClient(It.IsAny<string>()))
             .Returns(httpClient);
-        VaultService sut = new(_httpClientFactory.Object, _options);
+
+        VaultService sut = new(_httpClientFactory.Object, _options, requestData.Object);
 
         // Assert
-        await Assert.ThrowsAsync<HttpRequestException>(() => sut.SendAsync(operation, canSignIn: false));
+        await Assert.ThrowsAsync<HttpRequestException>(() => sut.SendAsync(It.IsAny<string>(), canSignIn: false));
     }
 }

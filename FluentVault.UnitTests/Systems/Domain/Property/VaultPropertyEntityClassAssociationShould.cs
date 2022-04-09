@@ -3,7 +3,7 @@ using System.Xml.Linq;
 
 using FluentAssertions;
 
-using FluentVault.UnitTests.Fixtures;
+using FluentVault.TestFixtures;
 
 using Xunit;
 

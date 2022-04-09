@@ -1,11 +1,9 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Text;
 
 using AutoFixture;
 
-namespace FluentVault.UnitTests.Fixtures;
-internal static partial class VaultResponseFixtures
+namespace FluentVault.TestFixtures;
+public static partial class VaultResponseFixtures
 {
     public static (string Body, IEnumerable<VaultUserInfo> UserInfos) GetVaultUserInfoFixture(int count)
     {

@@ -11,7 +11,8 @@ internal class VaultRequestServiceFixture
     {
         IOptions<VaultOptions> options = new VaultOptionsFixture().Create();
         IHttpClientFactory factory = new VaultHttpClientFactory();
-        VaultRequestService = new VaultService(factory, options);
+        VaultRequestData requestData = new();
+        VaultRequestService = new VaultService(factory, options, requestData);
     }
 
     public IVaultService VaultRequestService { get; }
