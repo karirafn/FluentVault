@@ -1,5 +1,5 @@
 # FluentVault
-![CI](https://github.com/karirafn/FluentVault/workflows/dotnet/badge.svg)
+![Dotnet](https://github.com/karirafn/FluentVault/workflows/dotnet/badge.svg)
 A wrapper for Autodesk Vault's API using the fluent syntax.
 
 ## Using FluentVault
