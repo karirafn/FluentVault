@@ -42,5 +42,11 @@ public class GetLatestFileByMasterIdHandlerShould
 
         // Assert
         result.Should().BeEquivalentTo(file);
+        vaultService.Verify(x => x.SendAsync(
+                It.IsAny<string>(),
+                It.IsAny<bool>(),
+                It.IsAny<Action<XElement, XNamespace>?>(),
+                It.IsAny<CancellationToken>()),
+            Times.Once());
     }
 }
