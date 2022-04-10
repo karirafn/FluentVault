@@ -8,6 +8,7 @@ using FluentAssertions;
 using FluentVault.Common;
 using FluentVault.Features;
 using FluentVault.TestFixtures.File;
+using FluentVault.UnitTests.Helpers;
 
 using Moq;
 
@@ -22,31 +23,22 @@ public class GetLatestFileByMasterIdHandlerShould
     public async Task CallVaultService()
     {
         // Arrange
-        VaultFile file = _fixture.Create();
-        XDocument response = _fixture.ParseXDocument(file);
+        VaultFile expectation = _fixture.Create();
+        XDocument response = _fixture.ParseXDocument(expectation);
 
         Mock<IVaultService> vaultService = new();
 
-        vaultService.Setup(x => x.SendAsync(
-                It.IsAny<string>(),
-                It.IsAny<bool>(),
-                It.IsAny<Action<XElement, XNamespace>?>(),
-                It.IsAny<CancellationToken>()))
+        vaultService.Setup(VaultServiceExpressions.SendAsync)
             .ReturnsAsync(response);
 
-        GetLatestFileByMasterIdQuery query = new(file.MasterId);
+        GetLatestFileByMasterIdQuery query = new(expectation.MasterId);
         GetLatestFileByMasterIdHandler sut = new(vaultService.Object);
 
         // Act
         VaultFile result = await sut.Handle(query, CancellationToken.None);
 
         // Assert
-        result.Should().BeEquivalentTo(file);
-        vaultService.Verify(x => x.SendAsync(
-                It.IsAny<string>(),
-                It.IsAny<bool>(),
-                It.IsAny<Action<XElement, XNamespace>?>(),
-                It.IsAny<CancellationToken>()),
-            Times.Once());
+        result.Should().BeEquivalentTo(expectation);
+        vaultService.Verify(VaultServiceExpressions.SendAsync, Times.Once());
     }
 }
