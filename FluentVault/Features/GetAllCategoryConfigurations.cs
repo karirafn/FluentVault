@@ -6,18 +6,18 @@ using MediatR;
 
 namespace FluentVault.Features;
 
-internal record GetCategoryConfigurationsQuery() : IRequest<IEnumerable<VaultCategory>>;
+internal record GetAllCategoryConfigurationsQuery() : IRequest<IEnumerable<VaultCategory>>;
 
-internal class GetCategoryConfigurationsHandler : IRequestHandler<GetCategoryConfigurationsQuery, IEnumerable<VaultCategory>>
+internal class GetAllCategoryConfigurationsHandler : IRequestHandler<GetAllCategoryConfigurationsQuery, IEnumerable<VaultCategory>>
 {
     private const string Operation = "GetCategoryConfigurationsByBehaviorNames";
 
     private readonly IVaultService _vaultRequestService;
 
-    public GetCategoryConfigurationsHandler(IVaultService vaultRequestService)
+    public GetAllCategoryConfigurationsHandler(IVaultService vaultRequestService)
         => _vaultRequestService = vaultRequestService;
 
-    public async Task<IEnumerable<VaultCategory>> Handle(GetCategoryConfigurationsQuery query, CancellationToken cancellationToken)
+    public async Task<IEnumerable<VaultCategory>> Handle(GetAllCategoryConfigurationsQuery query, CancellationToken cancellationToken)
     {
         XDocument response = await _vaultRequestService.SendAsync(Operation, canSignIn: true, cancellationToken: cancellationToken);
         IEnumerable<VaultCategory> categories = VaultCategory.ParseAll(response);

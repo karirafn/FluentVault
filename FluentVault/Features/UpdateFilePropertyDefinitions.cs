@@ -69,7 +69,7 @@ internal class UpdateFilePropertyDefinitionsHandler : IRequestHandler<UpdateFile
     private async Task<IEnumerable<VaultPropertyDefinitionId>> GetPropertyIdsFromPropertyNames(IEnumerable<string> names)
     {
         if (!_allProperties.Any())
-            _allProperties = await _mediator.Send(new GetPropertyDefinitionInfosQuery());
+            _allProperties = await _mediator.Send(new GetAllPropertyDefinitionInfosQuery());
 
         return _allProperties.Where(x => names.Contains(x.Definition.DisplayName))
                .Select(x => x.Definition.Id);

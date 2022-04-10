@@ -123,7 +123,7 @@ internal class SearchFilesRequestBuilder :
     private async Task SetPropertyValue(string property)
     {
         if (_allProperties.Any() is false)
-            _allProperties = await _mediator.Send(new GetPropertyDefinitionInfosQuery());
+            _allProperties = await _mediator.Send(new GetAllPropertyDefinitionInfosQuery());
 
         var selectedProperty = _allProperties.FirstOrDefault(x => x.Definition.DisplayName.Equals(property))
             ?? throw new KeyNotFoundException($@"Property ""{property}"" was not found");
