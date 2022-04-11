@@ -15,17 +15,17 @@ public abstract class VaultEntityRequestFixture<T> : VaultEntityFixture<T>
     public string CreateBody(T entity) => ParseXDocument(entity).ToString();
     public string CreateBody(IEnumerable<T> entities) => ParseXDocument(entities).ToString();
 
-    public XDocument ParseXDocument(IEnumerable<T> entities)
+    public virtual XDocument ParseXDocument(IEnumerable<T> entities)
     {
         IEnumerable<XElement> content = entities.Select(entity => ParseXElement(entity));
 
-        return new XDocument().AddResponseBody(Operation, Namespace, content);
+        return new XDocument().AddResponseContent(Operation, Namespace, content, null);
     }
 
-    public XDocument ParseXDocument(T entity)
+    public virtual XDocument ParseXDocument(T entity)
     {
         XElement content = ParseXElement(entity);
 
-        return new XDocument().AddResponseBody(Operation, Namespace, content);
+        return new XDocument().AddResponseContent(Operation, Namespace, content, null);
     }
 }
