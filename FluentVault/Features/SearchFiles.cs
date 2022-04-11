@@ -13,9 +13,9 @@ internal record SearchFilesCommand(
     IEnumerable<VaultFolderId> FolderIds,
     bool RecurseFolders,
     bool LatestOnly,
-    string Bookmark) : IRequest<FileSearchResult>;
+    string Bookmark) : IRequest<VaultFileSearchResult>;
 
-internal class SearchFilesHandler : IRequestHandler<SearchFilesCommand, FileSearchResult>
+internal class SearchFilesHandler : IRequestHandler<SearchFilesCommand, VaultFileSearchResult>
 {
     private const string Operation = "FindFilesBySearchConditions";
 
@@ -24,7 +24,7 @@ internal class SearchFilesHandler : IRequestHandler<SearchFilesCommand, FileSear
     public SearchFilesHandler(IVaultService vaultRequestService)
         => _vaultRequestService = vaultRequestService;
 
-    public async Task<FileSearchResult> Handle(SearchFilesCommand command, CancellationToken cancellationToken)
+    public async Task<VaultFileSearchResult> Handle(SearchFilesCommand command, CancellationToken cancellationToken)
     {
         void contentBuilder(XElement content, XNamespace ns)
         {
@@ -37,7 +37,7 @@ internal class SearchFilesHandler : IRequestHandler<SearchFilesCommand, FileSear
         }
 
         XDocument response = await _vaultRequestService.SendAsync(Operation, canSignIn: true, contentBuilder, cancellationToken);
-        var result = FileSearchResult.Parse(response);
+        var result = VaultFileSearchResult.Parse(response);
 
         return result;
     }

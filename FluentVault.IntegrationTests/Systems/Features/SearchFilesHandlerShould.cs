@@ -60,7 +60,7 @@ public class SearchFilesHandlerShould : IClassFixture<VaultFixture>
         SearchFilesCommand command = new(searchConditions, _sortConditions, _folderIds, _recurseFolders, latestOnly, _bookmark);
 
         // Act
-        FileSearchResult results = await _sut.Handle(command, default);
+        VaultFileSearchResult results = await _sut.Handle(command, default);
 
         // Assert
         results.Should().NotBeNull();
