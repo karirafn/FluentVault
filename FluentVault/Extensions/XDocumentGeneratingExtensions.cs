@@ -59,29 +59,28 @@ internal static class XDocumentGeneratingExtensions
         parent.Add(root);
     }
 
-    internal static XDocument AddResponseBody(this XDocument document, string operation, XNamespace @namespace, XElement content)
+    internal static XDocument AddResponseContent(this XDocument document, string operation, XNamespace @namespace, IEnumerable<XElement> responseContent, IEnumerable<XElement?>? resultContent)
     {
         XElement response = new(@namespace + $"{operation}Response");
         XElement result = new(@namespace + $"{operation}Result");
 
-        result.Add(content);
+        if (resultContent is not null)
+        {
+            resultContent = resultContent.Where(content => content is not null);
+
+            if (resultContent.Any())
+                result.Add(resultContent);
+        }
+
+        result.Add(responseContent);
         response.Add(result);
         document.AddRequestBody(new(), response);
 
         return document;
     }
 
-    internal static XDocument AddResponseBody(this XDocument document, string operation, XNamespace @namespace, IEnumerable<XElement> content)
-    {
-        XElement response = new(@namespace + $"{operation}Response");
-        XElement result = new(@namespace + $"{operation}Result");
-
-        content.ToList().ForEach(x => result.Add(x));
-        response.Add(result);
-        document.AddRequestBody(new(), response);
-
-        return document;
-    }
+    internal static XDocument AddResponseContent(this XDocument document, string operation, XNamespace @namespace, XElement responseContent, IEnumerable<XElement>? resultContent)
+        => document.AddResponseContent(operation, @namespace, new XElement[] { responseContent }, resultContent);
 
     internal static XDocument AddRequestBody(this XDocument document, VaultSessionCredentials session, XElement content)
     {
