@@ -5,7 +5,6 @@ using FluentVault.Extensions;
 namespace FluentVault.Common;
 internal abstract class XDocumentSerializer<T> : XElementSerializer<T>
 {
-
     public XDocumentSerializer(string name, XNamespace @namespace) : base(name, @namespace)
     {
     }
