@@ -1,17 +1,24 @@
 ﻿using System.Xml.Linq;
 
+using FluentVault.Common;
 using FluentVault.Extensions;
 
 namespace FluentVault;
 
-public record VaultEntityCategory(VaultCategoryId Id, string Name)
+public record VaultEntityCategory(VaultCategoryId Id, string Name);
+
+internal class VaultEntityCategorySerializer : XElementSerializer<VaultEntityCategory>
 {
-    internal static VaultEntityCategory Deserialize(XElement element)
+    public VaultEntityCategorySerializer(XNamespace @namespace) : base("Cat", @namespace)
+    {
+    }
+
+    internal override VaultEntityCategory Deserialize(XElement element)
         => new(element.ParseAttributeValue("CatId", VaultCategoryId.Parse),
             element.GetAttributeValue("CatName"));
 
-    internal static XElement Serialize(VaultEntityCategory category, XNamespace @namespace)
-        => new XElement(@namespace + "Cat")
+    internal override XElement Serialize(VaultEntityCategory category)
+        => BaseElement
             .AddAttribute("CatId", category.Id)
             .AddAttribute("CatName", category.Name);
 }

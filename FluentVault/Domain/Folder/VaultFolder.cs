@@ -1,5 +1,6 @@
 ﻿using System.Xml.Linq;
 
+using FluentVault.Common;
 using FluentVault.Extensions;
 
 namespace FluentVault;
@@ -15,17 +16,18 @@ public record VaultFolder(
     bool IsLibraryFolder,
     bool IsCloaked,
     bool IsLocked,
-    VaultEntityCategory Category)
+    VaultEntityCategory Category);
+
+internal class VaultFolderSerializer : XDocumentSerializer<VaultFolder>
 {
-    private const string Folder = nameof(Folder);
+    private readonly VaultEntityCategorySerializer _categorySerializer;
 
-    internal static VaultFolder DeserializeSingle(XDocument document)
-        => document.ParseElement(Folder, Deserialize);
+    internal VaultFolderSerializer(XNamespace @namespace) : base("Folder", @namespace) 
+    {
+        _categorySerializer = new(Namespace);
+    }
 
-    internal static IEnumerable<VaultFolder> DeserializeAll(XDocument document)
-        => document.ParseAllElements(Folder, Deserialize);
-
-    internal static VaultFolder Deserialize(XElement element)
+    internal override VaultFolder Deserialize(XElement element)
         => new(element.ParseAttributeValue("Id", VaultFolderId.Parse),
             element.GetAttributeValue("Name"),
             element.GetAttributeValue("FullName"),
@@ -37,10 +39,10 @@ public record VaultFolder(
             element.ParseAttributeValue("IsLib", bool.Parse),
             element.ParseAttributeValue("Cloaked", bool.Parse),
             element.ParseAttributeValue("Locked", bool.Parse),
-            element.ParseElement("Cat", VaultEntityCategory.Deserialize));
+            element.ParseElement("Cat", _categorySerializer.Deserialize));
 
-    internal static XElement Serialize(VaultFolder folder, XNamespace @namespace)
-        => new XElement(@namespace + "Folder")
+    internal override XElement Serialize(VaultFolder folder)
+        => new XElement(Namespace + "Folder")
             .AddAttribute("Id", folder.Id)
             .AddAttribute("Name", folder.Name)
             .AddAttribute("FullName", folder.Path)
@@ -52,5 +54,5 @@ public record VaultFolder(
             .AddAttribute("IsLib", folder.IsLibraryFolder)
             .AddAttribute("Cloaked", folder.IsCloaked)
             .AddAttribute("Locked", folder.IsLocked)
-            .AddElement(VaultEntityCategory.Serialize(folder.Category, @namespace));
+            .AddElement(_categorySerializer.Serialize(folder.Category));
 }
