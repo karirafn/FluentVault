@@ -43,7 +43,7 @@ public class VaultFileFixture : VaultEntityRequestFixture<VaultFile>
         element.AddAttribute("ControlledByChangeOrder", file.IsControlledByChangeOrder);
         element.Add(new VaultFileRevisionFixture(Namespace).ParseXElement(file.Revision));
         element.Add(new VaultFileLifeCycleFixture(Namespace).ParseXElement(file.LifeCycle));
-        element.Add(new VaultFileCategoryFixture(Namespace).ParseXElement(file.Category));
+        element.Add(new VaultEntityCategorySerializer(Namespace).Serialize(file.Category));
 
         return element;
     }
