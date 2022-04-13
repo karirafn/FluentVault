@@ -9,54 +9,72 @@ internal static class XDocumentGeneratingExtensions
     private static readonly XNamespace _envelope = "http://schemas.xmlsoap.org/soap/envelope/";
     private static readonly XNamespace _autodesk = "http://AutodeskDM/Services";
 
-    internal static void AddAttribute(this XElement element, XName name, object value)
-        => element.Add(new XAttribute(name, value));
+    internal static XElement AddAttribute(this XElement element, XName name, object value)
+    {
+        element.Add(new XAttribute(name, value));
 
-    internal static void AddAttributes(this XElement element, IDictionary<string, object> attributes)
+        return element;
+    }
+
+    internal static XElement AddAttributes(this XElement element, IDictionary<string, object> attributes)
     {
         foreach (KeyValuePair<string, object> attribute in attributes)
-            element.AddAttribute(attribute.Key, attribute.Value);
+            _ = element.AddAttribute(attribute.Key, attribute.Value);
+
+        return element;
     }
 
-    internal static void AddElement(this XElement parent, XNamespace ns, string childName, object childValue)
-        => parent.Add(new XElement(ns + childName, childValue));
+    internal static XElement AddElement(this XElement element, XNamespace ns, string childName, object childValue)
+    {
+        element.Add(new XElement(ns + childName, childValue));
 
-    internal static void AddElements(this XElement parent, XNamespace ns, string childName, IEnumerable<object> childValues)
+        return element;
+    }
+
+    internal static XElement AddElements(this XElement element, XNamespace ns, string childName, IEnumerable<object> childValues)
     {
         foreach (var childValue in childValues)
-            parent.AddElement(ns, childName, childValue);
+            _ = element.AddElement(ns, childName, childValue);
+
+        return element;
     }
 
-    internal static void AddNestedElements(this XElement parent, XNamespace ns, string childName, string nestedName, IEnumerable<object> nestedValues)
+    internal static XElement AddNestedElements(this XElement element, XNamespace ns, string childName, string nestedName, IEnumerable<object> nestedValues)
     {
         XElement child = new(ns + childName);
 
         foreach (var value in nestedValues)
-            child.AddElement(ns, nestedName, value);
+            _ = child.AddElement(ns, nestedName, value);
 
-        parent.Add(child);
+        element.Add(child);
+
+        return element;
     }
 
-    internal static void AddElementWithAttributes(this XElement parent, XNamespace ns, string childName, IDictionary<string, object> attributes)
+    internal static XElement AddElementWithAttributes(this XElement element, XNamespace ns, string childName, IDictionary<string, object> attributes)
     {
-        XElement child = new(ns + childName);
-        child.AddAttributes(attributes);
+        XElement child = new XElement(ns + childName).AddAttributes(attributes);
 
-        parent.Add(child);
+        element.Add(child);
+
+        return element;
     }
 
-    internal static void AddElementsWithAttributes(this XElement parent, XNamespace ns, string childName, IEnumerable<IDictionary<string, object>> attributeSets)
+    internal static XElement AddElementsWithAttributes(this XElement element, XNamespace ns, string childName, IEnumerable<IDictionary<string, object>> attributeSets)
     {
         foreach (IDictionary<string, object> attributes in attributeSets)
-            parent.AddElementWithAttributes(ns, childName, attributes);
+            _ = element.AddElementWithAttributes(ns, childName, attributes);
+
+        return element;
     }
 
-    internal static void AddNestedElementsWithAttributes(this XElement parent, XNamespace ns, string rootName, string childName, IEnumerable<IDictionary<string, object>> attributeSets)
+    internal static XElement AddNestedElementsWithAttributes(this XElement element, XNamespace ns, string rootName, string childName, IEnumerable<IDictionary<string, object>> attributeSets)
     {
-        XElement root = new(ns + rootName);
-        root.AddElementsWithAttributes(ns, childName, attributeSets);
+        XElement root = new XElement(ns + rootName).AddElementsWithAttributes(ns, childName, attributeSets);
 
-        parent.Add(root);
+        element.Add(root);
+
+        return element;
     }
 
     internal static XDocument AddResponseContent(this XDocument document, string operation, XNamespace @namespace, IEnumerable<XElement> responseContent, IEnumerable<XElement?>? resultContent)
@@ -89,15 +107,16 @@ internal static class XDocumentGeneratingExtensions
         if (session.Ticket != Guid.Empty && session.UserId > 0)
             envelope.AddHeader().AddSecurityHeader(session);
 
-        envelope.AddBody().Add(content);
+        envelope.AddBody()
+            .Add(content);
 
         return document;
     }
 
     internal static XElement AddBody(this XElement element)
     {
-        XElement body = new(_envelope + "Body");
-        body.AddXmlSchema();
+        XElement body = new XElement(_envelope + "Body")
+            .AddXmlSchema();
 
         element.Add(body);
 
@@ -106,11 +125,12 @@ internal static class XDocumentGeneratingExtensions
 
     internal static XElement AddSecurityHeader(this XElement element, VaultSessionCredentials session)
     {
-        XElement securityHeader = new(_autodesk + "SecurityHeader");
         XElement ticket = new(_autodesk + "Ticket", session.Ticket);
         XElement userId = new(_autodesk + "UserId", session.UserId);
 
-        securityHeader.AddXmlSchema();
+        XElement securityHeader = new XElement(_autodesk + "SecurityHeader")
+            .AddXmlSchema();
+
         securityHeader.Add(ticket);
         securityHeader.Add(userId);
 
@@ -125,25 +145,27 @@ internal static class XDocumentGeneratingExtensions
 
         element.Add(header);
 
-        return header;
+        return element;
     }
 
     internal static XElement AddEnvelope(this XDocument document)
     {
-        XElement envelope = new(_envelope + "Envelope");
-        envelope.AddNamespace(XNamespace.Xmlns + "s", _envelope);
+        XElement envelope = new XElement(_envelope + "Envelope")
+            .AddNamespace(XNamespace.Xmlns + "s", _envelope);
 
         document.Add(envelope);
 
         return envelope;
     }
 
-    internal static void AddXmlSchema(this XElement element)
-    {
-        element.AddNamespace(XNamespace.Xmlns + "xsd", _xsd);
-        element.AddNamespace(XNamespace.Xmlns + "xsi", _xsi);
-    }
+    internal static XElement AddXmlSchema(this XElement element)
+        => element.AddNamespace(XNamespace.Xmlns + "xsd", _xsd)
+            .AddNamespace(XNamespace.Xmlns + "xsi", _xsi);
 
-    internal static void AddNamespace(this XElement element, XName name, XNamespace ns)
-        => element.Add(new XAttribute(name, ns.NamespaceName));
+    internal static XElement AddNamespace(this XElement element, XName name, XNamespace ns)
+    {
+        element.Add(new XAttribute(name, ns.NamespaceName));
+
+        return element;
+    }
 }
