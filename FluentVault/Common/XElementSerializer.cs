@@ -16,8 +16,10 @@ internal abstract class XElementSerializer<T>
         BaseElement = new(Namespace + Name);
     }
 
-    internal abstract XContainer Serialize(T entity);
+    internal abstract XElement Serialize(T entity);
     internal abstract T Deserialize(XElement element);
     internal IEnumerable<T> DeserializeMany(XElement element)
         => element.ParseAllElements(Name, Deserialize);
+    internal IEnumerable<XElement> Serialize(IEnumerable<T> entities)
+        => entities.Select(entity => Serialize(entity));
 }
