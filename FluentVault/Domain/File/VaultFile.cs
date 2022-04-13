@@ -74,5 +74,5 @@ public record VaultFile(
             element.GetAttributeValue("DesignVisAttmtStatus"),
             element.ParseElement("FileRev", VaultFileRevision.Parse),
             element.ParseElement("FileLfCyc", VaultFileLifeCycle.Parse),
-            element.ParseElement("Cat", VaultEntityCategory.Parse));
+            element.ParseElement("Cat", VaultEntityCategory.Deserialize));
 }

@@ -11,11 +11,7 @@ public record VaultEntityCategory(VaultCategoryId Id, string Name)
             element.GetAttributeValue("CatName"));
 
     internal static XElement Serialize(VaultEntityCategory category, XNamespace @namespace)
-    {
-        XElement element = new(@namespace + "Cat");
-        element.AddAttribute("CatId", category.Id);
-        element.AddAttribute("CatName", category.Name);
-
-        return element;
-    }
+        => new XElement(@namespace + "Cat")
+            .AddAttribute("CatId", category.Id)
+            .AddAttribute("CatName", category.Name);
 }
