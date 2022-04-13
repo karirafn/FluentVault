@@ -31,6 +31,13 @@ internal static class XDocumentGeneratingExtensions
         return element;
     }
 
+    internal static XElement AddElement(this XElement element, XElement child)
+    {
+        element.Add(child);
+
+        return element;
+    }
+
     internal static XElement AddElements(this XElement element, XNamespace ns, string childName, IEnumerable<object> childValues)
     {
         foreach (var childValue in childValues)
