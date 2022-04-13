@@ -38,6 +38,13 @@ internal class VaultRequestData : IVaultRequestData
           @namespace: "Services/Category/1/7/2020"
         ),
         new(
+          operation: "GetFoldersByFileMasterIds",
+          version: "v26",
+          service: "DocumentService",
+          command: "",
+          @namespace: "Services/Document/1/7/2020"
+        ),
+        new(
           operation: "GetLatestFileByMasterId",
           version: "v26",
           service: "DocumentService",
