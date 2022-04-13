@@ -34,7 +34,7 @@ public record VaultFile(
     string DesignVisualAttachmentStatus,
     VaultFileRevision Revision,
     VaultFileLifeCycle LifeCycle,
-    VaultFileCategory Category)
+    VaultEntityCategory Category)
 {
     private const string FileElementName = "File";
 
@@ -74,5 +74,5 @@ public record VaultFile(
             element.GetAttributeValue("DesignVisAttmtStatus"),
             element.ParseElement("FileRev", VaultFileRevision.Parse),
             element.ParseElement("FileLfCyc", VaultFileLifeCycle.Parse),
-            element.ParseElement("Cat", VaultFileCategory.Parse));
+            element.ParseElement("Cat", VaultEntityCategory.Parse));
 }
