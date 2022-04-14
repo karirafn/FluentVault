@@ -26,8 +26,16 @@ internal class GetLatestFileByMasterIdHandler : IRequestHandler<GetLatestFileByM
         };
 
         XDocument document = await _vaultService.SendAsync(Operation, canSignIn: true, contentBuilder, cancellationToken);
-        VaultFile file = VaultFile.ParseSingle(document);
+        VaultFile file = new GetLatestFileByMasterIdSerializer().Deserialize(document);
 
         return file;
     }
+}
+
+internal class GetLatestFileByMasterIdSerializer : XDocumentSerializer<VaultFile>
+{
+    private const string GetLatestFileByMasterId = nameof(GetLatestFileByMasterId);
+    private static readonly VaultRequest _request = new VaultRequestData().Get(GetLatestFileByMasterId);
+
+    public GetLatestFileByMasterIdSerializer() : base(_request.Operation, new VaultFileSerializer(_request.Namespace)) { }
 }

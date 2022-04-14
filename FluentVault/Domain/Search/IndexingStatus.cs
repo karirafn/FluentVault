@@ -1,7 +1,7 @@
 ﻿
 using Ardalis.SmartEnum;
 
-namespace FluentVault.Domain.Search;
+namespace FluentVault;
 public sealed class IndexingStatus : SmartEnum<IndexingStatus>
 {
     public static readonly IndexingStatus IndexingComplete = new(nameof(IndexingComplete), 1);

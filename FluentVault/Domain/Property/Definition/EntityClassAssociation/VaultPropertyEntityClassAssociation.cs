@@ -1,0 +1,3 @@
+﻿namespace FluentVault;
+
+public record VaultPropertyEntityClassAssociation(VaultEntityClass EntityClass, VaultPropertyAllowedMappingDirection AllowedMappingDirection);

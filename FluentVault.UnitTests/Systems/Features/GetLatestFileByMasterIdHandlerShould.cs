@@ -1,13 +1,14 @@
-﻿using System;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+
+using AutoFixture;
 
 using FluentAssertions;
 
 using FluentVault.Common;
 using FluentVault.Features;
-using FluentVault.TestFixtures.File;
+using FluentVault.TestFixtures;
 using FluentVault.UnitTests.Helpers;
 
 using Moq;
@@ -17,14 +18,15 @@ using Xunit;
 namespace FluentVault.UnitTests.Systems.Features;
 public class GetLatestFileByMasterIdHandlerShould
 {
-    private static readonly VaultFileFixture _fixture = new();
+    private static readonly SmartEnumFixture _fixture = new();
+    private static readonly GetLatestFileByMasterIdSerializer _serializer = new();
 
     [Fact]
     public async Task CallVaultService()
     {
         // Arrange
-        VaultFile expectation = _fixture.Create();
-        XDocument response = _fixture.ParseXDocument(expectation);
+        VaultFile expectation = _fixture.Create<VaultFile>();
+        XDocument response = _serializer.Serialize(expectation);
 
         Mock<IVaultService> vaultService = new();
 

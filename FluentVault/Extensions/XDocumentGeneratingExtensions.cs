@@ -24,19 +24,15 @@ internal static class XDocumentGeneratingExtensions
         return element;
     }
 
-    internal static XElement AddElement(this XElement element, XNamespace ns, string childName, object childValue)
-    {
-        element.Add(new XElement(ns + childName, childValue));
-
-        return element;
-    }
-
     internal static XElement AddElement(this XElement element, XElement child)
     {
         element.Add(child);
 
         return element;
     }
+
+    internal static XElement AddElement(this XElement element, XNamespace ns, string childName, object childValue)
+        => element.AddElement(new XElement(ns + childName, childValue));
 
     internal static XElement AddElements(this XElement element, XNamespace ns, string childName, IEnumerable<object> childValues)
     {
@@ -151,7 +147,7 @@ internal static class XDocumentGeneratingExtensions
 
         element.Add(securityHeader);
 
-        return securityHeader;
+        return element;
     }
 
     internal static XElement AddHeader(this XElement element)
@@ -160,7 +156,7 @@ internal static class XDocumentGeneratingExtensions
 
         element.Add(header);
 
-        return element;
+        return header;
     }
 
     internal static XElement AddEnvelope(this XDocument document)

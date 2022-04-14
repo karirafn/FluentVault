@@ -5,21 +5,32 @@ using FluentVault.Extensions;
 namespace FluentVault.Common;
 internal abstract class XElementSerializer<T>
 {
-    protected string Name { get; }
-    protected XNamespace Namespace { get; }
-    protected XElement BaseElement { get; }
+    public string ElementName { get; }
+    public XNamespace Namespace { get; }
+    protected XElement BaseElement => new(Namespace + ElementName);
 
-    public XElementSerializer(string name, XNamespace @namespace)
+    public XElementSerializer(string elementName, XNamespace @namespace)
     {
-        Name = name;
+        ElementName = elementName;
         Namespace = @namespace;
-        BaseElement = new(Namespace + Name);
     }
 
+    protected XElement GetSerializationElement(XElement element)
+        => element.Name.LocalName == ElementName
+            ? element
+            : element.GetElement(ElementName);
+
     internal abstract XElement Serialize(T entity);
-    internal abstract T Deserialize(XElement element);
-    internal IEnumerable<T> DeserializeMany(XElement element)
-        => element.ParseAllElements(Name, Deserialize);
+    
     internal IEnumerable<XElement> Serialize(IEnumerable<T> entities)
         => entities.Select(entity => Serialize(entity));
+    
+    internal XElement SerializeMany(string name, IEnumerable<T> entities)
+        => new XElement(Namespace + name)
+            .AddElements(entities.Select(entity => Serialize(entity)));
+
+    internal abstract T Deserialize(XElement element);
+    
+    internal IEnumerable<T> DeserializeMany(XElement element)
+        => element.ParseAllElements(ElementName, Deserialize);
 }

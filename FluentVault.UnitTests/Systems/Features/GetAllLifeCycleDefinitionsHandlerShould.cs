@@ -3,11 +3,13 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 
+using AutoFixture;
+
 using FluentAssertions;
 
 using FluentVault.Common;
 using FluentVault.Features;
-using FluentVault.TestFixtures.LifeCycle;
+using FluentVault.TestFixtures;
 using FluentVault.UnitTests.Helpers;
 
 using Moq;
@@ -17,15 +19,16 @@ using Xunit;
 namespace FluentVault.UnitTests.Systems.Features;
 public class GetAllLifeCycleDefinitionsHandlerShould
 {
-    private static readonly VaultLifeCycleDefinitionFixture _fixture = new();
+    private static readonly SmartEnumFixture _fixture = new();
+    private static readonly GetAllLifeCycleDefinitionsSerializer _serializer = new();
 
     [Fact]
     public async Task ValVaultService()
     {
         // Arrange
         int count = 5;
-        IEnumerable<VaultLifeCycleDefinition> expectation = _fixture.CreateMany(count);
-        XDocument response = _fixture.ParseXDocument(expectation);
+        IEnumerable<VaultLifeCycleDefinition> expectation = _fixture.CreateMany<VaultLifeCycleDefinition>(count);
+        XDocument response = _serializer.Serialize(expectation);
         Mock<IVaultService> vaultService = new();
 
         vaultService.Setup(VaultServiceExpressions.SendAsync)

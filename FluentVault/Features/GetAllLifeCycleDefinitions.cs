@@ -20,8 +20,16 @@ internal class GetAllLifeCycleDefinitionsHandler : IRequestHandler<GetAllLifeCyc
     public async Task<IEnumerable<VaultLifeCycleDefinition>> Handle(GetAllLifeCycleDefinitionsQuery query, CancellationToken cancellationToken)
     {
         XDocument response = await _vaultRequestService.SendAsync(Operation, canSignIn: true, cancellationToken: cancellationToken);
-        IEnumerable<VaultLifeCycleDefinition> lifeCycles = VaultLifeCycleDefinition.ParseAll(response);
+        IEnumerable<VaultLifeCycleDefinition> lifeCycles = new GetAllLifeCycleDefinitionsSerializer().DeserializeMany(response);
 
         return lifeCycles;
     }
+}
+
+internal class GetAllLifeCycleDefinitionsSerializer : XDocumentSerializer<VaultLifeCycleDefinition>
+{
+    private const string GetAllLifeCycleDefinitions = nameof(GetAllLifeCycleDefinitions);
+    private static readonly VaultRequest _request = new VaultRequestData().Get(GetAllLifeCycleDefinitions);
+
+    public GetAllLifeCycleDefinitionsSerializer() : base(_request.Operation, new VaultLifeCycleDefinitionSerializer(_request.Namespace)) { }
 }

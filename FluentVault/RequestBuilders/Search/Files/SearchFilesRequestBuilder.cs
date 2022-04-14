@@ -125,7 +125,7 @@ internal class SearchFilesRequestBuilder :
         if (_allProperties.Any() is false)
             _allProperties = await _mediator.Send(new GetAllPropertyDefinitionInfosQuery());
 
-        var selectedProperty = _allProperties.FirstOrDefault(x => x.Definition.DisplayName.Equals(property))
+        VaultProperty selectedProperty = _allProperties.FirstOrDefault(x => x.Definition.DisplayName.Equals(property))
             ?? throw new KeyNotFoundException($@"Property ""{property}"" was not found");
         _propertyId = selectedProperty.Definition.Id;
     }
@@ -144,10 +144,10 @@ internal class SearchFilesRequestBuilder :
 
         do
         {
-            var command = new SearchFilesCommand(searchConditionAttributes, sortConditionAttributes, _folderIds, _recurseFolders, _latestOnly, bookmark);
-            var result = await _mediator.Send(command);
-            files.AddRange(result.Files);
-            bookmark = result.Bookmark;
+            FindFilesBySearchConditionsQuery command = new(searchConditionAttributes, sortConditionAttributes, _folderIds, _recurseFolders, _latestOnly, bookmark);
+            VaultSearchFilesResponse response = await _mediator.Send(command);
+            files.AddRange(response.Result.Files);
+            bookmark = response.Bookmark;
         } while (files.Count <= maxResultCount && string.IsNullOrEmpty(bookmark) is false);
 
         return files;

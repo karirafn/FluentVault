@@ -20,11 +20,11 @@ public class SearchFilesHandlerShould : IClassFixture<VaultFixture>
     private static readonly bool _recurseFolders = true;
     private static readonly bool _latestOnly = true;
     private static readonly string _bookmark = string.Empty;
-    private readonly SearchFilesHandler _sut;
+    private readonly FindFilesBySearchConditionsHandler _sut;
 
     public SearchFilesHandlerShould(VaultFixture fixture)
     {
-        _sut = new SearchFilesHandler(fixture.Service);
+        _sut = new FindFilesBySearchConditionsHandler(fixture.Service);
     }
 
     [Fact]
@@ -37,33 +37,33 @@ public class SearchFilesHandlerShould : IClassFixture<VaultFixture>
         }.Select(x => x.Attributes);
 
         
-        SearchFilesCommand command = new(searchConditions, _sortConditions, _folderIds, _recurseFolders, _latestOnly, _bookmark);
+        FindFilesBySearchConditionsQuery command = new(searchConditions, _sortConditions, _folderIds, _recurseFolders, _latestOnly, _bookmark);
 
         // Act
-        var results = await _sut.Handle(command, default);
+        VaultSearchFilesResponse response = await _sut.Handle(command, default);
 
         // Assert
-        results.Should().NotBeNull();
-        results.Files.Should().NotBeEmpty();
+        response.Should().NotBeNull();
+        response.Result.Files.Should().NotBeEmpty();
     }
 
     [Fact]
     public async Task FindMultipleVersions_WhenLatestOnlyIsFalse()
     {
         // Arrange
-        var searchConditions = new SearchCondition[]
+        IEnumerable<IDictionary<string, object>> searchConditions = new SearchCondition[]
         {
             new(StringSearchProperty.FileName.Value, SearchOperator.IsEqualTo, _testData.TestPartFilename, SearchPropertyType.SingleProperty, SearchRule.Must),
         }.Select(x => x.Attributes);
 
         var latestOnly = false;
-        SearchFilesCommand command = new(searchConditions, _sortConditions, _folderIds, _recurseFolders, latestOnly, _bookmark);
+        FindFilesBySearchConditionsQuery command = new(searchConditions, _sortConditions, _folderIds, _recurseFolders, latestOnly, _bookmark);
 
         // Act
-        VaultFileSearchResult results = await _sut.Handle(command, default);
+        VaultSearchFilesResponse response = await _sut.Handle(command, default);
 
         // Assert
-        results.Should().NotBeNull();
-        results.Files.Should().NotBeEmpty();
+        response.Should().NotBeNull();
+        response.Result.Files.Should().NotBeEmpty();
     }
 }
