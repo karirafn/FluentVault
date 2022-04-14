@@ -9,15 +9,21 @@ internal static class XDocumentGeneratingExtensions
     private static readonly XNamespace _envelope = "http://schemas.xmlsoap.org/soap/envelope/";
     private static readonly XNamespace _autodesk = "http://AutodeskDM/Services";
 
-    internal static XElement AddAttribute(this XElement element, XName name, object value)
+    internal static XElement AddAttribute(this XElement element, XName name, object? value)
     {
+        if (value is null)
+            return element;
+
         element.Add(new XAttribute(name, value));
 
         return element;
     }
 
-    internal static XElement AddAttributes(this XElement element, IDictionary<string, object> attributes)
+    internal static XElement AddAttributes(this XElement element, IDictionary<string, object>? attributes)
     {
+        if (attributes is null)
+            return element;
+
         foreach (KeyValuePair<string, object> attribute in attributes)
             _ = element.AddAttribute(attribute.Key, attribute.Value);
 
@@ -31,11 +37,14 @@ internal static class XDocumentGeneratingExtensions
         return element;
     }
 
-    internal static XElement AddElement(this XElement element, XNamespace ns, string childName, object childValue)
+    internal static XElement AddElement(this XElement element, XNamespace ns, string childName, object? childValue)
         => element.AddElement(new XElement(ns + childName, childValue));
 
-    internal static XElement AddElements(this XElement element, XNamespace ns, string childName, IEnumerable<object> childValues)
+    internal static XElement AddElements(this XElement element, XNamespace ns, string childName, IEnumerable<object>? childValues)
     {
+        if (childValues is null)
+            return element;
+
         foreach (var childValue in childValues)
             _ = element.AddElement(ns, childName, childValue);
 
@@ -50,8 +59,11 @@ internal static class XDocumentGeneratingExtensions
         return element;
     }
 
-    internal static XElement AddNestedElements(this XElement element, XNamespace ns, string childName, string nestedName, IEnumerable<object> nestedValues)
+    internal static XElement AddNestedElements(this XElement element, XNamespace ns, string childName, string nestedName, IEnumerable<object>? nestedValues)
     {
+        if (nestedValues is null)
+            return element;
+
         XElement child = new(ns + childName);
 
         foreach (var value in nestedValues)
@@ -62,8 +74,11 @@ internal static class XDocumentGeneratingExtensions
         return element;
     }
 
-    internal static XElement AddElementWithAttributes(this XElement element, XNamespace ns, string childName, IDictionary<string, object> attributes)
+    internal static XElement AddElementWithAttributes(this XElement element, XNamespace ns, string childName, IDictionary<string, object>? attributes)
     {
+        if (attributes is null)
+            return element;
+
         XElement child = new XElement(ns + childName).AddAttributes(attributes);
 
         element.Add(child);
@@ -71,16 +86,22 @@ internal static class XDocumentGeneratingExtensions
         return element;
     }
 
-    internal static XElement AddElementsWithAttributes(this XElement element, XNamespace ns, string childName, IEnumerable<IDictionary<string, object>> attributeSets)
+    internal static XElement AddElementsWithAttributes(this XElement element, XNamespace ns, string childName, IEnumerable<IDictionary<string, object>>? attributeSets)
     {
+        if (attributeSets is null)
+            return element;
+
         foreach (IDictionary<string, object> attributes in attributeSets)
             _ = element.AddElementWithAttributes(ns, childName, attributes);
 
         return element;
     }
 
-    internal static XElement AddNestedElementsWithAttributes(this XElement element, XNamespace ns, string rootName, string childName, IEnumerable<IDictionary<string, object>> attributeSets)
+    internal static XElement AddNestedElementsWithAttributes(this XElement element, XNamespace ns, string rootName, string childName, IEnumerable<IDictionary<string, object>>? attributeSets)
     {
+        if (attributeSets is null)
+            return element;
+
         XElement root = new XElement(ns + rootName).AddElementsWithAttributes(ns, childName, attributeSets);
 
         element.Add(root);
