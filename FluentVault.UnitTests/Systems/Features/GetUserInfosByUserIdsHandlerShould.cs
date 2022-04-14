@@ -18,7 +18,7 @@ using Moq;
 using Xunit;
 
 namespace FluentVault.UnitTests.Systems.Features;
-public class GatUserInfosByUserIdsHandlerShould
+public class GetUserInfosByUserIdsHandlerShould
 {
     private static readonly SmartEnumFixture _fixture = new();
     private static readonly GetUserInfosByUserIdsSerializer _serializer = new();
