@@ -8,30 +8,30 @@ using MediatR;
 
 namespace FluentVault.Features;
 
-internal record UpdateFileLifeCycleStateCommand(
+internal record UpdateFileLifeCycleStatesCommand(
     IEnumerable<string> FileNames,
     IEnumerable<VaultMasterId> MasterIds,
     IEnumerable<VaultLifeCycleStateId> StateIds,
-    string Comment) : IRequest<VaultFile>;
+    string Comment) : IRequest<IEnumerable<VaultFile>>;
 
 
-internal class UpdateFileLifeCycleStateHandler : IRequestHandler<UpdateFileLifeCycleStateCommand, VaultFile>
+internal class UpdateFileLifeCycleStatesHandler : IRequestHandler<UpdateFileLifeCycleStatesCommand, IEnumerable<VaultFile>>
 {
     private const string Operation = "UpdateFileLifeCycleStates";
 
     private readonly IMediator _mediator;
     private readonly IVaultService _vaultRequestService;
 
-    public UpdateFileLifeCycleStateHandler(IMediator mediator, IVaultService soapRequestService)
+    public UpdateFileLifeCycleStatesHandler(IMediator mediator, IVaultService soapRequestService)
         => (_mediator, _vaultRequestService) = (mediator, soapRequestService);
 
-    public async Task<VaultFile> Handle(UpdateFileLifeCycleStateCommand command, CancellationToken cancellationToken)
+    public async Task<IEnumerable<VaultFile>> Handle(UpdateFileLifeCycleStatesCommand command, CancellationToken cancellationToken)
     {
         List<VaultMasterId> masterIds = command.MasterIds.ToList();
         if (command.FileNames.Any())
         {
             string searchString = string.Join(" OR ", command.FileNames);
-            var response = await new SearchFilesRequestBuilder(_mediator)
+            IEnumerable<VaultFile> response = await new SearchFilesRequestBuilder(_mediator)
                 .ForValueEqualTo(searchString)
                 .InSystemProperty(StringSearchProperty.FileName)
                 .WithoutPaging();
@@ -48,8 +48,16 @@ internal class UpdateFileLifeCycleStateHandler : IRequestHandler<UpdateFileLifeC
         };
 
         XDocument document = await _vaultRequestService.SendAsync(Operation, canSignIn: true, contentBuilder, cancellationToken);
-        VaultFile file = VaultFile.ParseSingle(document);
+        IEnumerable<VaultFile> files = new UpdateFileLifeCycleStatesSerializer().DeserializeMany(document);
 
-        return file;
+        return files;
     }
+}
+
+internal class UpdateFileLifeCycleStatesSerializer : XDocumentSerializer<VaultFile>
+{
+    private const string UpdateFileLifeCycleStates = nameof(UpdateFileLifeCycleStates);
+    private static readonly VaultRequest _request = new VaultRequestData().Get(UpdateFileLifeCycleStates);
+
+    public UpdateFileLifeCycleStatesSerializer() : base(_request.Operation, new VaultFileSerializer(_request.Namespace)) { }
 }

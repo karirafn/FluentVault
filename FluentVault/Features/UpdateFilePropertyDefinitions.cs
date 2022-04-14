@@ -47,7 +47,7 @@ internal class UpdateFilePropertyDefinitionsHandler : IRequestHandler<UpdateFile
         };
 
         XDocument response = await _vaultRequestService.SendAsync(Operation, canSignIn: true, contentBuilder, cancellationToken);
-        var files = VaultFile.ParseAll(response);
+        IEnumerable<VaultFile> files = new UpdateFilePropertyDefinitionsSerializer().DeserializeMany(response);
 
         return files;
     }
@@ -74,4 +74,12 @@ internal class UpdateFilePropertyDefinitionsHandler : IRequestHandler<UpdateFile
         return _allProperties.Where(x => names.Contains(x.Definition.DisplayName))
                .Select(x => x.Definition.Id);
     }
+}
+
+internal class UpdateFilePropertyDefinitionsSerializer : XDocumentSerializer<VaultFile>
+{
+    private const string UpdateFilePropertyDefinitions = nameof(UpdateFilePropertyDefinitions);
+    private static readonly VaultRequest _request = new VaultRequestData().Get(UpdateFilePropertyDefinitions);
+
+    public UpdateFilePropertyDefinitionsSerializer() : base(_request.Operation, new VaultFileSerializer(_request.Namespace)) { }
 }

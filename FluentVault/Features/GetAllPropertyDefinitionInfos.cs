@@ -20,8 +20,16 @@ internal class GetAllPropertyDefinitionInfosHandler : IRequestHandler<GetAllProp
     public async Task<IEnumerable<VaultProperty>> Handle(GetAllPropertyDefinitionInfosQuery query, CancellationToken cancellationToken)
     {
         XDocument response = await _vaultRequestService.SendAsync(Operation, canSignIn: true, cancellationToken: cancellationToken);
-        IEnumerable<VaultProperty> properties = VaultProperty.ParseAll(response);
+        IEnumerable<VaultProperty> properties = new GetAllPropertyDefinitionInfosSerializer().DeserializeMany(response);
 
         return properties;
     }
+}
+
+internal class GetAllPropertyDefinitionInfosSerializer : XDocumentSerializer<VaultProperty>
+{
+    private const string GetBehaviorConfigurationsByNames = nameof(GetBehaviorConfigurationsByNames);
+    private static readonly VaultRequest _request = new VaultRequestData().Get(GetBehaviorConfigurationsByNames);
+
+    public GetAllPropertyDefinitionInfosSerializer() : base(_request.Operation, new VaultPropertySerializer(_request.Namespace)) { }
 }

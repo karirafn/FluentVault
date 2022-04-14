@@ -3,11 +3,13 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 
+using AutoFixture;
+
 using FluentAssertions;
 
 using FluentVault.Common;
 using FluentVault.Features;
-using FluentVault.TestFixtures.Category;
+using FluentVault.TestFixtures;
 using FluentVault.UnitTests.Helpers;
 
 using Moq;
@@ -15,17 +17,18 @@ using Moq;
 using Xunit;
 
 namespace FluentVault.UnitTests.Systems.Features;
-public class GetAllCategoryConfigurations
+public class GetAllCategoryConfigurationsHandlerShould
 {
-    private static readonly VaultCategoryFixture _fixture = new();
+    private static readonly SmartEnumFixture _fixture = new();
+    private static readonly GetCategoryConfigurationsByBehaviorNamesSerializer _serializer = new();
 
     [Fact]
     public async Task ValVaultService()
     {
         // Arrange
         int count = 5;
-        IEnumerable<VaultCategory> expectation = _fixture.CreateMany(count);
-        XDocument response = _fixture.ParseXDocument(expectation);
+        IEnumerable<VaultCategory> expectation = _fixture.CreateMany<VaultCategory>(count);
+        XDocument response = _serializer.Serialize(expectation);
         Mock<IVaultService> vaultService = new();
 
         vaultService.Setup(VaultServiceExpressions.SendAsync)

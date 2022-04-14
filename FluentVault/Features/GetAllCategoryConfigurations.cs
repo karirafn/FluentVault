@@ -20,8 +20,16 @@ internal class GetAllCategoryConfigurationsHandler : IRequestHandler<GetAllCateg
     public async Task<IEnumerable<VaultCategory>> Handle(GetAllCategoryConfigurationsQuery query, CancellationToken cancellationToken)
     {
         XDocument response = await _vaultRequestService.SendAsync(Operation, canSignIn: true, cancellationToken: cancellationToken);
-        IEnumerable<VaultCategory> categories = VaultCategory.ParseAll(response);
+        IEnumerable<VaultCategory> categories = new GetCategoryConfigurationsByBehaviorNamesSerializer().DeserializeMany(response);
 
         return categories;
     }
+}
+
+internal class GetCategoryConfigurationsByBehaviorNamesSerializer : XDocumentSerializer<VaultCategory>
+{
+    private const string GetCategoryConfigurationsByBehaviorNames = nameof(GetCategoryConfigurationsByBehaviorNames);
+    private static readonly VaultRequest _request = new VaultRequestData().Get(GetCategoryConfigurationsByBehaviorNames);
+
+    public GetCategoryConfigurationsByBehaviorNamesSerializer() : base(_request.Operation, new VaultCategorySerializer(_request.Namespace)) { }
 }

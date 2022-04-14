@@ -24,8 +24,16 @@ internal class GetFoldersByFileMasterIdsHandler : IRequestHandler<GetFoldersByFi
             => content.AddNestedElements(@namespace, "fileMasterIds", "long", query.MasterIds);
 
         XDocument document = await _vaultService.SendAsync(Operation, canSignIn: true, contentBuilder, cancellationToken);
-        IEnumerable<VaultFolder> folders = VaultFolder.DeserializeAll(document);
+        IEnumerable<VaultFolder> folders = new GetFoldersByFileMasterIdsSerializer().DeserializeMany(document);
 
         return folders;
     }
+}
+
+internal class GetFoldersByFileMasterIdsSerializer : XDocumentSerializer<VaultFolder>
+{
+    private const string GetFoldersByFileMasterIds = nameof(GetFoldersByFileMasterIds);
+    private static readonly VaultRequest _request = new VaultRequestData().Get(GetFoldersByFileMasterIds);
+
+    public GetFoldersByFileMasterIdsSerializer() : base(_request.Operation, new VaultFolderSerializer(_request.Namespace)) { }
 }

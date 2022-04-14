@@ -24,8 +24,16 @@ internal class GetUserInfosByUserIdsHandler : IRequestHandler<GetUserInfosByIser
             => content.AddNestedElements(ns, "userIdArray", "long", query.UserIds.Select(id => id.ToString()));
 
         XDocument response = await _vaultRequestService.SendAsync(Operation, canSignIn: true, contentBuilder, cancellationToken);
-        IEnumerable<VaultUserInfo> result = VaultUserInfo.ParseAll(response);
+        IEnumerable<VaultUserInfo> result = new GetUserInfosByUserIdsSerializer().DeserializeMany(response);
 
         return result;
     }
+}
+
+internal class GetUserInfosByUserIdsSerializer : XDocumentSerializer<VaultUserInfo>
+{
+    private const string GetUserInfosByUserIds = nameof(GetUserInfosByUserIds);
+    private static readonly VaultRequest _request = new VaultRequestData().Get(GetUserInfosByUserIds);
+
+    public GetUserInfosByUserIdsSerializer() : base(_request.Operation, new VaultUserInfoSerializer(_request.Namespace)) { }
 }
