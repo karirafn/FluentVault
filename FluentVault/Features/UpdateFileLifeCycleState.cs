@@ -1,8 +1,8 @@
 ﻿using System.Xml.Linq;
 
 using FluentVault.Common;
+using FluentVault.Domain.Search;
 using FluentVault.Extensions;
-using FluentVault.Requests.Search.Files;
 
 using MediatR;
 
@@ -13,7 +13,6 @@ internal record UpdateFileLifeCycleStatesCommand(
     IEnumerable<VaultMasterId> MasterIds,
     IEnumerable<VaultLifeCycleStateId> StateIds,
     string Comment) : IRequest<IEnumerable<VaultFile>>;
-
 
 internal class UpdateFileLifeCycleStatesHandler : IRequestHandler<UpdateFileLifeCycleStatesCommand, IEnumerable<VaultFile>>
 {
@@ -27,30 +26,36 @@ internal class UpdateFileLifeCycleStatesHandler : IRequestHandler<UpdateFileLife
 
     public async Task<IEnumerable<VaultFile>> Handle(UpdateFileLifeCycleStatesCommand command, CancellationToken cancellationToken)
     {
-        List<VaultMasterId> masterIds = command.MasterIds.ToList();
-        if (command.FileNames.Any())
-        {
-            string searchString = string.Join(" OR ", command.FileNames);
-            IEnumerable<VaultFile> response = await new SearchFilesRequestBuilder(_mediator)
-                .ForValueEqualTo(searchString)
-                .InSystemProperty(StringSearchProperty.FileName)
-                .WithoutPaging();
-
-            masterIds.AddRange(response.Select(x => x.MasterId));
-            command = command with { MasterIds = masterIds };
-        }
+        command = command.FileNames.Any()
+            ? command with { MasterIds = await GetMasterIdsFromFilenames(command, cancellationToken) }
+            : command;
 
         void contentBuilder(XElement content, XNamespace ns)
-        {
-            content.AddNestedElements(ns, "fileMasterIds", "long", command.MasterIds.Select(x => x.ToString()));
-            content.AddNestedElements(ns, "toStateIds", "long", command.StateIds.Select(x => x.ToString()));
-            content.AddElement(ns, "comment", command.Comment);
-        };
+            => content.AddNestedElements(ns, "fileMasterIds", "long", command.MasterIds.Select(x => x.ToString()))
+                .AddNestedElements(ns, "toStateIds", "long", command.StateIds.Select(x => x.ToString()))
+                .AddElement(ns, "comment", command.Comment);
 
         XDocument document = await _vaultRequestService.SendAsync(Operation, canSignIn: true, contentBuilder, cancellationToken);
         IEnumerable<VaultFile> files = new UpdateFileLifeCycleStatesSerializer().DeserializeMany(document);
 
         return files;
+    }
+
+    private async Task<List<VaultMasterId>> GetMasterIdsFromFilenames(UpdateFileLifeCycleStatesCommand command, CancellationToken cancellationToken)
+    {
+        List<VaultMasterId> masterIds = command.MasterIds.ToList();
+        SearchCondition searchCondition = new(
+            StringSearchProperty.FileName.Value,
+            SearchOperator.Contains,
+            string.Join(" OR ", command.FileNames),
+            SearchPropertyType.SingleProperty,
+            SearchRule.Must);
+        FindFilesBySearchConditionsQuery query = new(new[] { searchCondition.Attributes });
+        VaultSearchFilesResponse response = await _mediator.Send(query, cancellationToken);
+
+        masterIds.AddRange(response.Result.Files.Select(x => x.MasterId));
+
+        return masterIds;
     }
 }
 
