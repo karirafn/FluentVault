@@ -9,11 +9,11 @@ using MediatR;
 namespace FluentVault.Features;
 internal record FindFilesBySearchConditionsQuery(
     IEnumerable<IDictionary<string, object>> SearchConditions,
-    IEnumerable<IDictionary<string, object>> SortConditions,
-    IEnumerable<VaultFolderId> FolderIds,
-    bool RecurseFolders,
-    bool LatestOnly,
-    string Bookmark) : IRequest<VaultSearchFilesResponse>;
+    IEnumerable<IDictionary<string, object>>? SortConditions = null,
+    IEnumerable<VaultFolderId>? FolderIds = null,
+    bool RecurseFolders = true,
+    bool LatestOnly = true,
+    string Bookmark = "") : IRequest<VaultSearchFilesResponse>;
 
 internal class FindFilesBySearchConditionsHandler : IRequestHandler<FindFilesBySearchConditionsQuery, VaultSearchFilesResponse>
 {
@@ -27,14 +27,12 @@ internal class FindFilesBySearchConditionsHandler : IRequestHandler<FindFilesByS
     public async Task<VaultSearchFilesResponse> Handle(FindFilesBySearchConditionsQuery command, CancellationToken cancellationToken)
     {
         void contentBuilder(XElement content, XNamespace ns)
-        {
-            content.AddNestedElementsWithAttributes(ns, "conditions", "SrchCond", command.SearchConditions);
-            content.AddNestedElementsWithAttributes(ns, "sortConditions", "SrchSort", command.SortConditions);
-            content.AddNestedElements(ns, "folderIds", "long", command.FolderIds.Select(id => id.ToString()));
-            content.AddElement(ns, "recurseFolders", command.RecurseFolders);
-            content.AddElement(ns, "latestOnly", command.LatestOnly);
-            content.AddElement(ns, "bookmark", command.Bookmark);
-        }
+            => content.AddNestedElementsWithAttributes(ns, "conditions", "SrchCond", command.SearchConditions)
+                .AddNestedElementsWithAttributes(ns, "sortConditions", "SrchSort", command.SortConditions)
+                .AddNestedElements(ns, "folderIds", "long", command.FolderIds?.Select(id => id.ToString()))
+                .AddElement(ns, "recurseFolders", command.RecurseFolders)
+                .AddElement(ns, "latestOnly", command.LatestOnly)
+                .AddElement(ns, "bookmark", command.Bookmark);
 
         XDocument response = await _vaultRequestService.SendAsync(Operation, canSignIn: true, contentBuilder, cancellationToken);
         VaultSearchFilesResponse result = new FindFilesBySearchConditionsSerializer().Deserialize(response);
