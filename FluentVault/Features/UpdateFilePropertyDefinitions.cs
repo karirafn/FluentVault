@@ -1,8 +1,8 @@
 ﻿using System.Xml.Linq;
 
 using FluentVault.Common;
+using FluentVault.Domain.Search;
 using FluentVault.Extensions;
-using FluentVault.Requests.Search.Files;
 
 using MediatR;
 
@@ -22,7 +22,7 @@ internal class UpdateFilePropertyDefinitionsHandler : IRequestHandler<UpdateFile
 
     private readonly IMediator _mediator;
     private readonly IVaultService _vaultRequestService;
-    private IEnumerable<VaultProperty> _allProperties = new List<VaultProperty>();
+    private IEnumerable<VaultProperty> _allProperties = Enumerable.Empty<VaultProperty>();
 
     public UpdateFilePropertyDefinitionsHandler(IMediator mediator, IVaultService vaultRequestService)
         => (_mediator, _vaultRequestService) = (mediator, vaultRequestService);
@@ -39,12 +39,10 @@ internal class UpdateFilePropertyDefinitionsHandler : IRequestHandler<UpdateFile
             command.AddedPropertyIds.AddRange(await GetPropertyIdsFromPropertyNames(command.RemovedPropertyNames));
 
         void contentBuilder(XElement content, XNamespace ns)
-        {
-            content.AddNestedElements(ns, "masterIds", "long", command.MasterIds.Select(x => x.ToString()));
-            content.AddNestedElements(ns, "addedPropDefIds", "long", command.AddedPropertyIds.Select(x => x.ToString()));
-            content.AddNestedElements(ns, "removedPropDefIds", "long", command.RemovedPropertyIds.Select(x => x.ToString()));
-            content.AddElement(ns, "comment", "Add/Remove properties");
-        };
+            => content.AddNestedElements(ns, "masterIds", "long", command.MasterIds)
+                .AddNestedElements(ns, "addedPropDefIds", "long", command.AddedPropertyIds)
+                .AddNestedElements(ns, "removedPropDefIds", "long", command.RemovedPropertyIds)
+                .AddElement(ns, "comment", "Add/Remove properties");
 
         XDocument response = await _vaultRequestService.SendAsync(Operation, canSignIn: true, contentBuilder, cancellationToken);
         IEnumerable<VaultFile> files = new UpdateFilePropertyDefinitionsSerializer().DeserializeMany(response);
@@ -54,25 +52,28 @@ internal class UpdateFilePropertyDefinitionsHandler : IRequestHandler<UpdateFile
 
     private async Task<IEnumerable<VaultMasterId>> GetMasterIdsFromFilenames(UpdateFilePropertyDefinitionsCommand command)
     {
-        var searchString = string.Join(" OR ", command.Filenames);
-        var files = await new SearchFilesRequestBuilder(_mediator)
-            .ForValueEqualTo(searchString)
-            .InSystemProperty(StringSearchProperty.FileName)
-            .WithoutPaging()
-            ?? throw new Exception("Failed to search for filenames");
-
-        var masterIds = files.Select(x => x.MasterId);
+        SearchCondition searchCondition = new(
+            StringSearchProperty.FileName,
+            SearchOperator.Contains,
+            string.Join(" OR ", command.Filenames),
+            SearchPropertyType.SingleProperty,
+            SearchRule.Must);
+        FindFilesBySearchConditionsQuery query = new(new[] { searchCondition.Attributes });
+        VaultSearchFilesResponse response = await _mediator.Send(query);
+        IEnumerable<VaultMasterId> masterIds = response.Result.Files.Select(file => file.MasterId);
 
         return masterIds;
     }
 
     private async Task<IEnumerable<VaultPropertyDefinitionId>> GetPropertyIdsFromPropertyNames(IEnumerable<string> names)
     {
-        if (!_allProperties.Any())
-            _allProperties = await _mediator.Send(new GetAllPropertyDefinitionInfosQuery());
+        _allProperties = _allProperties.Any()
+            ? _allProperties
+            : await _mediator.Send(new GetAllPropertyDefinitionInfosQuery());
 
-        return _allProperties.Where(x => names.Contains(x.Definition.DisplayName))
-               .Select(x => x.Definition.Id);
+        return _allProperties
+            .Where(x => names.Contains(x.Definition.DisplayName))
+            .Select(x => x.Definition.Id);
     }
 }
 
