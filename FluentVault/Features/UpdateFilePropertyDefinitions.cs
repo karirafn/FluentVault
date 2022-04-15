@@ -12,9 +12,9 @@ internal record UpdateFilePropertyDefinitionsCommand(
     List<VaultMasterId> MasterIds,
     List<VaultPropertyDefinitionId> AddedPropertyIds,
     List<VaultPropertyDefinitionId> RemovedPropertyIds,
-    IEnumerable<string> Filenames,
-    IEnumerable<string> AddedPropertyNames,
-    IEnumerable<string> RemovedPropertyNames) : IRequest<IEnumerable<VaultFile>>;
+    IEnumerable<string>? Filenames = null,
+    IEnumerable<string>? AddedPropertyNames = null,
+    IEnumerable<string>? RemovedPropertyNames = null) : IRequest<IEnumerable<VaultFile>>;
 
 internal class UpdateFilePropertyDefinitionsHandler : IRequestHandler<UpdateFilePropertyDefinitionsCommand, IEnumerable<VaultFile>>
 {
@@ -29,13 +29,13 @@ internal class UpdateFilePropertyDefinitionsHandler : IRequestHandler<UpdateFile
 
     public async Task<IEnumerable<VaultFile>> Handle(UpdateFilePropertyDefinitionsCommand command, CancellationToken cancellationToken)
     {
-        if (command.Filenames.Any())
+        if (command.Filenames?.Any() ?? false)
             command.MasterIds.AddRange(await GetMasterIdsFromFilenames(command));
 
-        if (command.AddedPropertyNames.Any())
+        if (command.AddedPropertyNames?.Any() ?? false)
             command.AddedPropertyIds.AddRange(await GetPropertyIdsFromPropertyNames(command.AddedPropertyNames));
 
-        if (command.RemovedPropertyNames.Any())
+        if (command.RemovedPropertyNames?.Any() ?? false)
             command.AddedPropertyIds.AddRange(await GetPropertyIdsFromPropertyNames(command.RemovedPropertyNames));
 
         void contentBuilder(XElement content, XNamespace ns)
@@ -52,6 +52,9 @@ internal class UpdateFilePropertyDefinitionsHandler : IRequestHandler<UpdateFile
 
     private async Task<IEnumerable<VaultMasterId>> GetMasterIdsFromFilenames(UpdateFilePropertyDefinitionsCommand command)
     {
+        if (command.Filenames is null)
+            return Enumerable.Empty<VaultMasterId>();
+
         SearchCondition searchCondition = new(
             StringSearchProperty.FileName,
             SearchOperator.Contains,
@@ -72,8 +75,8 @@ internal class UpdateFilePropertyDefinitionsHandler : IRequestHandler<UpdateFile
             : await _mediator.Send(new GetAllPropertyDefinitionInfosQuery());
 
         return _allProperties
-            .Where(x => names.Contains(x.Definition.DisplayName))
-            .Select(x => x.Definition.Id);
+            .Where(property => names.Contains(property.Definition.DisplayName))
+            .Select(property => property.Definition.Id);
     }
 }
 
