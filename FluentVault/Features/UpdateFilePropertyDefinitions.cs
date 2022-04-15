@@ -29,14 +29,12 @@ internal class UpdateFilePropertyDefinitionsHandler : IRequestHandler<UpdateFile
 
     public async Task<IEnumerable<VaultFile>> Handle(UpdateFilePropertyDefinitionsCommand command, CancellationToken cancellationToken)
     {
-        if (command.Filenames?.Any() ?? false)
-            command.MasterIds.AddRange(await GetMasterIdsFromFilenames(command));
+        if (CanHandle(command) is false)
+            return Enumerable.Empty<VaultFile>();
 
-        if (command.AddedPropertyNames?.Any() ?? false)
-            command.AddedPropertyIds.AddRange(await GetPropertyIdsFromPropertyNames(command.AddedPropertyNames));
-
-        if (command.RemovedPropertyNames?.Any() ?? false)
-            command.AddedPropertyIds.AddRange(await GetPropertyIdsFromPropertyNames(command.RemovedPropertyNames));
+        await AddMasterIdsFromFilenames(command);
+        await AddAddedPropertyIdsFromPropertyNames(command);
+        await AddRemovedPropertyIdsFromPropertyNames(command);
 
         void contentBuilder(XElement content, XNamespace ns)
             => content.AddNestedElements(ns, "masterIds", "long", command.MasterIds)
@@ -50,10 +48,16 @@ internal class UpdateFilePropertyDefinitionsHandler : IRequestHandler<UpdateFile
         return files;
     }
 
-    private async Task<IEnumerable<VaultMasterId>> GetMasterIdsFromFilenames(UpdateFilePropertyDefinitionsCommand command)
+    private static bool CanHandle(UpdateFilePropertyDefinitionsCommand command) => new bool[]
+        {
+            command.MasterIds.Any() || (command.Filenames?.Any() ?? false),
+            command.AddedPropertyIds.Any() || command.RemovedPropertyIds.Any() || (command.AddedPropertyNames?.Any() ?? false) || (command.RemovedPropertyNames?.Any() ?? false)
+        }.All(x => x);
+
+    private async Task AddMasterIdsFromFilenames(UpdateFilePropertyDefinitionsCommand command)
     {
-        if (command.Filenames is null)
-            return Enumerable.Empty<VaultMasterId>();
+        if ((command.Filenames?.Any() ?? false) is false)
+            return;
 
         SearchCondition searchCondition = new(
             StringSearchProperty.FileName,
@@ -63,13 +67,38 @@ internal class UpdateFilePropertyDefinitionsHandler : IRequestHandler<UpdateFile
             SearchRule.Must);
         FindFilesBySearchConditionsQuery query = new(new[] { searchCondition.Attributes });
         VaultSearchFilesResponse response = await _mediator.Send(query);
-        IEnumerable<VaultMasterId> masterIds = response.Result.Files.Select(file => file.MasterId);
+        IEnumerable<VaultMasterId> masterIds = response.Result.Files
+            .Select(file => file.MasterId)
+            .Where(id => command.MasterIds.Contains(id) is false);
 
-        return masterIds;
+        command.MasterIds.AddRange(masterIds);
     }
 
-    private async Task<IEnumerable<VaultPropertyDefinitionId>> GetPropertyIdsFromPropertyNames(IEnumerable<string> names)
+    private async Task AddAddedPropertyIdsFromPropertyNames(UpdateFilePropertyDefinitionsCommand command)
     {
+        if ((command.AddedPropertyNames?.Any() ?? false) is false)
+            return;
+
+        IEnumerable<VaultPropertyDefinitionId> ids = await GetPropertyIdsFromPropertyNames(command.AddedPropertyNames);
+
+        command.AddedPropertyIds.AddRange(ids.Where(id => command.AddedPropertyIds.Contains(id) is false));
+    }
+
+    private async Task AddRemovedPropertyIdsFromPropertyNames(UpdateFilePropertyDefinitionsCommand command)
+    {
+        if ((command.RemovedPropertyNames?.Any() ?? false) is false)
+            return;
+
+        IEnumerable<VaultPropertyDefinitionId> ids = await GetPropertyIdsFromPropertyNames(command.AddedPropertyNames);
+
+        command.RemovedPropertyIds.AddRange(ids.Where(id => command.RemovedPropertyIds.Contains(id) is false));
+    }
+
+    private async Task<IEnumerable<VaultPropertyDefinitionId>> GetPropertyIdsFromPropertyNames(IEnumerable<string>? names)
+    {
+        if (names is null)
+            return Enumerable.Empty<VaultPropertyDefinitionId>();
+
         _allProperties = _allProperties.Any()
             ? _allProperties
             : await _mediator.Send(new GetAllPropertyDefinitionInfosQuery());
