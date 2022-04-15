@@ -29,5 +29,5 @@ public record VaultFile(
     bool IsControlledByChangeOrder,
     string DesignVisualAttachmentStatus,
     VaultFileRevision Revision,
-    VaultEntityLifeCycle LifeCycle,
+    VaultFileLifeCycle LifeCycle,
     VaultEntityCategory Category);
