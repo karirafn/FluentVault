@@ -27,7 +27,7 @@ internal class VaultFileSerializer : XElementSerializer<VaultFile>
     private const string DesignVisAttmtStatus = nameof(DesignVisAttmtStatus);
 
     private readonly VaultFileRevisionSerializer _revisionSerializer;
-    private readonly VaultFileLifeCycleSerializer _lifeCycleSerializer;
+    private readonly VaultEntityLifeCycleSerializer _lifeCycleSerializer;
     private readonly VaultEntityCategorySerializer _categorySerializer;
 
     public VaultFileSerializer(XNamespace @namespace) : base(File, @namespace)

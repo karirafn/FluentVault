@@ -5,7 +5,7 @@ using FluentVault.Extensions;
 
 namespace FluentVault;
 
-internal class VaultFileLifeCycleSerializer : XElementSerializer<VaultFileLifeCycle>
+internal class VaultEntityLifeCycleSerializer : XElementSerializer<VaultEntityLifeCycle>
 {
     private const string FileLfCyc = nameof(FileLfCyc);
     private const string LfCycStateId = nameof(LfCycStateId);
@@ -13,9 +13,9 @@ internal class VaultFileLifeCycleSerializer : XElementSerializer<VaultFileLifeCy
     private const string LfCycStateName = nameof(LfCycStateName);
     private const string Consume = nameof(Consume);
     private const string Obsolete = nameof(Obsolete);
-    public VaultFileLifeCycleSerializer(XNamespace @namespace) : base(FileLfCyc, @namespace) { }
+    public VaultEntityLifeCycleSerializer(XNamespace @namespace) : base(FileLfCyc, @namespace) { }
 
-    internal override VaultFileLifeCycle Deserialize(XElement element)
+    internal override VaultEntityLifeCycle Deserialize(XElement element)
     {
         element = GetSerializationElement(element);
 
@@ -27,7 +27,7 @@ internal class VaultFileLifeCycleSerializer : XElementSerializer<VaultFileLifeCy
                    element.ParseAttributeValue(Obsolete, bool.Parse));
     }
 
-    internal override XElement Serialize(VaultFileLifeCycle lifeCycle)
+    internal override XElement Serialize(VaultEntityLifeCycle lifeCycle)
         => BaseElement
             .AddAttribute(LfCycStateId, lifeCycle.StateId)
             .AddAttribute(LfCycDefId, lifeCycle.DefinitionId)

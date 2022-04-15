@@ -1,6 +1,6 @@
 ﻿namespace FluentVault;
 
-public record VaultFileLifeCycle(
+public record VaultEntityLifeCycle(
     VaultLifeCycleStateId StateId,
     VaultLifeCycleDefinitionId DefinitionId,
     string StateName,
