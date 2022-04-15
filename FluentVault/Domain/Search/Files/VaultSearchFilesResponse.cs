@@ -1,2 +1,2 @@
 ﻿namespace FluentVault;
-public record VaultSearchFilesResponse(VaultSearchFilesResult Result, SearchStatus SearchStatus, string Bookmark = "");
+internal record VaultSearchFilesResponse(VaultSearchFilesResult Result, SearchStatus SearchStatus, string Bookmark = "");
