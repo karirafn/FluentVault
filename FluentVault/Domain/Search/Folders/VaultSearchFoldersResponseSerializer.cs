@@ -21,8 +21,8 @@ internal class VaultSearchFoldersResponseSerializer : XElementSerializer<VaultSe
             _statusSeraializer.Deserialize(element),
             element.GetElementValue(nameof(VaultSearchFoldersResponse.Bookmark).ToLower()));
 
-    internal override XElement Serialize(VaultSearchFoldersResponse entity)
-        => BaseElement.AddElement(_resultSerializer.Serialize(entity.Result))
-            .AddElement(_statusSeraializer.Serialize(entity.SearchStatus))
-            .AddElement(Namespace, nameof(VaultSearchFoldersResponse.Bookmark).ToLower(), entity.Bookmark);
+    internal override XElement Serialize(VaultSearchFoldersResponse response)
+        => BaseElement.AddElement(_resultSerializer.Serialize(response.Result))
+            .AddElement(_statusSeraializer.Serialize(response.SearchStatus))
+            .AddElement(Namespace, nameof(VaultSearchFoldersResponse.Bookmark).ToLower(), response.Bookmark);
 }

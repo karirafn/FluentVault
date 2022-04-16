@@ -45,8 +45,8 @@ internal class FindFoldersBySearchConditionsHandler : IRequestHandler<FindFolder
 
 internal class FindFoldersBySearchConditionsSerializer : XDocumentSerializer<VaultSearchFoldersResponse>
 {
-    private const string GetUserInfosByUserIds = nameof(GetUserInfosByUserIds);
-    private static readonly VaultRequest _request = new VaultRequestData().Get(GetUserInfosByUserIds);
+    private const string FindFoldersBySearchConditions = nameof(FindFoldersBySearchConditions);
+    private static readonly VaultRequest _request = new VaultRequestData().Get(FindFoldersBySearchConditions);
 
     public FindFoldersBySearchConditionsSerializer() : base(_request.Operation, new VaultSearchFoldersResponseSerializer(_request.Namespace)) { }
 }

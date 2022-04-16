@@ -17,6 +17,27 @@ internal class VaultRequestData : IVaultRequestData
     private static readonly IEnumerable<VaultRequest> _soapRequestData = new VaultRequest[]
     {
         new(
+          operation: "FindFilesBySearchConditions",
+          version: "v26",
+          service: "DocumentService",
+          command: "",
+          @namespace: "Services/Document/1/7/2020"
+        ),
+        new(
+          operation: "FindFoldersBySearchConditions",
+          version: "v26",
+          service: "DocumentService",
+          command: "",
+          @namespace: "Services/Document/1/7/2020"
+        ),
+        new(
+          operation: "FindItemRevisionsBySearchConditions",
+          version: "v26",
+          service: "ItemService",
+          command: "",
+          @namespace: "Services/Document/1/7/2020"
+        ),
+        new(
           operation: "GetAllLifeCycleDefinitions",
           version: "v26",
           service: "LifeCycleService",
@@ -64,13 +85,6 @@ internal class VaultRequestData : IVaultRequestData
           service: "AdminService",
           command: "Connectivity.Explorer.Admin.SecurityCommand",
           @namespace: "Services/Admin/1/7/2020"
-        ),
-        new(
-          operation: "FindFilesBySearchConditions",
-          version: "v26",
-          service: "DocumentService",
-          command: "",
-          @namespace: "Services/Document/1/7/2020"
         ),
         new(
           operation: "UpdateFileLifeCycleStates",
