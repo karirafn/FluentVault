@@ -30,10 +30,10 @@ internal class UpdateFileLifeCycleStatesHandler : IRequestHandler<UpdateFileLife
             ? command with { MasterIds = await GetMasterIdsFromFilenames(command, cancellationToken) }
             : command;
 
-        void contentBuilder(XElement content, XNamespace ns)
-            => content.AddNestedElements(ns, "fileMasterIds", "long", command.MasterIds.Select(x => x.ToString()))
-                .AddNestedElements(ns, "toStateIds", "long", command.StateIds.Select(x => x.ToString()))
-                .AddElement(ns, "comment", command.Comment);
+        void contentBuilder(XElement content, XNamespace ns) => content
+            .AddNestedElements(ns, "fileMasterIds", "long", command.MasterIds.Select(x => x.ToString()))
+            .AddNestedElements(ns, "toStateIds", "long", command.StateIds.Select(x => x.ToString()))
+            .AddElement(ns, "comment", command.Comment);
 
         XDocument document = await _vaultRequestService.SendAsync(Operation, canSignIn: true, contentBuilder, cancellationToken);
         IEnumerable<VaultFile> files = new UpdateFileLifeCycleStatesSerializer().DeserializeMany(document);

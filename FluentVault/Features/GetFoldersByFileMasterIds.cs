@@ -20,8 +20,8 @@ internal class GetFoldersByFileMasterIdsHandler : IRequestHandler<GetFoldersByFi
 
     public async Task<IEnumerable<VaultFolder>> Handle(GetFoldersByFileMasterIdsQuery query, CancellationToken cancellationToken)
     {
-        void contentBuilder(XElement content, XNamespace @namespace)
-            => content.AddNestedElements(@namespace, "fileMasterIds", "long", query.MasterIds);
+        void contentBuilder(XElement content, XNamespace @namespace) => content
+            .AddNestedElements(@namespace, "fileMasterIds", "long", query.MasterIds);
 
         XDocument document = await _vaultService.SendAsync(Operation, canSignIn: true, contentBuilder, cancellationToken);
         IEnumerable<VaultFolder> folders = new GetFoldersByFileMasterIdsSerializer().DeserializeMany(document);

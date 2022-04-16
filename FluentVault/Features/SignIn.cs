@@ -23,13 +23,11 @@ internal class SignInHandler : IRequestHandler<SignInCommand, VaultSessionCreden
     {
         new VaultOptionsValidator().ValidateAndThrow(command.VaultOptions);
 
-        void contentBuilder(XElement content, XNamespace ns)
-        {
-            content.AddElement(ns, "dataServer", $"http://{command.VaultOptions.Server}");
-            content.AddElement(ns, "knowledgeVault", command.VaultOptions.Database);
-            content.AddElement(ns, "userName", command.VaultOptions.Username);
-            content.AddElement(ns, "userPassword", command.VaultOptions.Password);
-        }
+        void contentBuilder(XElement content, XNamespace ns) => content
+            .AddElement(ns, "dataServer", $"http://{command.VaultOptions.Server}")
+            .AddElement(ns, "knowledgeVault", command.VaultOptions.Database)
+            .AddElement(ns, "userName", command.VaultOptions.Username)
+            .AddElement(ns, "userPassword", command.VaultOptions.Password);
 
         XDocument document = await _vaultRequestService.SendAsync(Operation, canSignIn: false, contentBuilder, cancellationToken);
 

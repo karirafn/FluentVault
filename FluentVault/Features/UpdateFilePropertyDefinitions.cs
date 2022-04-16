@@ -36,11 +36,11 @@ internal class UpdateFilePropertyDefinitionsHandler : IRequestHandler<UpdateFile
         await AddAddedPropertyIdsFromPropertyNames(command);
         await AddRemovedPropertyIdsFromPropertyNames(command);
 
-        void contentBuilder(XElement content, XNamespace ns)
-            => content.AddNestedElements(ns, "masterIds", "long", command.MasterIds)
-                .AddNestedElements(ns, "addedPropDefIds", "long", command.AddedPropertyIds)
-                .AddNestedElements(ns, "removedPropDefIds", "long", command.RemovedPropertyIds)
-                .AddElement(ns, "comment", "Add/Remove properties");
+        void contentBuilder(XElement content, XNamespace ns) => content
+            .AddNestedElements(ns, "masterIds", "long", command.MasterIds)
+            .AddNestedElements(ns, "addedPropDefIds", "long", command.AddedPropertyIds)
+            .AddNestedElements(ns, "removedPropDefIds", "long", command.RemovedPropertyIds)
+            .AddElement(ns, "comment", "Add/Remove properties");
 
         XDocument response = await _vaultRequestService.SendAsync(Operation, canSignIn: true, contentBuilder, cancellationToken);
         IEnumerable<VaultFile> files = new UpdateFilePropertyDefinitionsSerializer().DeserializeMany(response);

@@ -26,13 +26,13 @@ internal class FindFilesBySearchConditionsHandler : IRequestHandler<FindFilesByS
 
     public async Task<VaultSearchFilesResponse> Handle(FindFilesBySearchConditionsQuery command, CancellationToken cancellationToken)
     {
-        void contentBuilder(XElement content, XNamespace ns)
-            => content.AddNestedElementsWithAttributes(ns, "conditions", "SrchCond", command.SearchConditions)
-                .AddNestedElementsWithAttributes(ns, "sortConditions", "SrchSort", command.SortConditions)
-                .AddNestedElements(ns, "folderIds", "long", command.FolderIds?.Select(id => id.ToString()))
-                .AddElement(ns, "recurseFolders", command.RecurseFolders)
-                .AddElement(ns, "latestOnly", command.LatestOnly)
-                .AddElement(ns, "bookmark", command.Bookmark);
+        void contentBuilder(XElement content, XNamespace ns) => content
+            .AddNestedElementsWithAttributes(ns, "conditions", "SrchCond", command.SearchConditions)
+            .AddNestedElementsWithAttributes(ns, "sortConditions", "SrchSort", command.SortConditions)
+            .AddNestedElements(ns, "folderIds", "long", command.FolderIds?.Select(id => id.ToString()))
+            .AddElement(ns, "recurseFolders", command.RecurseFolders)
+            .AddElement(ns, "latestOnly", command.LatestOnly)
+            .AddElement(ns, "bookmark", command.Bookmark);
 
         XDocument response = await _vaultRequestService.SendAsync(Operation, canSignIn: true, contentBuilder, cancellationToken);
         VaultSearchFilesResponse result = new FindFilesBySearchConditionsSerializer().Deserialize(response);

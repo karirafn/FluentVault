@@ -20,10 +20,8 @@ internal class GetLatestFileByMasterIdHandler : IRequestHandler<GetLatestFileByM
 
     public async Task<VaultFile> Handle(GetLatestFileByMasterIdQuery query, CancellationToken cancellationToken)
     {
-        void contentBuilder(XElement content, XNamespace ns)
-        {
-            content.AddElement(ns, "fileMasterId", query.MasterId.Value);
-        };
+        void contentBuilder(XElement content, XNamespace ns) => content
+            .AddElement(ns, "fileMasterId", query.MasterId.Value);
 
         XDocument document = await _vaultService.SendAsync(Operation, canSignIn: true, contentBuilder, cancellationToken);
         VaultFile file = new GetLatestFileByMasterIdSerializer().Deserialize(document);

@@ -21,8 +21,8 @@ internal class GetLatestItemByItemMasterIdHandler : IRequestHandler<GetLatestIte
 
     public async Task<VaultItem> Handle(GetLatestItemByItemMasterIdQuery query, CancellationToken cancellationToken)
     {
-        void contentBuilder(XElement content, XNamespace @namespace)
-            => content.AddElement(@namespace, "itemMasterId", query.MasterId);
+        void contentBuilder(XElement content, XNamespace @namespace) => content
+            .AddElement(@namespace, "itemMasterId", query.MasterId);
 
         XDocument document = await _vaultService.SendAsync(Operation, canSignIn: true, contentBuilder, cancellationToken);
         VaultItem item = new GetLatestItemByItemMasterIdSerializer().Deserialize(document);

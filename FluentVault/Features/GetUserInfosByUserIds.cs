@@ -20,8 +20,8 @@ internal class GetUserInfosByUserIdsHandler : IRequestHandler<GetUserInfosByIser
 
     public async Task<IEnumerable<VaultUserInfo>> Handle(GetUserInfosByIserIdsQuery query, CancellationToken cancellationToken)
     {
-        void contentBuilder(XElement content, XNamespace ns)
-            => content.AddNestedElements(ns, "userIdArray", "long", query.UserIds.Select(id => id.ToString()));
+        void contentBuilder(XElement content, XNamespace ns) => content
+            .AddNestedElements(ns, "userIdArray", "long", query.UserIds.Select(id => id.ToString()));
 
         XDocument response = await _vaultRequestService.SendAsync(Operation, canSignIn: true, contentBuilder, cancellationToken);
         IEnumerable<VaultUserInfo> result = new GetUserInfosByUserIdsSerializer().DeserializeMany(response);

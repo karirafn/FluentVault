@@ -28,13 +28,13 @@ internal class FindItemRevisionsBySearchConditionsHandler : IRequestHandler<Find
 
     public async Task<VaultSearchItemsResponse> Handle(FindItemRevisionsBySearchConditionsQuery query, CancellationToken cancellationToken)
     {
-        void contentBuilder(XElement content, XNamespace ns)
-            => content.AddNestedElementsWithAttributes(ns, "conditions", "SrchCond", query.SearchConditions)
-                .AddNestedElementsWithAttributes(ns, "sortConditions", "SrchSort", query.SortConditions)
-                .AddNestedElements(ns, "folderIds", "long", query.FolderIds?.Select(id => id.ToString()))
-                .AddElement(ns, "recurseFolders", query.RecurseFolders)
-                .AddElement(ns, "latestOnly", query.LatestOnly)
-                .AddElement(ns, "bookmark", query.Bookmark);
+        void contentBuilder(XElement content, XNamespace ns) => content
+            .AddNestedElementsWithAttributes(ns, "conditions", "SrchCond", query.SearchConditions)
+            .AddNestedElementsWithAttributes(ns, "sortConditions", "SrchSort", query.SortConditions)
+            .AddNestedElements(ns, "folderIds", "long", query.FolderIds?.Select(id => id.ToString()))
+            .AddElement(ns, "recurseFolders", query.RecurseFolders)
+            .AddElement(ns, "latestOnly", query.LatestOnly)
+            .AddElement(ns, "bookmark", query.Bookmark);
 
         XDocument response = await _vaultService.SendAsync(Operation, canSignIn: true, contentBuilder, cancellationToken);
         VaultSearchItemsResponse result = new FindItemRevisionsBySearchConditionsSerializer().Deserialize(response);
