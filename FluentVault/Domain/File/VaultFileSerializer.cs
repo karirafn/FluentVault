@@ -37,6 +37,13 @@ internal class VaultFileSerializer : XElementSerializer<VaultFile>
         _categorySerializer = new(Namespace);
     }
 
+    public VaultFileSerializer(string entityName, XNamespace @namespace) : base(entityName, @namespace)
+    {
+        _revisionSerializer = new(Namespace);
+        _lifeCycleSerializer = new(Namespace);
+        _categorySerializer = new(Namespace);
+    }
+
     internal override XElement Serialize(VaultFile file)
         => BaseElement
             .AddAttribute(nameof(VaultFile.Id), file.Id)
