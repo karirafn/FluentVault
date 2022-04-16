@@ -73,6 +73,13 @@ internal class VaultRequestData : IVaultRequestData
           @namespace: "Services/Document/1/7/2020"
         ),
         new(
+          operation: "GetLatestItemByItemMasterId",
+          version: "v26",
+          service: "ItemService",
+          command: "",
+          @namespace: "Services/Document/1/7/2020"
+        ),
+        new(
           operation: "GetPropertyDefinitionInfosByEntityClassId",
           version: "v26",
           service: "PropertyService",
