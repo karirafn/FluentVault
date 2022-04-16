@@ -23,13 +23,13 @@ public class GetClientUrisHandlerShould
 {
     private static readonly TestFixtures.SmartEnumFixture _fixture = new();
 
-    private static readonly Expression<Func<IMediator, Task<VaultFile>>> GetLatestFileByMasterIdQuery
+    private static readonly Expression<Func<IMediator, Task<VaultFile>>> _getLatestFileByMasterIdQuery
         = x => x.Send(It.IsAny<GetLatestFileByMasterIdQuery>(), It.IsAny<CancellationToken>());
 
-    private static readonly Expression<Func<IMediator, Task<IEnumerable<VaultFolder>>>> GetFoldersByFileMasterIdsQuery
+    private static readonly Expression<Func<IMediator, Task<IEnumerable<VaultFolder>>>> _getFoldersByFileMasterIdsQuery
         = x => x.Send(It.IsAny<GetFoldersByFileMasterIdsQuery>(), It.IsAny<CancellationToken>());
 
-    private static readonly Expression<Func<IMediator, Task<VaultItem>>> GetLatestItemByItemMasterIdQuery
+    private static readonly Expression<Func<IMediator, Task<VaultItem>>> _getLatestItemByItemMasterIdQuery
         = x => x.Send(It.IsAny<GetLatestItemByItemMasterIdQuery>(), It.IsAny<CancellationToken>());
 
     [Fact]
@@ -39,10 +39,10 @@ public class GetClientUrisHandlerShould
         IOptions<VaultOptions> options = Options.Create(_fixture.Create<VaultOptions>());
         Mock<IMediator> mediator = new();
 
-        mediator.Setup(GetLatestFileByMasterIdQuery)
+        mediator.Setup(_getLatestFileByMasterIdQuery)
             .ReturnsAsync(_fixture.Create<VaultFile>());
 
-        mediator.Setup(GetFoldersByFileMasterIdsQuery)
+        mediator.Setup(_getFoldersByFileMasterIdsQuery)
             .ReturnsAsync(new[] { _fixture.Create<VaultFolder>() });
 
         GetClientUrisQuery query = _fixture.Create<GetClientUrisQuery>();
@@ -52,9 +52,9 @@ public class GetClientUrisHandlerShould
         _ = await sut.Handle(query, CancellationToken.None);
 
         // Assert
-        mediator.Verify(GetLatestFileByMasterIdQuery, Times.Once);
-        mediator.Verify(GetFoldersByFileMasterIdsQuery, Times.Once);
-        mediator.Verify(GetLatestItemByItemMasterIdQuery, Times.Never);
+        mediator.Verify(_getLatestFileByMasterIdQuery, Times.Once);
+        mediator.Verify(_getFoldersByFileMasterIdsQuery, Times.Once);
+        mediator.Verify(_getLatestItemByItemMasterIdQuery, Times.Never);
     }
 
     [Fact]
@@ -64,10 +64,10 @@ public class GetClientUrisHandlerShould
         IOptions<VaultOptions> options = Options.Create(_fixture.Create<VaultOptions>());
         Mock<IMediator> mediator = new();
 
-        mediator.Setup(GetLatestFileByMasterIdQuery)
+        mediator.Setup(_getLatestFileByMasterIdQuery)
             .ThrowsAsync(new Exception());
 
-        mediator.Setup(GetLatestItemByItemMasterIdQuery)
+        mediator.Setup(_getLatestItemByItemMasterIdQuery)
             .ReturnsAsync(_fixture.Create<VaultItem>());
 
         GetClientUrisQuery query = _fixture.Create<GetClientUrisQuery>();
@@ -77,9 +77,9 @@ public class GetClientUrisHandlerShould
         _ = await sut.Handle(query, CancellationToken.None);
 
         // Assert
-        mediator.Verify(GetLatestFileByMasterIdQuery, Times.Once);
-        mediator.Verify(GetFoldersByFileMasterIdsQuery, Times.Never);
-        mediator.Verify(GetLatestItemByItemMasterIdQuery, Times.Once);
+        mediator.Verify(_getLatestFileByMasterIdQuery, Times.Once);
+        mediator.Verify(_getFoldersByFileMasterIdsQuery, Times.Never);
+        mediator.Verify(_getLatestItemByItemMasterIdQuery, Times.Once);
     }
 
     [Fact]
@@ -89,10 +89,10 @@ public class GetClientUrisHandlerShould
         IOptions<VaultOptions> options = Options.Create(_fixture.Create<VaultOptions>());
         Mock<IMediator> mediator = new();
 
-        mediator.Setup(GetLatestFileByMasterIdQuery)
+        mediator.Setup(_getLatestFileByMasterIdQuery)
             .ThrowsAsync(new Exception());
 
-        mediator.Setup(GetLatestItemByItemMasterIdQuery)
+        mediator.Setup(_getLatestItemByItemMasterIdQuery)
             .ThrowsAsync(new Exception());
 
         GetClientUrisQuery query = _fixture.Create<GetClientUrisQuery>();
@@ -103,8 +103,8 @@ public class GetClientUrisHandlerShould
 
         // Assert
         await handle.Should().ThrowExactlyAsync<ArgumentException>();
-        mediator.Verify(GetLatestFileByMasterIdQuery, Times.Once);
-        mediator.Verify(GetFoldersByFileMasterIdsQuery, Times.Never);
-        mediator.Verify(GetLatestItemByItemMasterIdQuery, Times.Once);
+        mediator.Verify(_getLatestFileByMasterIdQuery, Times.Once);
+        mediator.Verify(_getFoldersByFileMasterIdsQuery, Times.Never);
+        mediator.Verify(_getLatestItemByItemMasterIdQuery, Times.Once);
     }
 }
