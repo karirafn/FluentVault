@@ -1,15 +1,15 @@
-﻿using FluentVault.Requests.Search.Files;
-
-using MediatR;
+﻿using FluentVault.RequestBuilders;
 
 namespace FluentVault.Requests.Search;
 
-internal class SearchRequestBuilder : ISearchRequestBuilder
+internal class SearchRequestBuilder : IRequestBuilder, ISearchRequestBuilder
 {
-    private readonly IMediator _mediator;
+    private readonly ISearchFilesRequestBuilder _files;
 
-    public SearchRequestBuilder(IMediator mediator)
-        => _mediator = mediator;
+    public SearchRequestBuilder(ISearchFilesRequestBuilder files)
+    {
+        _files = files;
+    }
 
-    public ISearchFilesRequestBuilder Files => new SearchFilesRequestBuilder(_mediator);
+    public ISearchFilesRequestBuilder Files => _files;
 }

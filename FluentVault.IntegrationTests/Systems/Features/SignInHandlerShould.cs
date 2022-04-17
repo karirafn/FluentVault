@@ -2,31 +2,31 @@
 
 using FluentAssertions;
 
+using FluentVault.Common;
 using FluentVault.Features;
 using FluentVault.IntegrationTests.Fixtures;
+
+using Microsoft.Extensions.Options;
 
 using Xunit;
 
 namespace FluentVault.IntegrationTests.Systems.Features;
 
-public class SignInHandlerShould : IClassFixture<VaultFixture>
+public class SignInHandlerShould
 {
-    private readonly SignInCommand _command;
-    private readonly SignInHandler _sut;
-
-    public SignInHandlerShould(VaultFixture fixture)
-    {
-        _sut = new(fixture.Service);
-        _command = new(fixture.Options.Value);
-    }
-
     [Fact]
     public async Task SignIn()
     {
         // Arrange
+        IOptions<VaultOptions> vaultOptions = new VaultOptionsFixture().Create();
+        SignInCommand command = new(vaultOptions.Value);
+
+        VaultServiceProvider provider = new();
+        IVaultService vaultService = provider.GetRequiredService<IVaultService>();
+        SignInHandler sut = new(vaultService);
 
         // Act
-        VaultSessionCredentials session = await _sut.Handle(_command, default);
+        VaultSessionCredentials session = await sut.Handle(command, default);
 
         // Assert
         session.Ticket.Should().NotBeEmpty();

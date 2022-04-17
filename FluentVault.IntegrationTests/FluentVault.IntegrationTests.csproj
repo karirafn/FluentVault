@@ -5,6 +5,7 @@
 	<UserSecretsId>B01A22DA-C6E1-4748-8A68-261C67961FBF</UserSecretsId>
     <Nullable>enable</Nullable>
 	<IsPackable>false</IsPackable>
+    <IsPublishable>false</IsPublishable>
   </PropertyGroup>
 
   <ItemGroup>
@@ -32,6 +33,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\FluentVault.TestFixtures\FluentVault.TestFixtures.csproj" />
     <ProjectReference Include="..\FluentVault\FluentVault.csproj" />
   </ItemGroup>
 

@@ -1,10 +1,11 @@
 ﻿using FluentVault.Features;
+using FluentVault.RequestBuilders;
 
 using MediatR;
 
 namespace FluentVault.Requests.Update.File.LifecycleState;
 
-internal class UpdateFileLifecycleStateRequestBuilder : IUpdateFileLifecycleStateRequestBuilder, IWithFiles, IWithComment
+internal class UpdateFileLifecycleStateRequestBuilder : IRequestBuilder, IUpdateFileLifecycleStateRequestBuilder, IWithFiles, IWithComment
 {
     private readonly IMediator _mediator;
 
@@ -37,10 +38,10 @@ internal class UpdateFileLifecycleStateRequestBuilder : IUpdateFileLifecycleStat
 
     public async Task<VaultFile> WithComment(string comment)
     {
-        UpdateFileLifeCycleStateCommand command = new(_filenames, _masterIds, _stateIds, comment);
-        VaultFile response = await _mediator.Send(command);
+        UpdateFileLifeCycleStatesCommand command = new(_filenames, _masterIds, _stateIds, comment);
+        IEnumerable<VaultFile> response = await _mediator.Send(command);
 
-        return response;
+        return response.Single();
     }
 
     public async Task<VaultFile> WithoutComment() => await WithComment(string.Empty);

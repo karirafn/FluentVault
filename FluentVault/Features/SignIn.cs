@@ -9,29 +9,32 @@ using MediatR;
 
 namespace FluentVault.Features;
 internal record SignInCommand(VaultOptions VaultOptions) : IRequest<VaultSessionCredentials>;
-
 internal class SignInHandler : IRequestHandler<SignInCommand, VaultSessionCredentials>
 {
-    private const string Operation = "SignIn";
+    private static readonly VaultRequest _request = new(
+          operation: "SignIn",
+          version: "Filestore/v26_2",
+          service: "AuthService",
+          command: "Connectivity.Application.VaultBase.SignInCommand",
+          @namespace: "Filestore/Auth/1/8/2021");
+    private readonly IVaultService _vaultService;
 
-    private readonly IVaultService _vaultRequestService;
-
-    public SignInHandler(IVaultService vaultRequestService)
-        => _vaultRequestService = vaultRequestService;
+    public SignInHandler(IVaultService vaultService)
+    {
+        _vaultService = vaultService;
+    }
 
     public async Task<VaultSessionCredentials> Handle(SignInCommand command, CancellationToken cancellationToken)
     {
         new VaultOptionsValidator().ValidateAndThrow(command.VaultOptions);
 
-        void contentBuilder(XElement content, XNamespace ns)
-        {
-            content.AddElement(ns, "dataServer", $"http://{command.VaultOptions.Server}");
-            content.AddElement(ns, "knowledgeVault", command.VaultOptions.Database);
-            content.AddElement(ns, "userName", command.VaultOptions.Username);
-            content.AddElement(ns, "userPassword", command.VaultOptions.Password);
-        }
+        void contentBuilder(XElement content, XNamespace ns) => content
+            .AddElement(ns, "dataServer", $"http://{command.VaultOptions.Server}")
+            .AddElement(ns, "knowledgeVault", command.VaultOptions.Database)
+            .AddElement(ns, "userName", command.VaultOptions.Username)
+            .AddElement(ns, "userPassword", command.VaultOptions.Password);
 
-        XDocument document = await _vaultRequestService.SendAsync(Operation, canSignIn: false, contentBuilder, cancellationToken);
+        XDocument document = await _vaultService.SendAsync(_request, canSignIn: false, contentBuilder, cancellationToken);
 
         string t = document.GetElementValue("Ticket");
         string u = document.GetElementValue("UserId");

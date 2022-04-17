@@ -1,6 +1,7 @@
-﻿namespace FluentVault;
+﻿using FluentVault.RequestBuilders;
 
-public interface IUpdateFilePropertyDefinitionsRequestBuilder
+namespace FluentVault;
+public interface IUpdateFilePropertyDefinitionsRequestBuilder : IRequestBuilder
 {
     public IUpdateFilePropertDefinitionsAction ByFileMasterIds(IEnumerable<VaultMasterId> masterIds);
     public IUpdateFilePropertDefinitionsAction ByFileMasterId(VaultMasterId masterId);

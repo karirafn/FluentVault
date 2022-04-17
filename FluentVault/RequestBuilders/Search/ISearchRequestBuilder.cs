@@ -1,6 +1,7 @@
-﻿namespace FluentVault;
+﻿using FluentVault.RequestBuilders;
 
-public interface ISearchRequestBuilder
+namespace FluentVault;
+public interface ISearchRequestBuilder : IRequestBuilder
 {
     public ISearchFilesRequestBuilder Files { get; }
 }

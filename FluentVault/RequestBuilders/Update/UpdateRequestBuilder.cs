@@ -1,18 +1,19 @@
-﻿using FluentVault.Requests.Update.File.LifecycleState;
-using FluentVault.Requests.Update.File.PropertyDefinitions;
-
-using MediatR;
+﻿using FluentVault.RequestBuilders;
 
 namespace FluentVault.Requests.Update;
 
-internal class UpdateRequestBuilder : IUpdateRequestBuilder, IUpdateFileRequestBuilder
+internal class UpdateRequestBuilder : IRequestBuilder, IUpdateRequestBuilder, IUpdateFileRequestBuilder
 {
-    private readonly IMediator _mediator;
+    private readonly IUpdateFileLifecycleStateRequestBuilder _state;
+    private readonly IUpdateFilePropertyDefinitionsRequestBuilder _property;
 
-    public UpdateRequestBuilder(IMediator mediator)
-        => _mediator = mediator;
+    public UpdateRequestBuilder(IUpdateFileLifecycleStateRequestBuilder state, IUpdateFilePropertyDefinitionsRequestBuilder property)
+    {
+        _state = state;
+        _property = property;
+    }
 
     public IUpdateFileRequestBuilder File => this;
-    public IUpdateFileLifecycleStateRequestBuilder LifecycleState => new UpdateFileLifecycleStateRequestBuilder(_mediator);
-    public IUpdateFilePropertyDefinitionsRequestBuilder PropertyDefinitions => new UpdateFilePropertyDefinitionsRequestBuilder(_mediator);
+    public IUpdateFileLifecycleStateRequestBuilder LifecycleState => _state;
+    public IUpdateFilePropertyDefinitionsRequestBuilder PropertyDefinitions => _property;
 }

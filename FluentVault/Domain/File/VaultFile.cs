@@ -1,8 +1,4 @@
-﻿using System.Xml.Linq;
-
-using FluentVault.Extensions;
-
-namespace FluentVault;
+﻿namespace FluentVault;
 
 public record VaultFile(
     VaultFileId Id,
@@ -12,8 +8,8 @@ public record VaultFile(
     long VersionNumber,
     long MaximumCheckInVersionNumber,
     string Comment,
-    DateTime CheckedInDate,
-    DateTime CreatedDate,
+    DateTime CheckInDate,
+    DateTime CreateDate,
     DateTime ModifiedDate,
     VaultUserId CreateUserId,
     string CreateUserName,
@@ -34,45 +30,4 @@ public record VaultFile(
     string DesignVisualAttachmentStatus,
     VaultFileRevision Revision,
     VaultFileLifeCycle LifeCycle,
-    VaultFileCategory Category)
-{
-    private const string FileElementName = "File";
-
-    internal static VaultFile ParseSingle(XDocument document)
-        => document.ParseElement(FileElementName, ParseVaultFile);
-
-    internal static IEnumerable<VaultFile> ParseAll(XDocument document)
-        => document.ParseAllElements(FileElementName, ParseVaultFile);
-
-    private static VaultFile ParseVaultFile(XElement element)
-        => new(element.ParseAttributeValue("Id", VaultFileId.Parse),
-            element.GetAttributeValue("Name"),
-            element.ParseAttributeValue("MasterId", VaultMasterId.Parse),
-            element.GetAttributeValue("VerName"),
-            element.ParseAttributeValue("VerNum", long.Parse),
-            element.ParseAttributeValue("MaxCkInVerNum", long.Parse),
-            element.GetAttributeValue("Comm"),
-            element.ParseAttributeValue("CkInDate", DateTime.Parse),
-            element.ParseAttributeValue("CreateDate", DateTime.Parse),
-            element.ParseAttributeValue("ModDate", DateTime.Parse),
-            element.ParseAttributeValue("CreateUserId", VaultUserId.Parse),
-            element.GetAttributeValue("CreateUserName"),
-            element.ParseAttributeValue("Cksum", long.Parse),
-            element.ParseAttributeValue("FileSize", long.Parse),
-            element.ParseAttributeValue("CheckedOut", bool.Parse),
-            element.ParseAttributeValue("FolderId", VaultFolderId.Parse),
-            element.GetAttributeValue("CkOutSpec"),
-            element.GetAttributeValue("CkOutMach"),
-            element.ParseAttributeValue("CkOutUserId", VaultUserId.Parse),
-            element.ParseAttributeValue("FileClass", x => VaultFileClass.FromName(x)),
-            element.ParseAttributeValue("FileStatus", x => VaultFileStatus.FromName(x)),
-            element.ParseAttributeValue("Locked", bool.Parse),
-            element.ParseAttributeValue("Hidden", bool.Parse),
-            element.ParseAttributeValue("Cloaked", bool.Parse),
-            element.ParseAttributeValue("IsOnSite", bool.Parse),
-            element.ParseAttributeValue("ControlledByChangeOrder", bool.Parse),
-            element.GetAttributeValue("DesignVisAttmtStatus"),
-            element.ParseElement("FileRev", VaultFileRevision.Parse),
-            element.ParseElement("FileLfCyc", VaultFileLifeCycle.Parse),
-            element.ParseElement("Cat", VaultFileCategory.Parse));
-}
+    VaultEntityCategory Category);

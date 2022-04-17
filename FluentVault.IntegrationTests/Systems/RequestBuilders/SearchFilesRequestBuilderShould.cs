@@ -4,32 +4,24 @@ using System.Threading.Tasks;
 using FluentAssertions;
 
 using FluentVault.IntegrationTests.Fixtures;
-using FluentVault.Requests.Search.Files;
-
-using MediatR;
 
 using Xunit;
 
 namespace FluentVault.IntegrationTests.Systems.RequestBuilders;
-public class SearchFilesRequestBuilderShould : IClassFixture<VaultFixture>
+public class SearchFilesRequestBuilderShould
 {
     private static readonly VaultTestData _testData = new();
-    private readonly IMediator _mediator;
-
-    public SearchFilesRequestBuilderShould(VaultFixture fixture)
-    {
-        _mediator = fixture.Mediator;
-    }
 
     // This test will fail if the Vault has no part files
     [Fact]
     public async Task FindFiles()
     {
         // Arrange
-        SearchFilesRequestBuilder sut = new(_mediator);
+        VaultServiceProvider provider = new();
+        IVaultClient sut = provider.GetRequiredService<IVaultClient>();
 
         // Act
-        IEnumerable<VaultFile> result = await sut
+        IEnumerable<VaultFile> result = await sut.Search.Files
             .ForValueContaining("ipt")
             .InSystemProperty(StringSearchProperty.FileExtension)
             .WithPaging();
@@ -43,10 +35,11 @@ public class SearchFilesRequestBuilderShould : IClassFixture<VaultFixture>
     public async Task FindMultipleVersions_WhenCallingCetAllVersions()
     {
         // Arrange
-        SearchFilesRequestBuilder sut = new(_mediator);
+        VaultServiceProvider provider = new();
+        IVaultClient sut = provider.GetRequiredService<IVaultClient>();
 
         // Act
-        IEnumerable<VaultFile> result = await sut
+        IEnumerable<VaultFile> result = await sut.Search.Files
             .ForValueEqualTo(_testData.TestPartFilename)
             .InSystemProperty(StringSearchProperty.FileName)
             .GetAllVersions()

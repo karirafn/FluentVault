@@ -1,11 +1,14 @@
 ﻿using FluentVault.Domain.Search;
+using FluentVault.Domain.Search.Files;
 using FluentVault.Features;
+using FluentVault.RequestBuilders;
 
 using MediatR;
 
 namespace FluentVault.Requests.Search.Files;
 
-internal class SearchFilesRequestBuilder :
+internal class SearchFilesRequestBuilder : 
+    IRequestBuilder,
     ISearchFilesRequestBuilder,
     ISearchFilesBooleanProperty,
     ISearchFilesDateTimeProperty,
@@ -28,7 +31,9 @@ internal class SearchFilesRequestBuilder :
     private readonly List<SortCondition> _sortConditions = new();
 
     public SearchFilesRequestBuilder(IMediator mediator)
-        => _mediator = mediator;
+    {
+        _mediator = mediator;
+    }
 
     public async Task<IEnumerable<VaultFile>> WithoutPaging()
     {
@@ -123,9 +128,9 @@ internal class SearchFilesRequestBuilder :
     private async Task SetPropertyValue(string property)
     {
         if (_allProperties.Any() is false)
-            _allProperties = await _mediator.Send(new GetPropertyDefinitionInfosQuery());
+            _allProperties = await _mediator.Send(new GetAllPropertyDefinitionInfosQuery());
 
-        var selectedProperty = _allProperties.FirstOrDefault(x => x.Definition.DisplayName.Equals(property))
+        VaultProperty selectedProperty = _allProperties.FirstOrDefault(x => x.Definition.DisplayName.Equals(property))
             ?? throw new KeyNotFoundException($@"Property ""{property}"" was not found");
         _propertyId = selectedProperty.Definition.Id;
     }
@@ -139,15 +144,15 @@ internal class SearchFilesRequestBuilder :
 
         List<VaultFile> files = new();
         string bookmark = string.Empty;
-        var searchConditionAttributes = _searchConditions.Select(x => x.Attributes);
-        var sortConditionAttributes = _sortConditions.Select(x => x.Attributes);
+        IEnumerable<IDictionary<string, object>> searchConditionAttributes = _searchConditions.Select(x => x.Attributes);
+        IEnumerable<IDictionary<string, object>> sortConditionAttributes = _sortConditions.Select(x => x.Attributes);
 
         do
         {
-            var command = new SearchFilesCommand(searchConditionAttributes, sortConditionAttributes, _folderIds, _recurseFolders, _latestOnly, bookmark);
-            var result = await _mediator.Send(command);
-            files.AddRange(result.Files);
-            bookmark = result.Bookmark;
+            FindFilesBySearchConditionsQuery command = new(searchConditionAttributes, sortConditionAttributes, _folderIds, _recurseFolders, _latestOnly, bookmark);
+            VaultSearchFilesResponse response = await _mediator.Send(command);
+            files.AddRange(response.Result.Files);
+            bookmark = response.Bookmark;
         } while (files.Count <= maxResultCount && string.IsNullOrEmpty(bookmark) is false);
 
         return files;

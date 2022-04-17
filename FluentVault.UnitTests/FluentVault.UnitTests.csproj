@@ -3,8 +3,8 @@
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <Nullable>enable</Nullable>
-
     <IsPackable>false</IsPackable>
+    <IsPublishable>false</IsPublishable>
   </PropertyGroup>
 
   <ItemGroup>
@@ -25,6 +25,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\FluentVault.TestFixtures\FluentVault.TestFixtures.csproj" />
     <ProjectReference Include="..\FluentVault\FluentVault.csproj" />
   </ItemGroup>
 
