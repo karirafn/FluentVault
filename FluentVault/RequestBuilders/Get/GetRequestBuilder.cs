@@ -2,7 +2,7 @@
 
 using MediatR;
 
-namespace FluentVault.RequestBuilders;
+namespace FluentVault.RequestBuilders.Get;
 internal class GetRequestBuilder : IRequestBuilder, IGetRequestBuilder
 {
     private readonly IMediator _mediator;
@@ -32,4 +32,7 @@ internal class GetRequestBuilder : IRequestBuilder, IGetRequestBuilder
 
     public async Task<VaultItem> LatestItemByMasterId(VaultMasterId id, CancellationToken cancellationToken = default)
         => await _mediator.Send(new GetLatestItemByItemMasterIdQuery(id), cancellationToken);
+
+    public async Task<IEnumerable<VaultFolder>> FoldersByFileMasterIds(IEnumerable<VaultMasterId> masterIds, CancellationToken cancellationToken = default)
+        => await _mediator.Send(new GetFoldersByFileMasterIdsQuery(masterIds), cancellationToken);
 }
