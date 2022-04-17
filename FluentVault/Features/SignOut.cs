@@ -4,21 +4,25 @@ using FluentVault.Common;
 using MediatR;
 
 namespace FluentVault.Features;
-
 internal record SignOutCommand() : IRequest;
-
 internal class SignOutHandler : IRequestHandler<SignOutCommand>
 {
-    private const string Operation = "SignOut";
+    private static readonly VaultRequest _request = new(
+          operation: "SignOut",
+          version: "Filestore/v26",
+          service: "AuthService",
+          command: "Connectivity.Application.VaultBase.SignOutCommand",
+          @namespace: "Filestore/Auth/1/7/2020");
+    private readonly IVaultService _vaultService;
 
-    private readonly IVaultService _vaultRequestService;
-
-    public SignOutHandler(IVaultService vaultRequestService)
-        => _vaultRequestService = vaultRequestService;
+    public SignOutHandler(IVaultService vaultService)
+    {
+        _vaultService = vaultService;
+    }
 
     public async Task<Unit> Handle(SignOutCommand command, CancellationToken cancellationToken)
     {
-        _ = await _vaultRequestService.SendAsync(Operation, cancellationToken: cancellationToken, canSignIn: false);
+        _ = await _vaultService.SendAsync(_request, cancellationToken: cancellationToken, canSignIn: false);
 
         return Unit.Value;
     }

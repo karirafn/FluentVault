@@ -30,7 +30,7 @@ internal static class XDocumentGeneratingExtensions
         return element;
     }
 
-    internal static XElement AddElement(this XElement element, XElement child)
+    internal static XElement AddElement(this XElement element, XElement? child)
     {
         element.Add(child);
 
@@ -51,10 +51,15 @@ internal static class XDocumentGeneratingExtensions
         return element;
     }
 
-    internal static XElement AddElements(this XElement element, IEnumerable<XElement> children)
+    internal static XElement AddElements(this XElement element, IEnumerable<XElement?>? elements = null)
     {
-        foreach (var child in children)
-            _ = element.AddElement(child);
+        if (elements is not null)
+        {
+            elements = elements.Where(content => content is not null);
+
+            if (elements.Any())
+                element.Add(elements);
+        }
 
         return element;
     }
@@ -109,27 +114,29 @@ internal static class XDocumentGeneratingExtensions
         return element;
     }
 
-    internal static XDocument AddResponseContent(this XDocument document, string operation, XNamespace @namespace, IEnumerable<XElement> responseContent, IEnumerable<XElement?>? resultContent)
+    internal static XDocument AddResponse(this XDocument document, string operation, XNamespace @namespace, XElement result, IEnumerable<XElement?>? responseContent = null)
     {
         XElement response = new(@namespace + $"{operation}Response");
-        XElement result = new(@namespace + $"{operation}Result");
 
-        if (resultContent is not null)
-        {
-            resultContent = resultContent.Where(content => content is not null);
+        response.AddElements(responseContent)
+            .AddElement(result);
 
-            if (resultContent.Any())
-                result.Add(resultContent);
-        }
-
-        result.Add(responseContent);
-        response.Add(result);
         document.AddRequestBody(new(), response);
 
         return document;
     }
 
-    internal static XDocument AddResponseContent(this XDocument document, string operation, XNamespace @namespace, XElement responseContent, IEnumerable<XElement>? resultContent)
+    internal static XDocument AddResponseContent(this XDocument document, string operation, XNamespace @namespace, IEnumerable<XElement?>? responseContent = null, IEnumerable<XElement?>? resultContent = null)
+    {
+        XElement result = new(@namespace + $"{operation}Result");
+
+        result.AddElements(resultContent);
+        document.AddResponse(operation, @namespace, result, responseContent);
+
+        return document;
+    }
+
+    internal static XDocument AddResponseContent(this XDocument document, string operation, XNamespace @namespace, XElement responseContent, IEnumerable<XElement?>? resultContent = null)
         => document.AddResponseContent(operation, @namespace, new XElement[] { responseContent }, resultContent);
 
     internal static XDocument AddRequestBody(this XDocument document, VaultSessionCredentials session, XElement content)

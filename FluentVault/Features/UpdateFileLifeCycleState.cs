@@ -2,27 +2,36 @@
 
 using FluentVault.Common;
 using FluentVault.Domain.Search;
+using FluentVault.Domain.Search.Files;
 using FluentVault.Extensions;
 
 using MediatR;
 
 namespace FluentVault.Features;
-
 internal record UpdateFileLifeCycleStatesCommand(
     IEnumerable<string> FileNames,
     IEnumerable<VaultMasterId> MasterIds,
     IEnumerable<VaultLifeCycleStateId> StateIds,
     string Comment) : IRequest<IEnumerable<VaultFile>>;
-
 internal class UpdateFileLifeCycleStatesHandler : IRequestHandler<UpdateFileLifeCycleStatesCommand, IEnumerable<VaultFile>>
 {
-    private const string Operation = "UpdateFileLifeCycleStates";
-
+    private static readonly VaultRequest _request = new(
+          operation: "UpdateFileLifeCycleStates",
+          version: "v26",
+          service: "DocumentServiceExtensions",
+          command: "Connectivity.Explorer.DocumentPS.ChangeLifecycleStateCommand",
+          @namespace: "Services/DocumentExtensions/1/7/2020");
     private readonly IMediator _mediator;
-    private readonly IVaultService _vaultRequestService;
+    private readonly IVaultService _vaultService;
 
-    public UpdateFileLifeCycleStatesHandler(IMediator mediator, IVaultService soapRequestService)
-        => (_mediator, _vaultRequestService) = (mediator, soapRequestService);
+    public UpdateFileLifeCycleStatesHandler(IMediator mediator, IVaultService vaultService)
+    {
+        _mediator = mediator;
+        _vaultService = vaultService;
+        Serializer = new(_request);
+    }
+
+    public UpdateFileLifeCycleStatesSerializer Serializer { get; }
 
     public async Task<IEnumerable<VaultFile>> Handle(UpdateFileLifeCycleStatesCommand command, CancellationToken cancellationToken)
     {
@@ -35,8 +44,8 @@ internal class UpdateFileLifeCycleStatesHandler : IRequestHandler<UpdateFileLife
             .AddNestedElements(ns, "toStateIds", "long", command.StateIds.Select(x => x.ToString()))
             .AddElement(ns, "comment", command.Comment);
 
-        XDocument document = await _vaultRequestService.SendAsync(Operation, canSignIn: true, contentBuilder, cancellationToken);
-        IEnumerable<VaultFile> files = new UpdateFileLifeCycleStatesSerializer().DeserializeMany(document);
+        XDocument document = await _vaultService.SendAsync(_request, canSignIn: true, contentBuilder, cancellationToken);
+        IEnumerable<VaultFile> files = Serializer.DeserializeMany(document);
 
         return files;
     }
@@ -57,12 +66,10 @@ internal class UpdateFileLifeCycleStatesHandler : IRequestHandler<UpdateFileLife
 
         return masterIds;
     }
-}
 
-internal class UpdateFileLifeCycleStatesSerializer : XDocumentSerializer<VaultFile>
-{
-    private const string UpdateFileLifeCycleStates = nameof(UpdateFileLifeCycleStates);
-    private static readonly VaultRequest _request = new VaultRequestData().Get(UpdateFileLifeCycleStates);
-
-    public UpdateFileLifeCycleStatesSerializer() : base(_request.Operation, new VaultFileSerializer(_request.Namespace)) { }
+    internal class UpdateFileLifeCycleStatesSerializer : XDocumentSerializer<VaultFile>
+    {
+        public UpdateFileLifeCycleStatesSerializer(VaultRequest request)
+            : base(request.Operation, new VaultFileSerializer(request.Namespace)) { }
+    }
 }

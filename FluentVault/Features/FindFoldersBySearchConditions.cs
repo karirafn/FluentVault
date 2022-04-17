@@ -1,7 +1,7 @@
 ﻿using System.Xml.Linq;
 
 using FluentVault.Common;
-using FluentVault.Domain.Search;
+using FluentVault.Domain.Search.Folders;
 using FluentVault.Extensions;
 
 using MediatR;
@@ -14,15 +14,23 @@ internal record FindFoldersBySearchConditionsQuery(
     bool RecurseFolders,
     bool LatestOnly,
     string Bookmark) : IRequest<VaultSearchFoldersResponse>;
-
 internal class FindFoldersBySearchConditionsHandler : IRequestHandler<FindFoldersBySearchConditionsQuery, VaultSearchFoldersResponse>
 {
-    private const string Operation = "FindFoldersBySearchConditions";
+    private static readonly VaultRequest _request = new(
+          operation: "FindFoldersBySearchConditions",
+          version: "v26",
+          service: "DocumentService",
+          command: "",
+          @namespace: "Services/Document/1/7/2020");
+    private readonly IVaultService _vaultService;
 
-    private readonly IVaultService _vaultRequestService;
+    public FindFoldersBySearchConditionsHandler(IVaultService vaultService)
+    {
+        _vaultService = vaultService;
+        Serializer = new(_request);
+    }
 
-    public FindFoldersBySearchConditionsHandler(IVaultService vaultRequestService)
-        => _vaultRequestService = vaultRequestService;
+    public FindFoldersBySearchConditionsSerializer Serializer { get; }
 
     public async Task<VaultSearchFoldersResponse> Handle(FindFoldersBySearchConditionsQuery command, CancellationToken cancellationToken)
     {
@@ -34,17 +42,15 @@ internal class FindFoldersBySearchConditionsHandler : IRequestHandler<FindFolder
             .AddElement(ns, "latestOnly", command.LatestOnly)
             .AddElement(ns, "bookmark", command.Bookmark);
 
-        XDocument response = await _vaultRequestService.SendAsync(Operation, canSignIn: true, contentBuilder, cancellationToken);
-        VaultSearchFoldersResponse result = new FindFoldersBySearchConditionsSerializer().Deserialize(response);
+        XDocument response = await _vaultService.SendAsync(_request, canSignIn: true, contentBuilder, cancellationToken);
+        VaultSearchFoldersResponse result = Serializer.Deserialize(response);
 
         return result;
     }
-}
 
-internal class FindFoldersBySearchConditionsSerializer : XDocumentSerializer<VaultSearchFoldersResponse>
-{
-    private const string FindFoldersBySearchConditions = nameof(FindFoldersBySearchConditions);
-    private static readonly VaultRequest _request = new VaultRequestData().Get(FindFoldersBySearchConditions);
-
-    public FindFoldersBySearchConditionsSerializer() : base(_request.Operation, new VaultSearchFoldersResponseSerializer(_request.Namespace)) { }
+    internal class FindFoldersBySearchConditionsSerializer : XDocumentSerializer<VaultSearchFoldersResponse>
+    {
+        public FindFoldersBySearchConditionsSerializer(VaultRequest request)
+            : base(request.Operation, new VaultSearchFoldersResponseSerializer(request.Namespace)) { }
+    }
 }

@@ -14,15 +14,23 @@ internal record FindFilesBySearchConditionsQuery(
     bool RecurseFolders = true,
     bool LatestOnly = true,
     string Bookmark = "") : IRequest<VaultSearchFilesResponse>;
-
 internal class FindFilesBySearchConditionsHandler : IRequestHandler<FindFilesBySearchConditionsQuery, VaultSearchFilesResponse>
 {
-    private const string Operation = "FindFilesBySearchConditions";
+    private static readonly VaultRequest _request = new(
+          operation: "FindFilesBySearchConditions",
+          version: "v26",
+          service: "DocumentService",
+          command: "",
+          @namespace: "Services/Document/1/7/2020");
+    private readonly IVaultService _vaultService;
 
-    private readonly IVaultService _vaultRequestService;
+    public FindFilesBySearchConditionsHandler(IVaultService vaultService)
+    {
+        _vaultService = vaultService;
+        Serializer = new(_request);
+    }
 
-    public FindFilesBySearchConditionsHandler(IVaultService vaultRequestService)
-        => _vaultRequestService = vaultRequestService;
+    public FindFilesBySearchConditionsSerializer Serializer { get; }
 
     public async Task<VaultSearchFilesResponse> Handle(FindFilesBySearchConditionsQuery command, CancellationToken cancellationToken)
     {
@@ -34,17 +42,15 @@ internal class FindFilesBySearchConditionsHandler : IRequestHandler<FindFilesByS
             .AddElement(ns, "latestOnly", command.LatestOnly)
             .AddElement(ns, "bookmark", command.Bookmark);
 
-        XDocument response = await _vaultRequestService.SendAsync(Operation, canSignIn: true, contentBuilder, cancellationToken);
-        VaultSearchFilesResponse result = new FindFilesBySearchConditionsSerializer().Deserialize(response);
+        XDocument response = await _vaultService.SendAsync(_request, canSignIn: true, contentBuilder, cancellationToken);
+        VaultSearchFilesResponse result = Serializer.Deserialize(response);
 
         return result;
     }
-}
 
-internal class FindFilesBySearchConditionsSerializer : XDocumentSerializer<VaultSearchFilesResponse>
-{
-    private const string FindFilesBySearchConditions = nameof(FindFilesBySearchConditions);
-    private static readonly VaultRequest _request = new VaultRequestData().Get(FindFilesBySearchConditions);
-
-    public FindFilesBySearchConditionsSerializer() : base(_request.Operation, new VaultSearchFilesResponseSerializer(_request.Namespace)) { }
+    internal class FindFilesBySearchConditionsSerializer : XDocumentSerializer<VaultSearchFilesResponse>
+    {
+        public FindFilesBySearchConditionsSerializer(VaultRequest request)
+            : base(request.Operation, new VaultSearchFilesResponseSerializer(request.Namespace)) { }
+    }
 }

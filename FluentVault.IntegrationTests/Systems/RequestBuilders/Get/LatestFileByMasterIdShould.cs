@@ -19,7 +19,7 @@ public class LatestFileByMasterIdShould
     public async Task ReturnFile()
     {
         // Arrange
-        await using VaultServiceProvider provider = new();
+        VaultServiceProvider provider = new();
         IMediator mediator = provider.GetRequiredService<IMediator>();
         GetRequestBuilder sut = new(mediator);
 

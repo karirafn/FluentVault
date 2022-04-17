@@ -6,23 +6,24 @@ namespace FluentVault.Common;
 internal abstract class XDocumentSerializer<T>
 {
     private readonly string _operation;
-    private readonly XElementSerializer<T> _elementSerializer;
 
     public XDocumentSerializer(string operation, XElementSerializer<T> elementSerializer)
     {
         _operation = operation;
-        _elementSerializer = elementSerializer;
+        ElementSerializer = elementSerializer;
     }
 
+    public XElementSerializer<T> ElementSerializer { get; }
+
     public T Deserialize(XDocument document)
-        => document.ParseElement(_elementSerializer.ElementName, _elementSerializer.Deserialize);
+        => document.ParseElement(ElementSerializer.ElementName, ElementSerializer.Deserialize);
 
     public IEnumerable<T> DeserializeMany(XDocument document)
-        => document.ParseAllElements(_elementSerializer.ElementName, _elementSerializer.Deserialize);
+        => document.ParseAllElements(ElementSerializer.ElementName, ElementSerializer.Deserialize);
 
-    public XDocument Serialize(T entity)
-        => new XDocument().AddResponseContent(_operation, _elementSerializer.Namespace, _elementSerializer.Serialize(entity), null);
+    public virtual XDocument Serialize(T entity)
+        => new XDocument().AddResponseContent(_operation, ElementSerializer.Namespace, ElementSerializer.Serialize(entity), null);
 
     public XDocument Serialize(IEnumerable<T> entity)
-        => new XDocument().AddResponseContent(_operation, _elementSerializer.Namespace, _elementSerializer.Serialize(entity), null);
+        => new XDocument().AddResponseContent(_operation, ElementSerializer.Namespace, ElementSerializer.Serialize(entity), null);
 }

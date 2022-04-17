@@ -17,14 +17,21 @@ internal record FindItemRevisionsBySearchConditionsQuery(
     string Bookmark = "") : IRequest<VaultSearchItemsResponse>;
 internal class FindItemRevisionsBySearchConditionsHandler : IRequestHandler<FindItemRevisionsBySearchConditionsQuery, VaultSearchItemsResponse>
 {
-    private const string Operation = "FindItemRevisionsBySearchConditions";
-
+    private static readonly VaultRequest _request = new(
+          operation: "FindItemRevisionsBySearchConditions",
+          version: "v26",
+          service: "ItemService",
+          command: "",
+          @namespace: "Services/Document/1/7/2020");
     private readonly IVaultService _vaultService;
 
     public FindItemRevisionsBySearchConditionsHandler(IVaultService vaultService)
     {
         _vaultService = vaultService;
+        Serializer = new(_request);
     }
+
+    public FindItemRevisionsBySearchConditionsSerializer Serializer { get; }
 
     public async Task<VaultSearchItemsResponse> Handle(FindItemRevisionsBySearchConditionsQuery query, CancellationToken cancellationToken)
     {
@@ -36,17 +43,15 @@ internal class FindItemRevisionsBySearchConditionsHandler : IRequestHandler<Find
             .AddElement(ns, "latestOnly", query.LatestOnly)
             .AddElement(ns, "bookmark", query.Bookmark);
 
-        XDocument response = await _vaultService.SendAsync(Operation, canSignIn: true, contentBuilder, cancellationToken);
-        VaultSearchItemsResponse result = new FindItemRevisionsBySearchConditionsSerializer().Deserialize(response);
+        XDocument response = await _vaultService.SendAsync(_request, canSignIn: true, contentBuilder, cancellationToken);
+        VaultSearchItemsResponse result = Serializer.Deserialize(response);
 
         return result;
     }
-}
 
-internal class FindItemRevisionsBySearchConditionsSerializer : XDocumentSerializer<VaultSearchItemsResponse>
-{
-    private const string FindItemRevisionsBySearchConditions = nameof(FindItemRevisionsBySearchConditions);
-    private static readonly VaultRequest _request = new VaultRequestData().Get(FindItemRevisionsBySearchConditions);
-
-    public FindItemRevisionsBySearchConditionsSerializer() : base(_request.Operation, new VaultSearchItemsResponseSerializer(_request.Namespace)) { }
+    internal class FindItemRevisionsBySearchConditionsSerializer : XDocumentSerializer<VaultSearchItemsResponse>
+    {
+        public FindItemRevisionsBySearchConditionsSerializer(VaultRequest request)
+            : base(request.Operation, new VaultSearchItemsResponseSerializer(request.Namespace)) { }
+    }
 }

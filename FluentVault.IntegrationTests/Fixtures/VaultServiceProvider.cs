@@ -1,12 +1,9 @@
 ﻿
-using System;
-using System.Threading.Tasks;
-
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
 namespace FluentVault.IntegrationTests.Fixtures;
-public class VaultServiceProvider : IAsyncDisposable
+public class VaultServiceProvider
 {
     private readonly ServiceProvider _provider;
 
@@ -25,10 +22,4 @@ public class VaultServiceProvider : IAsyncDisposable
     }
 
     public T GetRequiredService<T>() => _provider.GetRequiredService<T>();
-
-    public async ValueTask DisposeAsync()
-    {
-        await _provider.DisposeAsync();
-        GC.SuppressFinalize(this);
-    }
 }

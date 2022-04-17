@@ -36,8 +36,8 @@ public class GetClientUrisHandlerShould
     public async Task FindFile_WhenItExists()
     {
         // Arrange
-        IOptions<VaultOptions> options = Options.Create(_fixture.Create<VaultOptions>());
         Mock<IMediator> mediator = new();
+        IOptions<VaultOptions> options = Options.Create(_fixture.Create<VaultOptions>());
 
         mediator.Setup(_getLatestFileByMasterIdQuery)
             .ReturnsAsync(_fixture.Create<VaultFile>());

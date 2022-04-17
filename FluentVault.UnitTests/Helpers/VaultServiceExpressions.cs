@@ -13,7 +13,7 @@ internal static class VaultServiceExpressions
 {
     public static Expression<Func<IVaultService, Task<XDocument>>>
         SendAsync = x => x.SendAsync(
-            It.IsAny<string>(),
+            It.IsAny<VaultRequest>(),
             It.IsAny<bool>(),
             It.IsAny<Action<XElement, XNamespace>?>(),
             It.IsAny<CancellationToken>());

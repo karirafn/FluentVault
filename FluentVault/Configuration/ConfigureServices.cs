@@ -21,7 +21,6 @@ public static class ConfigureServices
                     httpClient.BaseAddress = new Uri($@"http://{vaultOptions.Server}/");
                 }).Services
             .AddMediatR(typeof(VaultClient).Assembly)
-            .AddSingleton<IVaultRequestData, VaultRequestData>()
             .AddTransient<IVaultService, VaultService>()
             .AddSingleton<IVaultClient, VaultClient>();
     }

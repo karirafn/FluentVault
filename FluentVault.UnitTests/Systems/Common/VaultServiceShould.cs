@@ -1,15 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 
 using AutoFixture;
-using AutoFixture.Kernel;
 
 using FluentVault.Common;
+
+using MediatR;
 
 using Microsoft.Extensions.Options;
 
@@ -32,27 +31,13 @@ public class VaultServiceShould
     }
 
     [Fact]
-    public async Task ThrowKeyNotFoundException_WhenGivenAnInvalidRequestName()
-    {
-        // Arrange
-        string requestName = "This request name is definitely invalid.";
-        VaultRequestData requestData = _fixture.Create<VaultRequestData>();
-        VaultService sut = new(_httpClientFactory.Object, _options, requestData);
-
-        // Assert
-        await Assert.ThrowsAsync<KeyNotFoundException>(() => sut.SendAsync(requestName, canSignIn: false));
-    }
-
-    [Fact]
     public async Task ThrowHttpResponseException_WhenResponseStatusCodeIsNotOk()
     {
         // Arrange
-        HttpResponseMessage response = new(HttpStatusCode.NotFound);
         VaultRequest request = _fixture.Create<VaultRequest>();
-        Mock<IVaultRequestData> requestData = new();
+        HttpResponseMessage response = new(HttpStatusCode.NotFound);
+        Mock<IMediator> mediator = new();
         Mock<HttpMessageHandler> handler = new();
-
-        requestData.Setup(x => x.Get(It.IsAny<string>())).Returns(request);
 
         handler.Protected()
             .Setup<Task<HttpResponseMessage>>(
@@ -66,9 +51,9 @@ public class VaultServiceShould
         _httpClientFactory.Setup(x => x.CreateClient(It.IsAny<string>()))
             .Returns(httpClient);
 
-        VaultService sut = new(_httpClientFactory.Object, _options, requestData.Object);
+        VaultService sut = new(_httpClientFactory.Object, _options, mediator.Object);
 
         // Assert
-        await Assert.ThrowsAsync<HttpRequestException>(() => sut.SendAsync(It.IsAny<string>(), canSignIn: false));
+        await Assert.ThrowsAsync<HttpRequestException>(() => sut.SendAsync(request, canSignIn: false));
     }
 }

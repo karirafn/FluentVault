@@ -20,22 +20,20 @@ namespace FluentVault.UnitTests.Systems.Features;
 public class GetAllCategoryConfigurationsHandlerShould
 {
     private static readonly SmartEnumFixture _fixture = new();
-    private static readonly GetCategoryConfigurationsByBehaviorNamesSerializer _serializer = new();
 
     [Fact]
     public async Task ValVaultService()
     {
         // Arrange
-        int count = 5;
-        IEnumerable<VaultCategory> expectation = _fixture.CreateMany<VaultCategory>(count);
-        XDocument response = _serializer.Serialize(expectation);
+        IEnumerable<VaultCategory> expectation = _fixture.CreateMany<VaultCategory>();
         Mock<IVaultService> vaultService = new();
-
-        vaultService.Setup(VaultServiceExpressions.SendAsync)
-            .ReturnsAsync(response);
 
         GetAllCategoryConfigurationsQuery query = new();
         GetAllCategoryConfigurationsHandler sut = new(vaultService.Object);
+
+        XDocument response = sut.Serializer.Serialize(expectation);
+        vaultService.Setup(VaultServiceExpressions.SendAsync)
+            .ReturnsAsync(response);
 
         // Act
         IEnumerable<VaultCategory> result = await sut.Handle(query, CancellationToken.None);

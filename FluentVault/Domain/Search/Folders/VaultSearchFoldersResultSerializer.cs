@@ -3,8 +3,7 @@
 using FluentVault.Common;
 using FluentVault.Extensions;
 
-namespace FluentVault.Domain.Search;
-
+namespace FluentVault.Domain.Search.Folders;
 internal class VaultSearchFoldersResultSerializer : XElementSerializer<VaultSearchFoldersResult>
 {
     private readonly VaultFolderSerializer _folderSerializer;

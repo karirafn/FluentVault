@@ -20,7 +20,7 @@ public class SearchFilesRequestBuilderShould
     public async Task FindFiles()
     {
         // Arrange
-        await using VaultServiceProvider provider = new();
+        VaultServiceProvider provider = new();
         IMediator mediator = provider.GetRequiredService<IMediator>();
         SearchFilesRequestBuilder sut = new(mediator);
 
@@ -39,7 +39,7 @@ public class SearchFilesRequestBuilderShould
     public async Task FindMultipleVersions_WhenCallingCetAllVersions()
     {
         // Arrange
-        await using VaultServiceProvider provider = new();
+        VaultServiceProvider provider = new();
         IMediator mediator = provider.GetRequiredService<IMediator>();
         SearchFilesRequestBuilder sut = new(mediator);
 

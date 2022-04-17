@@ -21,7 +21,7 @@ public class SignInHandlerShould
         IOptions<VaultOptions> vaultOptions = new VaultOptionsFixture().Create();
         SignInCommand command = new(vaultOptions.Value);
 
-        await using VaultServiceProvider provider = new();
+        VaultServiceProvider provider = new();
         IVaultService vaultService = provider.GetRequiredService<IVaultService>();
         SignInHandler sut = new(vaultService);
 

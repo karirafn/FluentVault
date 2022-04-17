@@ -7,6 +7,7 @@ using AutoFixture;
 using FluentAssertions;
 
 using FluentVault.Common;
+using FluentVault.Domain.Search.Folders;
 using FluentVault.Features;
 using FluentVault.TestFixtures;
 using FluentVault.UnitTests.Helpers;
@@ -19,22 +20,20 @@ namespace FluentVault.UnitTests.Systems.Features;
 public class FindFoldersBySearchConditionsHandlerShould
 {
     private static readonly SmartEnumFixture _fixture = new();
-    private static readonly FindFoldersBySearchConditionsSerializer _serializer = new();
 
     [Fact]
     public async Task CallVaultService()
     {
         // Arrange
-        VaultSearchFoldersResponse expectation = _fixture.Create<VaultSearchFoldersResponse>();
-        XDocument response = _serializer.Serialize(expectation);
-
         Mock<IVaultService> vaultService = new();
-
-        vaultService.Setup(VaultServiceExpressions.SendAsync)
-            .ReturnsAsync(response);
 
         FindFoldersBySearchConditionsQuery query = _fixture.Create<FindFoldersBySearchConditionsQuery>();
         FindFoldersBySearchConditionsHandler sut = new(vaultService.Object);
+
+        VaultSearchFoldersResponse expectation = _fixture.Create<VaultSearchFoldersResponse>();
+        XDocument response = sut.Serializer.Serialize(expectation);
+        vaultService.Setup(VaultServiceExpressions.SendAsync)
+            .ReturnsAsync(response);
 
         // Act
         VaultSearchFoldersResponse result = await sut.Handle(query, CancellationToken.None);

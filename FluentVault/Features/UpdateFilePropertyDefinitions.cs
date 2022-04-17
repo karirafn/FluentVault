@@ -2,12 +2,12 @@
 
 using FluentVault.Common;
 using FluentVault.Domain.Search;
+using FluentVault.Domain.Search.Files;
 using FluentVault.Extensions;
 
 using MediatR;
 
 namespace FluentVault.Features;
-
 internal record UpdateFilePropertyDefinitionsCommand(
     List<VaultMasterId> MasterIds,
     List<VaultPropertyDefinitionId> AddedPropertyIds,
@@ -15,17 +15,27 @@ internal record UpdateFilePropertyDefinitionsCommand(
     IEnumerable<string>? Filenames = null,
     IEnumerable<string>? AddedPropertyNames = null,
     IEnumerable<string>? RemovedPropertyNames = null) : IRequest<IEnumerable<VaultFile>>;
-
 internal class UpdateFilePropertyDefinitionsHandler : IRequestHandler<UpdateFilePropertyDefinitionsCommand, IEnumerable<VaultFile>>
 {
-    private const string Operation = "UpdateFilePropertyDefinitions";
-
+    private static readonly VaultRequest _request = new(
+          operation: "UpdateFilePropertyDefinitions",
+          version: "v26",
+          service: "DocumentService",
+          command: "Connectivity.Explorer.DocumentPS.ChangeLifecycleStateCommand",
+          @namespace: "Services/Document/1/7/2020");
     private readonly IMediator _mediator;
-    private readonly IVaultService _vaultRequestService;
+    private readonly IVaultService _vaultService;
+
     private IEnumerable<VaultProperty> _allProperties = Enumerable.Empty<VaultProperty>();
 
     public UpdateFilePropertyDefinitionsHandler(IMediator mediator, IVaultService vaultRequestService)
-        => (_mediator, _vaultRequestService) = (mediator, vaultRequestService);
+    {
+        _mediator = mediator;
+        _vaultService = vaultRequestService;
+        Serializer = new(_request);
+    }
+
+    public UpdateFilePropertyDefinitionsSerializer Serializer { get; }
 
     public async Task<IEnumerable<VaultFile>> Handle(UpdateFilePropertyDefinitionsCommand command, CancellationToken cancellationToken)
     {
@@ -42,8 +52,8 @@ internal class UpdateFilePropertyDefinitionsHandler : IRequestHandler<UpdateFile
             .AddNestedElements(ns, "removedPropDefIds", "long", command.RemovedPropertyIds)
             .AddElement(ns, "comment", "Add/Remove properties");
 
-        XDocument response = await _vaultRequestService.SendAsync(Operation, canSignIn: true, contentBuilder, cancellationToken);
-        IEnumerable<VaultFile> files = new UpdateFilePropertyDefinitionsSerializer().DeserializeMany(response);
+        XDocument response = await _vaultService.SendAsync(_request, canSignIn: true, contentBuilder, cancellationToken);
+        IEnumerable<VaultFile> files = Serializer.DeserializeMany(response);
 
         return files;
     }
@@ -107,12 +117,10 @@ internal class UpdateFilePropertyDefinitionsHandler : IRequestHandler<UpdateFile
             .Where(property => names.Contains(property.Definition.DisplayName))
             .Select(property => property.Definition.Id);
     }
-}
 
-internal class UpdateFilePropertyDefinitionsSerializer : XDocumentSerializer<VaultFile>
-{
-    private const string UpdateFilePropertyDefinitions = nameof(UpdateFilePropertyDefinitions);
-    private static readonly VaultRequest _request = new VaultRequestData().Get(UpdateFilePropertyDefinitions);
-
-    public UpdateFilePropertyDefinitionsSerializer() : base(_request.Operation, new VaultFileSerializer(_request.Namespace)) { }
+    internal class UpdateFilePropertyDefinitionsSerializer : XDocumentSerializer<VaultFile>
+    {
+        public UpdateFilePropertyDefinitionsSerializer(VaultRequest request)
+            : base(request.Operation, new VaultFileSerializer(request.Namespace)) { }
+    }
 }

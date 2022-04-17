@@ -5,31 +5,36 @@ using FluentVault.Common;
 using MediatR;
 
 namespace FluentVault.Features;
-
 internal record GetAllCategoryConfigurationsQuery() : IRequest<IEnumerable<VaultCategory>>;
-
 internal class GetAllCategoryConfigurationsHandler : IRequestHandler<GetAllCategoryConfigurationsQuery, IEnumerable<VaultCategory>>
 {
-    private const string Operation = "GetCategoryConfigurationsByBehaviorNames";
+    private static readonly VaultRequest _request = new(
+          operation: "GetCategoryConfigurationsByBehaviorNames",
+          version: "v26",
+          service: "CategoryService",
+          command: "Connectivity.Explorer.Admin.AdminToolsCommand",
+          @namespace: "Services/Category/1/7/2020");
+    private readonly IVaultService _vaultService;
 
-    private readonly IVaultService _vaultRequestService;
+    public GetAllCategoryConfigurationsHandler(IVaultService vaultService)
+    {
+        _vaultService = vaultService;
+        Serializer = new(_request);
+    }
 
-    public GetAllCategoryConfigurationsHandler(IVaultService vaultRequestService)
-        => _vaultRequestService = vaultRequestService;
+    public GetCategoryConfigurationsByBehaviorNamesSerializer Serializer { get; }
 
     public async Task<IEnumerable<VaultCategory>> Handle(GetAllCategoryConfigurationsQuery query, CancellationToken cancellationToken)
     {
-        XDocument response = await _vaultRequestService.SendAsync(Operation, canSignIn: true, cancellationToken: cancellationToken);
-        IEnumerable<VaultCategory> categories = new GetCategoryConfigurationsByBehaviorNamesSerializer().DeserializeMany(response);
+        XDocument response = await _vaultService.SendAsync(_request, canSignIn: true, cancellationToken: cancellationToken);
+        IEnumerable<VaultCategory> categories = Serializer.DeserializeMany(response);
 
         return categories;
     }
-}
 
-internal class GetCategoryConfigurationsByBehaviorNamesSerializer : XDocumentSerializer<VaultCategory>
-{
-    private const string GetCategoryConfigurationsByBehaviorNames = nameof(GetCategoryConfigurationsByBehaviorNames);
-    private static readonly VaultRequest _request = new VaultRequestData().Get(GetCategoryConfigurationsByBehaviorNames);
-
-    public GetCategoryConfigurationsByBehaviorNamesSerializer() : base(_request.Operation, new VaultCategorySerializer(_request.Namespace)) { }
+    internal class GetCategoryConfigurationsByBehaviorNamesSerializer : XDocumentSerializer<VaultCategory>
+    {
+        public GetCategoryConfigurationsByBehaviorNamesSerializer(VaultRequest request)
+            : base(request.Operation, new VaultCategorySerializer(request.Namespace)) { }
+    }
 }

@@ -26,6 +26,12 @@ internal class VaultItemSerializer : XElementSerializer<VaultItem>
     private readonly VaultEntityLifeCycleSerializer _lifeCycleSerializer;
     private readonly VaultEntityCategorySerializer _categorySerializer;
 
+    public VaultItemSerializer(string entityName, XNamespace @namespace) : base(entityName, @namespace)
+    {
+        _lifeCycleSerializer = new(Namespace);
+        _categorySerializer = new(Namespace);
+    }
+
     public VaultItemSerializer(XNamespace @namespace) : base(Item, @namespace)
     {
         _lifeCycleSerializer = new(Namespace);

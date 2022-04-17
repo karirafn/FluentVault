@@ -6,6 +6,7 @@ using System.Xml.Linq;
 using AutoFixture;
 
 using FluentVault.Common;
+using FluentVault.Domain.Search.Files;
 using FluentVault.Features;
 using FluentVault.TestFixtures;
 using FluentVault.UnitTests.Helpers;
@@ -20,25 +21,24 @@ namespace FluentVault.UnitTests.Systems.Features;
 public class UpdateFilePropertyDefinitionsHandlerShould
 {
     private static readonly SmartEnumFixture _fixture = new();
-    private static readonly UpdateFilePropertyDefinitionsSerializer _serializer = new();
 
     [Fact]
     public async Task CallVaultService()
     {
         // Arrange
         IEnumerable<VaultFile> files = _fixture.CreateMany<VaultFile>();
-        XDocument vaultServiceResponse = _serializer.Serialize(files);
         Mock<IMediator> mediator = new();
         Mock<IVaultService> vaultService = new();
-
-        vaultService.Setup(VaultServiceExpressions.SendAsync)
-            .ReturnsAsync(vaultServiceResponse);
 
         UpdateFilePropertyDefinitionsCommand command = new(
             MasterIds: _fixture.Create<List<VaultMasterId>>(),
             AddedPropertyIds: _fixture.Create<List<VaultPropertyDefinitionId>>(),
             RemovedPropertyIds: _fixture.Create<List<VaultPropertyDefinitionId>>());
         UpdateFilePropertyDefinitionsHandler sut = new(mediator.Object, vaultService.Object);
+
+        XDocument vaultServiceResponse = sut.Serializer.Serialize(files);
+        vaultService.Setup(VaultServiceExpressions.SendAsync)
+            .ReturnsAsync(vaultServiceResponse);
 
         // Act
         IEnumerable<VaultFile> result = await sut.Handle(command, CancellationToken.None);
@@ -54,15 +54,8 @@ public class UpdateFilePropertyDefinitionsHandlerShould
     {
         // Arrange
         IEnumerable<VaultFile> files = _fixture.CreateMany<VaultFile>();
-        XDocument vaultServiceResponse = _serializer.Serialize(files);
         Mock<IMediator> mediator = new();
         Mock<IVaultService> vaultService = new();
-
-        mediator.Setup(x => x.Send(It.IsAny<FindFilesBySearchConditionsQuery>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(_fixture.Create<VaultSearchFilesResponse>());
-
-        vaultService.Setup(VaultServiceExpressions.SendAsync)
-            .ReturnsAsync(vaultServiceResponse);
 
         UpdateFilePropertyDefinitionsCommand command = new(
             MasterIds: new List<VaultMasterId>(),
@@ -70,6 +63,13 @@ public class UpdateFilePropertyDefinitionsHandlerShould
             RemovedPropertyIds: _fixture.Create<List<VaultPropertyDefinitionId>>(),
             Filenames: _fixture.CreateMany<string>());
         UpdateFilePropertyDefinitionsHandler sut = new(mediator.Object, vaultService.Object);
+        XDocument vaultServiceResponse = sut.Serializer.Serialize(files);
+
+        mediator.Setup(x => x.Send(It.IsAny<FindFilesBySearchConditionsQuery>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(_fixture.Create<VaultSearchFilesResponse>());
+
+        vaultService.Setup(VaultServiceExpressions.SendAsync)
+            .ReturnsAsync(vaultServiceResponse);
 
         // Act
         IEnumerable<VaultFile> result = await sut.Handle(command, CancellationToken.None);
@@ -85,15 +85,8 @@ public class UpdateFilePropertyDefinitionsHandlerShould
     {
         // Arrange
         IEnumerable<VaultFile> files = _fixture.CreateMany<VaultFile>();
-        XDocument vaultServiceResponse = _serializer.Serialize(files);
         Mock<IMediator> mediator = new();
         Mock<IVaultService> vaultService = new();
-
-        mediator.Setup(x => x.Send(It.IsAny<GetAllPropertyDefinitionInfosQuery>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(_fixture.CreateMany<VaultProperty>());
-
-        vaultService.Setup(VaultServiceExpressions.SendAsync)
-            .ReturnsAsync(vaultServiceResponse);
 
         UpdateFilePropertyDefinitionsCommand command = new(
             MasterIds: _fixture.Create<List<VaultMasterId>>(),
@@ -102,6 +95,13 @@ public class UpdateFilePropertyDefinitionsHandlerShould
             Filenames: null,
             AddedPropertyNames: _fixture.CreateMany<string>());
         UpdateFilePropertyDefinitionsHandler sut = new(mediator.Object, vaultService.Object);
+
+        XDocument vaultServiceResponse = sut.Serializer.Serialize(files);
+        mediator.Setup(x => x.Send(It.IsAny<GetAllPropertyDefinitionInfosQuery>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(_fixture.CreateMany<VaultProperty>());
+
+        vaultService.Setup(VaultServiceExpressions.SendAsync)
+            .ReturnsAsync(vaultServiceResponse);
 
         // Act
         IEnumerable<VaultFile> result = await sut.Handle(command, CancellationToken.None);
@@ -117,15 +117,8 @@ public class UpdateFilePropertyDefinitionsHandlerShould
     {
         // Arrange
         IEnumerable<VaultFile> files = _fixture.CreateMany<VaultFile>();
-        XDocument vaultServiceResponse = _serializer.Serialize(files);
         Mock<IMediator> mediator = new();
         Mock<IVaultService> vaultService = new();
-
-        mediator.Setup(x => x.Send(It.IsAny<GetAllPropertyDefinitionInfosQuery>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(_fixture.CreateMany<VaultProperty>());
-
-        vaultService.Setup(VaultServiceExpressions.SendAsync)
-            .ReturnsAsync(vaultServiceResponse);
 
         UpdateFilePropertyDefinitionsCommand command = new(
             MasterIds: _fixture.Create<List<VaultMasterId>>(),
@@ -135,6 +128,13 @@ public class UpdateFilePropertyDefinitionsHandlerShould
             AddedPropertyNames: _fixture.CreateMany<string>(),
             RemovedPropertyNames: _fixture.CreateMany<string>());
         UpdateFilePropertyDefinitionsHandler sut = new(mediator.Object, vaultService.Object);
+
+        XDocument vaultServiceResponse = sut.Serializer.Serialize(files);
+        mediator.Setup(x => x.Send(It.IsAny<GetAllPropertyDefinitionInfosQuery>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(_fixture.CreateMany<VaultProperty>());
+
+        vaultService.Setup(VaultServiceExpressions.SendAsync)
+            .ReturnsAsync(vaultServiceResponse);
 
         // Act
         IEnumerable<VaultFile> result = await sut.Handle(command, CancellationToken.None);

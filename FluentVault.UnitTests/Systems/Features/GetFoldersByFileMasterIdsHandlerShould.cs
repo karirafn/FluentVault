@@ -20,21 +20,20 @@ namespace FluentVault.UnitTests.Systems.Features;
 public class GetFoldersByFileMasterIdsHandlerShould
 {
     private static readonly SmartEnumFixture _fixture = new();
-    private static readonly GetFoldersByFileMasterIdsSerializer _serializer = new();
 
     [Fact]
     public async Task CallVaultService()
     {
         // Arrange
         IEnumerable<VaultFolder> expectation = _fixture.CreateMany<VaultFolder>();
-        XDocument response = _serializer.Serialize(expectation);
         Mock<IVaultService> vaultService = new();
-
-        vaultService.Setup(VaultServiceExpressions.SendAsync)
-            .ReturnsAsync(response);
 
         GetFoldersByFileMasterIdsQuery query = _fixture.Create<GetFoldersByFileMasterIdsQuery>();
         GetFoldersByFileMasterIdsHandler sut = new(vaultService.Object);
+
+        XDocument response = sut.Serializer.Serialize(expectation);
+        vaultService.Setup(VaultServiceExpressions.SendAsync)
+            .ReturnsAsync(response);
 
         // Act
         IEnumerable<VaultFolder> result = await sut.Handle(query, CancellationToken.None);

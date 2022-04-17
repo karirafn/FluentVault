@@ -5,6 +5,8 @@ using System.Xml.Linq;
 using FluentVault.Extensions;
 using FluentVault.Features;
 
+using MediatR;
+
 using Microsoft.Extensions.Options;
 
 namespace FluentVault.Common;
@@ -13,22 +15,22 @@ internal class VaultService : IVaultService, IAsyncDisposable
 {
     private readonly HttpClient _httpClient;
     private readonly VaultOptions _options;
-    private readonly IVaultRequestData _data;
+    private readonly IMediator _mediator;
     private VaultSessionCredentials _session = new();
 
-    public VaultService(IHttpClientFactory httpClientFactory, IOptions<VaultOptions> options, IVaultRequestData data)
+    public VaultService(IHttpClientFactory httpClientFactory, IOptions<VaultOptions> options, IMediator mediator)
     {
         _httpClient = httpClientFactory.CreateClient("Vault");
         _options = options.Value;
-        _data = data;
+        _mediator = mediator;
     }
 
-    public async Task<XDocument> SendAsync(string operation, bool canSignIn, Action<XElement, XNamespace>? contentBuilder = null, CancellationToken cancellationToken = default)
+    public async Task<XDocument> SendAsync(VaultRequest request, bool canSignIn, Action<XElement, XNamespace>? contentBuilder = null, CancellationToken cancellationToken = default)
     {
         if (canSignIn && _session.IsValid == false)
-            _session = await new SignInHandler(this).Handle(new SignInCommand(_options), cancellationToken);
+            _session = await _mediator.Send(new SignInCommand(_options), cancellationToken);
 
-        HttpRequestMessage requestMessage = GetRequestMessage(operation, _session, contentBuilder);
+        HttpRequestMessage requestMessage = GetRequestMessage(request, _session, contentBuilder);
         HttpResponseMessage responseMessage = await _httpClient.SendAsync(requestMessage, cancellationToken);
 
         if (responseMessage.StatusCode != HttpStatusCode.OK)
@@ -40,12 +42,11 @@ internal class VaultService : IVaultService, IAsyncDisposable
         return document;
     }
 
-    private HttpRequestMessage GetRequestMessage(string operation, VaultSessionCredentials session, Action<XElement, XNamespace>? contentBuilder)
+    private static HttpRequestMessage GetRequestMessage(VaultRequest request, VaultSessionCredentials session, Action<XElement, XNamespace>? contentBuilder)
     {
-        VaultRequest data = _data.Get(operation);
-        string uri = data.Uri;
-        string soapAction = data.SoapAction;
-        XDocument requestBody = GetRequestBody(data.Operation, data.Namespace, session, contentBuilder);
+        string uri = request.Uri;
+        string soapAction = request.SoapAction;
+        XDocument requestBody = GetRequestBody(request, session, contentBuilder);
         StringContent requestContent = GetRequestContent(requestBody);
 
         HttpRequestMessage requestMessage = new(HttpMethod.Post, uri);
@@ -63,10 +64,10 @@ internal class VaultService : IVaultService, IAsyncDisposable
         return requestContent;
     }
 
-    private static XDocument GetRequestBody(string operation, string @namespace, VaultSessionCredentials session, Action<XElement, XNamespace>? contentBuilder)
+    private static XDocument GetRequestBody(VaultRequest request, VaultSessionCredentials session, Action<XElement, XNamespace>? contentBuilder)
     {
-        XNamespace ns = $"{@namespace}/";
-        XElement content = new(ns + operation);
+        XNamespace ns = $"{request.Namespace}/";
+        XElement content = new(ns + request.Operation);
 
         if (contentBuilder is not null)
             contentBuilder.Invoke(content, ns);
@@ -79,7 +80,7 @@ internal class VaultService : IVaultService, IAsyncDisposable
     public async ValueTask DisposeAsync()
     {
         if (_session.IsValid)
-            await new SignOutHandler(this).Handle(new SignOutCommand(), default);
+            _ = await _mediator.Send(new SignOutCommand());
 
         GC.SuppressFinalize(this);
     }

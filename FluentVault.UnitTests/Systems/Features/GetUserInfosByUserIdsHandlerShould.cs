@@ -21,21 +21,20 @@ namespace FluentVault.UnitTests.Systems.Features;
 public class GetUserInfosByUserIdsHandlerShould
 {
     private static readonly SmartEnumFixture _fixture = new();
-    private static readonly GetUserInfosByUserIdsSerializer _serializer = new();
 
     [Fact]
     public async Task CallVaultService()
     {
         // Arrange
         VaultUserInfo expectation = _fixture.Create<VaultUserInfo>();
-        XDocument response = _serializer.Serialize(expectation);
         Mock<IVaultService> vaultService = new();
-
-        vaultService.Setup(VaultServiceExpressions.SendAsync)
-            .ReturnsAsync(response);
 
         GetUserInfosByIserIdsQuery query = new(new[] { expectation.User.Id });
         GetUserInfosByUserIdsHandler sut = new(vaultService.Object);
+
+        XDocument response = sut.Serializer.Serialize(expectation);
+        vaultService.Setup(VaultServiceExpressions.SendAsync)
+            .ReturnsAsync(response);
 
         // Act
         IEnumerable<VaultUserInfo> result = await sut.Handle(query, CancellationToken.None);

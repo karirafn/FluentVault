@@ -1,4 +1,5 @@
 ﻿using FluentVault.Domain.Search;
+using FluentVault.Domain.Search.Files;
 using FluentVault.Features;
 
 using MediatR;

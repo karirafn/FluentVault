@@ -5,31 +5,36 @@ using FluentVault.Common;
 using MediatR;
 
 namespace FluentVault.Features;
-
 internal record GetAllPropertyDefinitionInfosQuery() : IRequest<IEnumerable<VaultProperty>>;
-
 internal class GetAllPropertyDefinitionInfosHandler : IRequestHandler<GetAllPropertyDefinitionInfosQuery, IEnumerable<VaultProperty>>
 {
-    private const string Operation = "GetPropertyDefinitionInfosByEntityClassId";
+    private static readonly VaultRequest _request = new(
+          operation: "GetPropertyDefinitionInfosByEntityClassId",
+          version: "v26",
+          service: "PropertyService",
+          command: "Connectivity.Explorer.Admin.AdminToolsCommand",
+          @namespace: "Services/Property/1/7/2020");
+    private readonly IVaultService _vaultService;
 
-    private readonly IVaultService _vaultRequestService;
+    public GetAllPropertyDefinitionInfosHandler(IVaultService vaultService)
+    {
+        _vaultService = vaultService;
+        Serializer = new(_request);
+    }
 
-    public GetAllPropertyDefinitionInfosHandler(IVaultService vaultRequestService)
-        => _vaultRequestService = vaultRequestService;
+    public GetAllPropertyDefinitionInfosSerializer Serializer { get; }
 
     public async Task<IEnumerable<VaultProperty>> Handle(GetAllPropertyDefinitionInfosQuery query, CancellationToken cancellationToken)
     {
-        XDocument response = await _vaultRequestService.SendAsync(Operation, canSignIn: true, cancellationToken: cancellationToken);
-        IEnumerable<VaultProperty> properties = new GetAllPropertyDefinitionInfosSerializer().DeserializeMany(response);
+        XDocument response = await _vaultService.SendAsync(_request, canSignIn: true, cancellationToken: cancellationToken);
+        IEnumerable<VaultProperty> properties = Serializer.DeserializeMany(response);
 
         return properties;
     }
-}
 
-internal class GetAllPropertyDefinitionInfosSerializer : XDocumentSerializer<VaultProperty>
-{
-    private const string GetBehaviorConfigurationsByNames = nameof(GetBehaviorConfigurationsByNames);
-    private static readonly VaultRequest _request = new VaultRequestData().Get(GetBehaviorConfigurationsByNames);
-
-    public GetAllPropertyDefinitionInfosSerializer() : base(_request.Operation, new VaultPropertySerializer(_request.Namespace)) { }
+    internal class GetAllPropertyDefinitionInfosSerializer : XDocumentSerializer<VaultProperty>
+    {
+        public GetAllPropertyDefinitionInfosSerializer(VaultRequest request)
+            : base(request.Operation, new VaultPropertySerializer(request.Namespace)) { }
+    }
 }

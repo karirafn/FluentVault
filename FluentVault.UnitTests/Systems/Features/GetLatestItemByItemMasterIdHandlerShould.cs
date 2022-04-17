@@ -19,22 +19,20 @@ namespace FluentVault.UnitTests.Systems.Features;
 public class GetLatestItemByItemMasterIdHandlerShould
 {
     private static readonly SmartEnumFixture _fixture = new();
-    private static readonly GetLatestItemByItemMasterIdSerializer _serializer = new();
 
     [Fact]
     public async Task CallVaultService()
     {
         // Arrange
         VaultItem expectation = _fixture.Create<VaultItem>();
-        XDocument response = _serializer.Serialize(expectation);
-
         Mock<IVaultService> vaultService = new();
-
-        vaultService.Setup(VaultServiceExpressions.SendAsync)
-            .ReturnsAsync(response);
 
         GetLatestItemByItemMasterIdQuery query = new(expectation.MasterId);
         GetLatestItemByItemMasterIdHandler sut = new(vaultService.Object);
+
+        XDocument response = sut.Serializer.Serialize(expectation);
+        vaultService.Setup(VaultServiceExpressions.SendAsync)
+            .ReturnsAsync(response);
 
         // Act
         VaultItem result = await sut.Handle(query, CancellationToken.None);

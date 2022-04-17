@@ -20,22 +20,20 @@ namespace FluentVault.UnitTests.Systems.Features;
 public class FindItemRevisionsBySearchConditionsHandlerShould
 {
     private static readonly SmartEnumFixture _fixture = new();
-    private static readonly FindItemRevisionsBySearchConditionsSerializer _serializer = new();
 
     [Fact]
     public async Task CallVaultService()
     {
         // Arrange
         VaultSearchItemsResponse expectation = _fixture.Create<VaultSearchItemsResponse>();
-        XDocument response = _serializer.Serialize(expectation);
-
         Mock<IVaultService> vaultService = new();
-
-        vaultService.Setup(VaultServiceExpressions.SendAsync)
-            .ReturnsAsync(response);
 
         FindItemRevisionsBySearchConditionsQuery query = _fixture.Create<FindItemRevisionsBySearchConditionsQuery>();
         FindItemRevisionsBySearchConditionsHandler sut = new(vaultService.Object);
+
+        XDocument response = sut.Serializer.Serialize(expectation);
+        vaultService.Setup(VaultServiceExpressions.SendAsync)
+            .ReturnsAsync(response);
 
         // Act
         VaultSearchItemsResponse result = await sut.Handle(query, CancellationToken.None);

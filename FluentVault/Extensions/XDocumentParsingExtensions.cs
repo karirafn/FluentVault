@@ -24,7 +24,7 @@ internal static class XDocumentParsingExtensions
 
     internal static string GetAttributeValue(this XElement element, string name)
         => element.Attribute(name)?.Value
-        ?? throw new KeyNotFoundException($@"Attribute ""{name}"" was not found in element ""{element.Name}"".");
+        ?? throw new KeyNotFoundException($@"Attribute ""{name}"" was not found in element ""{element.Name.LocalName}"".");
 
     internal static XElement GetElement(this XContainer container, string name)
         => container.Descendants().FirstOrDefault(x => x.Name.LocalName.Equals(name))

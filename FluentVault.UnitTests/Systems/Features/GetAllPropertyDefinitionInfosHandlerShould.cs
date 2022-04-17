@@ -20,22 +20,20 @@ namespace FluentVault.UnitTests.Systems.Features;
 public class GetAllPropertyDefinitionInfosHandlerShould
 {
     private static readonly SmartEnumFixture _fixture = new();
-    private static readonly GetAllPropertyDefinitionInfosSerializer _serialiser = new();
 
     [Fact]
     public async Task ValVaultService()
     {
         // Arrange
-        int count = 5;
-        IEnumerable<VaultProperty> expectation = _fixture.CreateMany<VaultProperty>(count);
-        XDocument response = _serialiser.Serialize(expectation);
+        IEnumerable<VaultProperty> expectation = _fixture.CreateMany<VaultProperty>();
         Mock<IVaultService> vaultService = new();
-
-        vaultService.Setup(VaultServiceExpressions.SendAsync)
-            .ReturnsAsync(response);
 
         GetAllPropertyDefinitionInfosQuery query = new();
         GetAllPropertyDefinitionInfosHandler sut = new(vaultService.Object);
+
+        XDocument response = sut.Serializer.Serialize(expectation);
+        vaultService.Setup(VaultServiceExpressions.SendAsync)
+            .ReturnsAsync(response);
 
         // Act
         IEnumerable<VaultProperty> result = await sut.Handle(query, CancellationToken.None);

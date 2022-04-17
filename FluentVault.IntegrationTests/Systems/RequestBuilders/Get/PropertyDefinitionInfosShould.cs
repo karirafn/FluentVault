@@ -18,7 +18,7 @@ public class PropertyDefinitionInfosShould
     public async Task ReturnAllLifeCycleDefinitions()
     {
         // Arrange
-        await using VaultServiceProvider provider = new();
+        VaultServiceProvider provider = new();
         IMediator mediator = provider.GetRequiredService<IMediator>();
         GetRequestBuilder sut = new(mediator);
 
