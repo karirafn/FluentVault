@@ -2,35 +2,41 @@
 using System.Net.Http.Headers;
 using System.Xml.Linq;
 
+using FluentVault.Domain.SecurityHeader;
 using FluentVault.Extensions;
 using FluentVault.Features;
 
 using MediatR;
 
-using Microsoft.Extensions.Options;
-
 namespace FluentVault.Common;
-
 internal class VaultService : IVaultService, IAsyncDisposable
 {
     private readonly HttpClient _httpClient;
-    private readonly VaultOptions _options;
     private readonly IMediator _mediator;
-    private VaultSessionCredentials _session = new();
+    private VaultSecurityHeader? _securityHeader;
 
-    public VaultService(IHttpClientFactory httpClientFactory, IOptions<VaultOptions> options, IMediator mediator)
+    public VaultService(IHttpClientFactory httpClientFactory, IMediator mediator)
     {
         _httpClient = httpClientFactory.CreateClient("Vault");
-        _options = options.Value;
         _mediator = mediator;
     }
 
-    public async Task<XDocument> SendAsync(VaultRequest request, bool canSignIn, Action<XElement, XNamespace>? contentBuilder = null, CancellationToken cancellationToken = default)
+    public async Task<XDocument> SendAuthenticatedAsync(VaultRequest request, Action<XElement, XNamespace>? contentBuilder = null, CancellationToken cancellationToken = default)
     {
-        if (canSignIn && _session.IsValid == false)
-            _session = await _mediator.Send(new SignInCommand(_options), cancellationToken);
+        if (_securityHeader is null)
+            _securityHeader = await _mediator.Send(new SignInCommand(), cancellationToken);
 
-        HttpRequestMessage requestMessage = GetRequestMessage(request, _session, contentBuilder);
+        XDocument document = await SendAsync(request, contentBuilder, cancellationToken);
+
+        return document;
+    }
+
+    public async Task<XDocument> SendUnauthenticatedAsync(VaultRequest request, Action<XElement, XNamespace>? contentBuilder, CancellationToken cancellationToken = default)
+        => await SendAsync(request, contentBuilder, cancellationToken);
+
+    private async Task<XDocument> SendAsync(VaultRequest request, Action<XElement, XNamespace>? contentBuilder = null, CancellationToken cancellationToken = default)
+    {
+        HttpRequestMessage requestMessage = GetRequestMessage(request, _securityHeader, contentBuilder);
         HttpResponseMessage responseMessage = await _httpClient.SendAsync(requestMessage, cancellationToken);
 
         if (responseMessage.StatusCode != HttpStatusCode.OK)
@@ -42,9 +48,9 @@ internal class VaultService : IVaultService, IAsyncDisposable
         return document;
     }
 
-    private static HttpRequestMessage GetRequestMessage(VaultRequest request, VaultSessionCredentials session, Action<XElement, XNamespace>? contentBuilder)
+    private static HttpRequestMessage GetRequestMessage(VaultRequest request, VaultSecurityHeader? securityHeader, Action<XElement, XNamespace>? contentBuilder)
     {
-        XDocument requestBody = GetRequestBody(request, session, contentBuilder);
+        XDocument requestBody = GetRequestBody(request, securityHeader, contentBuilder);
         StringContent requestContent = GetRequestContent(requestBody);
 
         HttpRequestMessage requestMessage = new(HttpMethod.Post, request.Uri);
@@ -62,7 +68,7 @@ internal class VaultService : IVaultService, IAsyncDisposable
         return requestContent;
     }
 
-    private static XDocument GetRequestBody(VaultRequest request, VaultSessionCredentials session, Action<XElement, XNamespace>? contentBuilder)
+    private static XDocument GetRequestBody(VaultRequest request, VaultSecurityHeader? securityHeader, Action<XElement, XNamespace>? contentBuilder)
     {
         XNamespace ns = $"{request.Namespace}/";
         XElement content = new(ns + request.Operation);
@@ -70,16 +76,14 @@ internal class VaultService : IVaultService, IAsyncDisposable
         if (contentBuilder is not null)
             contentBuilder.Invoke(content, ns);
 
-        XDocument requestBody = new XDocument().AddRequestBody(session, content);
+        XDocument requestBody = new XDocument().AddRequestBody(content, securityHeader);
 
         return requestBody;
     }
 
     public async ValueTask DisposeAsync()
     {
-        if (_session.IsValid)
-            _ = await _mediator.Send(new SignOutCommand());
-
+        await _mediator.Send(new SignOutCommand());
         GC.SuppressFinalize(this);
     }
 }

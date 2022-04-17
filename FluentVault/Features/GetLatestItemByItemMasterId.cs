@@ -31,7 +31,7 @@ internal class GetLatestItemByItemMasterIdHandler : IRequestHandler<GetLatestIte
         void contentBuilder(XElement content, XNamespace @namespace) => content
             .AddElement(@namespace, "itemMasterId", query.MasterId);
 
-        XDocument document = await _vaultService.SendAsync(_request, canSignIn: true, contentBuilder, cancellationToken);
+        XDocument document = await _vaultService.SendAuthenticatedAsync(_request, contentBuilder, cancellationToken);
         VaultItem item = Serializer.Deserialize(document);
 
         return item;

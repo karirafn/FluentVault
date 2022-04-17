@@ -1,5 +1,8 @@
 ﻿using System.Xml.Linq;
 
+using FluentVault.Common;
+using FluentVault.Domain.SecurityHeader;
+
 namespace FluentVault.Extensions;
 
 internal static class XDocumentGeneratingExtensions
@@ -121,7 +124,7 @@ internal static class XDocumentGeneratingExtensions
         response.AddElements(responseContent)
             .AddElement(result);
 
-        document.AddRequestBody(new(), response);
+        document.AddRequestBody(response);
 
         return document;
     }
@@ -139,12 +142,15 @@ internal static class XDocumentGeneratingExtensions
     internal static XDocument AddResponseContent(this XDocument document, string operation, XNamespace @namespace, XElement responseContent, IEnumerable<XElement?>? resultContent = null)
         => document.AddResponseContent(operation, @namespace, new XElement[] { responseContent }, resultContent);
 
-    internal static XDocument AddRequestBody(this XDocument document, VaultSessionCredentials session, XElement content)
+    internal static XDocument AddRequestBody(this XDocument document, XElement content, VaultSecurityHeader? securityHeader = null)
     {
         XElement envelope = document.AddEnvelope();
 
-        if (session.Ticket != Guid.Empty && session.UserId > 0)
-            envelope.AddHeader().AddSecurityHeader(session);
+        if (securityHeader is not null)
+        {
+            VaultSecurityHeaderSerializer serializer = new();
+            envelope.AddHeader().AddElement(serializer.Serialize(securityHeader));
+        }
 
         envelope.AddBody()
             .Add(content);
@@ -162,21 +168,21 @@ internal static class XDocumentGeneratingExtensions
         return body;
     }
 
-    internal static XElement AddSecurityHeader(this XElement element, VaultSessionCredentials session)
-    {
-        XElement ticket = new(_autodesk + "Ticket", session.Ticket);
-        XElement userId = new(_autodesk + "UserId", session.UserId);
+    //internal static XElement AddSecurityHeader(this XElement element, VaultSecurityHeader session)
+    //{
+    //    XElement ticket = new(_autodesk + "Ticket", session.Ticket);
+    //    XElement userId = new(_autodesk + "UserId", session.UserId);
 
-        XElement securityHeader = new XElement(_autodesk + "SecurityHeader")
-            .AddXmlSchema();
+    //    XElement securityHeader = new XElement(_autodesk + "SecurityHeader")
+    //        .AddXmlSchema();
 
-        securityHeader.Add(ticket);
-        securityHeader.Add(userId);
+    //    securityHeader.Add(ticket);
+    //    securityHeader.Add(userId);
 
-        element.Add(securityHeader);
+    //    element.Add(securityHeader);
 
-        return element;
-    }
+    //    return element;
+    //}
 
     internal static XElement AddHeader(this XElement element)
     {

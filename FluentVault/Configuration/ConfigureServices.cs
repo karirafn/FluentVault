@@ -27,7 +27,7 @@ public static class ConfigureServices
             .AddMediatR(assembly)
             .AddTransient<IVaultService, VaultService>()
             .AddImplementations<IRequestBuilder>(assembly)
-            .AddSingleton<IVaultClient, VaultClient>();
+            .AddTransient<IVaultClient, VaultClient>();
     }
 
     private static IServiceCollection AddImplementations<T>(this IServiceCollection services, Assembly assembly)

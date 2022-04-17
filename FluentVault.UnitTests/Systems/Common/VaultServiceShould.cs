@@ -51,9 +51,9 @@ public class VaultServiceShould
         _httpClientFactory.Setup(x => x.CreateClient(It.IsAny<string>()))
             .Returns(httpClient);
 
-        VaultService sut = new(_httpClientFactory.Object, _options, mediator.Object);
+        VaultService sut = new(_httpClientFactory.Object, mediator.Object);
 
         // Assert
-        await Assert.ThrowsAsync<HttpRequestException>(() => sut.SendAsync(request, canSignIn: false));
+        await Assert.ThrowsAsync<HttpRequestException>(() => sut.SendAuthenticatedAsync(request));
     }
 }

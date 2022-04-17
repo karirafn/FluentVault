@@ -26,7 +26,7 @@ internal class GetAllPropertyDefinitionInfosHandler : IRequestHandler<GetAllProp
 
     public async Task<IEnumerable<VaultProperty>> Handle(GetAllPropertyDefinitionInfosQuery query, CancellationToken cancellationToken)
     {
-        XDocument response = await _vaultService.SendAsync(_request, canSignIn: true, cancellationToken: cancellationToken);
+        XDocument response = await _vaultService.SendAuthenticatedAsync(_request, cancellationToken: cancellationToken);
         IEnumerable<VaultProperty> properties = Serializer.DeserializeMany(response);
 
         return properties;

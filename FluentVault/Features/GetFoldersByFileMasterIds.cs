@@ -30,7 +30,7 @@ internal class GetFoldersByFileMasterIdsHandler : IRequestHandler<GetFoldersByFi
         void contentBuilder(XElement content, XNamespace @namespace) => content
             .AddNestedElements(@namespace, "fileMasterIds", "long", query.MasterIds);
 
-        XDocument document = await _vaultService.SendAsync(_request, canSignIn: true, contentBuilder, cancellationToken);
+        XDocument document = await _vaultService.SendAuthenticatedAsync(_request, contentBuilder, cancellationToken);
         IEnumerable<VaultFolder> folders = Serializer.DeserializeMany(document);
 
         return folders;

@@ -22,7 +22,7 @@ internal class SignOutHandler : IRequestHandler<SignOutCommand>
 
     public async Task<Unit> Handle(SignOutCommand command, CancellationToken cancellationToken)
     {
-        _ = await _vaultService.SendAsync(_request, cancellationToken: cancellationToken, canSignIn: false);
+        _ = await _vaultService.SendAuthenticatedAsync(_request, cancellationToken: cancellationToken);
 
         return Unit.Value;
     }

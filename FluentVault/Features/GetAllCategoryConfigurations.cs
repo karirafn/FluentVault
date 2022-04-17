@@ -26,7 +26,7 @@ internal class GetAllCategoryConfigurationsHandler : IRequestHandler<GetAllCateg
 
     public async Task<IEnumerable<VaultCategory>> Handle(GetAllCategoryConfigurationsQuery query, CancellationToken cancellationToken)
     {
-        XDocument response = await _vaultService.SendAsync(_request, canSignIn: true, cancellationToken: cancellationToken);
+        XDocument response = await _vaultService.SendAuthenticatedAsync(_request, cancellationToken: cancellationToken);
         IEnumerable<VaultCategory> categories = Serializer.DeserializeMany(response);
 
         return categories;

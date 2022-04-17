@@ -27,10 +27,9 @@ internal class FindFilesBySearchConditionsHandler : IRequestHandler<FindFilesByS
     public FindFilesBySearchConditionsHandler(IVaultService vaultService)
     {
         _vaultService = vaultService;
-        Serializer = new(_request);
     }
 
-    public FindFilesBySearchConditionsSerializer Serializer { get; }
+    public FindFilesBySearchConditionsSerializer Serializer { get; } = new(_request);
 
     public async Task<VaultSearchFilesResponse> Handle(FindFilesBySearchConditionsQuery command, CancellationToken cancellationToken)
     {
@@ -42,7 +41,7 @@ internal class FindFilesBySearchConditionsHandler : IRequestHandler<FindFilesByS
             .AddElement(ns, "latestOnly", command.LatestOnly)
             .AddElement(ns, "bookmark", command.Bookmark);
 
-        XDocument response = await _vaultService.SendAsync(_request, canSignIn: true, contentBuilder, cancellationToken);
+        XDocument response = await _vaultService.SendAuthenticatedAsync(_request, contentBuilder, cancellationToken);
         VaultSearchFilesResponse result = Serializer.Deserialize(response);
 
         return result;

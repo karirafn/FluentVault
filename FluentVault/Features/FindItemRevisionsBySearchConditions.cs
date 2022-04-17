@@ -43,7 +43,7 @@ internal class FindItemRevisionsBySearchConditionsHandler : IRequestHandler<Find
             .AddElement(ns, "latestOnly", query.LatestOnly)
             .AddElement(ns, "bookmark", query.Bookmark);
 
-        XDocument response = await _vaultService.SendAsync(_request, canSignIn: true, contentBuilder, cancellationToken);
+        XDocument response = await _vaultService.SendAuthenticatedAsync(_request, contentBuilder, cancellationToken);
         VaultSearchItemsResponse result = Serializer.Deserialize(response);
 
         return result;

@@ -44,7 +44,7 @@ internal class UpdateFileLifeCycleStatesHandler : IRequestHandler<UpdateFileLife
             .AddNestedElements(ns, "toStateIds", "long", command.StateIds.Select(x => x.ToString()))
             .AddElement(ns, "comment", command.Comment);
 
-        XDocument document = await _vaultService.SendAsync(_request, canSignIn: true, contentBuilder, cancellationToken);
+        XDocument document = await _vaultService.SendAuthenticatedAsync(_request, contentBuilder, cancellationToken);
         IEnumerable<VaultFile> files = Serializer.DeserializeMany(document);
 
         return files;

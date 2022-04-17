@@ -1,8 +1,12 @@
 ﻿using System.Xml.Linq;
 
 namespace FluentVault.Common;
-
-internal interface IVaultService : IAsyncDisposable
+internal interface IVaultService
 {
-    Task<XDocument> SendAsync(VaultRequest request, bool canSignIn, Action<XElement, XNamespace>? contentBuilder = null, CancellationToken cancellationToken = default);
+    Task<XDocument> SendAuthenticatedAsync(
+        VaultRequest request,
+        Action<XElement, XNamespace>? contentBuilder = null,
+        CancellationToken cancellationToken = default);
+
+    Task<XDocument> SendUnauthenticatedAsync(VaultRequest request, Action<XElement, XNamespace>? contentBuilder, CancellationToken cancellationToken = default);
 }

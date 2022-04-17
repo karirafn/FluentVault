@@ -42,7 +42,7 @@ internal class FindFoldersBySearchConditionsHandler : IRequestHandler<FindFolder
             .AddElement(ns, "latestOnly", command.LatestOnly)
             .AddElement(ns, "bookmark", command.Bookmark);
 
-        XDocument response = await _vaultService.SendAsync(_request, canSignIn: true, contentBuilder, cancellationToken);
+        XDocument response = await _vaultService.SendAuthenticatedAsync(_request, contentBuilder, cancellationToken);
         VaultSearchFoldersResponse result = Serializer.Deserialize(response);
 
         return result;

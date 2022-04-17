@@ -3,6 +3,7 @@
 using FluentAssertions;
 
 using FluentVault.Common;
+using FluentVault.Domain.SecurityHeader;
 using FluentVault.Features;
 using FluentVault.IntegrationTests.Fixtures;
 
@@ -19,17 +20,17 @@ public class SignInHandlerShould
     {
         // Arrange
         IOptions<VaultOptions> vaultOptions = new VaultOptionsFixture().Create();
-        SignInCommand command = new(vaultOptions.Value);
+        SignInCommand command = new();
 
         VaultServiceProvider provider = new();
         IVaultService vaultService = provider.GetRequiredService<IVaultService>();
-        SignInHandler sut = new(vaultService);
+        SignInHandler sut = new(vaultService, vaultOptions);
 
         // Act
-        VaultSessionCredentials session = await sut.Handle(command, default);
+        VaultSecurityHeader securityHeader = await sut.Handle(command, default);
 
         // Assert
-        session.Ticket.Should().NotBeEmpty();
-        session.UserId.Should().BeGreaterThan(0);
+        securityHeader.Ticket.Value.Should().NotBeEmpty();
+        securityHeader.UserId.Value.Should().BeGreaterThan(0);
     }
 }

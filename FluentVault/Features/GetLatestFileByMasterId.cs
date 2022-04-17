@@ -30,7 +30,7 @@ internal class GetLatestFileByMasterIdHandler : IRequestHandler<GetLatestFileByM
         void contentBuilder(XElement content, XNamespace ns) => content
             .AddElement(ns, "fileMasterId", query.MasterId.Value);
 
-        XDocument document = await _vaultService.SendAsync(_request, canSignIn: true, contentBuilder, cancellationToken);
+        XDocument document = await _vaultService.SendAuthenticatedAsync(_request, contentBuilder, cancellationToken);
         VaultFile file = Serializer.Deserialize(document);
 
         return file;

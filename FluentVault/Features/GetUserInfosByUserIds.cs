@@ -30,7 +30,7 @@ internal class GetUserInfosByUserIdsHandler : IRequestHandler<GetUserInfosByIser
         void contentBuilder(XElement content, XNamespace ns) => content
             .AddNestedElements(ns, "userIdArray", "long", query.UserIds.Select(id => id.ToString()));
 
-        XDocument response = await _vaultService.SendAsync(_request, canSignIn: true, contentBuilder, cancellationToken);
+        XDocument response = await _vaultService.SendAuthenticatedAsync(_request, contentBuilder, cancellationToken);
         IEnumerable<VaultUserInfo> result = Serializer.DeserializeMany(response);
 
         return result;

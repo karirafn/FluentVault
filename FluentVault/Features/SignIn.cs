@@ -3,13 +3,16 @@
 using FluentValidation;
 
 using FluentVault.Common;
+using FluentVault.Domain.SecurityHeader;
 using FluentVault.Extensions;
 
 using MediatR;
 
+using Microsoft.Extensions.Options;
+
 namespace FluentVault.Features;
-internal record SignInCommand(VaultOptions VaultOptions) : IRequest<VaultSessionCredentials>;
-internal class SignInHandler : IRequestHandler<SignInCommand, VaultSessionCredentials>
+internal record SignInCommand() : IRequest<VaultSecurityHeader>;
+internal class SignInHandler : IRequestHandler<SignInCommand, VaultSecurityHeader>
 {
     private static readonly VaultRequest _request = new(
           operation: "SignIn",
@@ -18,40 +21,35 @@ internal class SignInHandler : IRequestHandler<SignInCommand, VaultSessionCreden
           command: "Connectivity.Application.VaultBase.SignInCommand",
           @namespace: "Filestore/Auth/1/8/2021");
     private readonly IVaultService _vaultService;
+    private readonly VaultOptions _options;
 
-    public SignInHandler(IVaultService vaultService)
+    public SignInHandler(IVaultService vaultService, IOptions<VaultOptions> options)
     {
         _vaultService = vaultService;
+        _options = options.Value;
     }
 
-    public async Task<VaultSessionCredentials> Handle(SignInCommand command, CancellationToken cancellationToken)
+    public SignInSerializer Serializer { get; } = new(_request);
+
+    public async Task<VaultSecurityHeader> Handle(SignInCommand command, CancellationToken cancellationToken)
     {
-        new VaultOptionsValidator().ValidateAndThrow(command.VaultOptions);
+        new VaultOptionsValidator().ValidateAndThrow(_options);
 
         void contentBuilder(XElement content, XNamespace ns) => content
-            .AddElement(ns, "dataServer", $"http://{command.VaultOptions.Server}")
-            .AddElement(ns, "knowledgeVault", command.VaultOptions.Database)
-            .AddElement(ns, "userName", command.VaultOptions.Username)
-            .AddElement(ns, "userPassword", command.VaultOptions.Password);
+            .AddElement(ns, "dataServer", $"http://{_options.Server}")
+            .AddElement(ns, "knowledgeVault", _options.Database)
+            .AddElement(ns, "userName", _options.Username)
+            .AddElement(ns, "userPassword", _options.Password);
 
-        XDocument document = await _vaultService.SendAsync(_request, canSignIn: false, contentBuilder, cancellationToken);
+        XDocument document = await _vaultService.SendUnauthenticatedAsync(_request, contentBuilder, cancellationToken: cancellationToken);
+        VaultSecurityHeader result = Serializer.Deserialize(document);
 
-        string t = document.GetElementValue("Ticket");
-        string u = document.GetElementValue("UserId");
-
-        var session = ParseSessionCredentials(t, u);
-
-        return session;
+        return result;
     }
 
-    private static VaultSessionCredentials ParseSessionCredentials(string t, string u)
+    internal class SignInSerializer : XDocumentSerializer<VaultSecurityHeader>
     {
-        if (Guid.TryParse(t, out Guid ticket) == false)
-            throw new ArgumentException($@"Failed to parse ticket with value ""{t}"".");
-
-        if (long.TryParse(u, out long userId) == false)
-            throw new ArgumentException($@"Failed to parse user ID with value ""{u}"".");
-
-        return new VaultSessionCredentials(ticket, userId);
+        public SignInSerializer(VaultRequest request)
+            : base(request.Operation, new VaultSecurityHeaderSerializer()) { }
     }
 }

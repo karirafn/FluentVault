@@ -52,7 +52,7 @@ internal class UpdateFilePropertyDefinitionsHandler : IRequestHandler<UpdateFile
             .AddNestedElements(ns, "removedPropDefIds", "long", command.RemovedPropertyIds)
             .AddElement(ns, "comment", "Add/Remove properties");
 
-        XDocument response = await _vaultService.SendAsync(_request, canSignIn: true, contentBuilder, cancellationToken);
+        XDocument response = await _vaultService.SendAuthenticatedAsync(_request, contentBuilder, cancellationToken);
         IEnumerable<VaultFile> files = Serializer.DeserializeMany(response);
 
         return files;
