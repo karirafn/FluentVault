@@ -1,7 +1,4 @@
-﻿using FluentVault.RequestBuilders;
-
-namespace FluentVault;
-
+﻿namespace FluentVault;
 public interface IGetRequestBuilder
 {
     public Task<IEnumerable<VaultCategory>> CategoryConfigurations(CancellationToken cancellationToken = default);

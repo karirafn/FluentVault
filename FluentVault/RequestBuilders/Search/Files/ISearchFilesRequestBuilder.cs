@@ -1,7 +1,5 @@
-﻿using FluentVault.RequestBuilders;
-
-namespace FluentVault;
-public interface ISearchFilesRequestBuilder : IRequestBuilder
+﻿namespace FluentVault;
+public interface ISearchFilesRequestBuilder
 {
     public ISearchFilesBooleanProperty ForValueEqualTo(bool value);
     public ISearchFilesBooleanProperty ForValueNotEqualTo(bool value);
