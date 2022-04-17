@@ -1,4 +1,6 @@
 ﻿
+using System.Reflection;
+
 using FluentVault.Common;
 using FluentVault.RequestBuilders;
 
@@ -14,6 +16,7 @@ public static class ConfigureServices
     {
         VaultOptions vaultOptions = new();
         options.Invoke(vaultOptions);
+        Assembly assembly = typeof(VaultClient).Assembly;
 
         return services
             .Configure(options)
@@ -21,18 +24,17 @@ public static class ConfigureServices
                 {
                     httpClient.BaseAddress = new Uri($@"http://{vaultOptions.Server}/");
                 }).Services
-            .AddMediatR(typeof(VaultClient).Assembly)
+            .AddMediatR(assembly)
             .AddTransient<IVaultService, VaultService>()
-            .AddRequestBuilders()
+            .AddImplementations<IRequestBuilder>(assembly)
             .AddSingleton<IVaultClient, VaultClient>();
     }
 
-    private static IServiceCollection AddRequestBuilders(this IServiceCollection services)
+    private static IServiceCollection AddImplementations<T>(this IServiceCollection services, Assembly assembly)
     {
-        typeof(VaultClient)
-            .Assembly
+        assembly
             .GetTypes()
-            .Where(type => type.IsAssignableTo(typeof(IRequestBuilder)))
+            .Where(type => type.IsAssignableTo(typeof(T)))
             .Where(type => !type.IsInterface)
             .ToList()
             .ForEach(type => services.AddSingleton(type.GetInterface($"I{type.Name}")!, type));
