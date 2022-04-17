@@ -44,14 +44,12 @@ internal class VaultService : IVaultService, IAsyncDisposable
 
     private static HttpRequestMessage GetRequestMessage(VaultRequest request, VaultSessionCredentials session, Action<XElement, XNamespace>? contentBuilder)
     {
-        string uri = request.Uri;
-        string soapAction = request.SoapAction;
         XDocument requestBody = GetRequestBody(request, session, contentBuilder);
         StringContent requestContent = GetRequestContent(requestBody);
 
-        HttpRequestMessage requestMessage = new(HttpMethod.Post, uri);
+        HttpRequestMessage requestMessage = new(HttpMethod.Post, request.Uri);
         requestMessage.Content = requestContent;
-        requestMessage.Headers.Add("SOAPAction", $@"""{soapAction}""");
+        requestMessage.Headers.Add("SOAPAction", $@"""{request.SoapAction}""");
 
         return requestMessage;
     }
