@@ -6,6 +6,7 @@ public interface IGetRequestBuilder
     public Task<IEnumerable<VaultProperty>> PropertyDefinitionInfos(CancellationToken cancellationToken = default);
     public Task<IEnumerable<VaultUserInfo>> UserInfos(IEnumerable<VaultUserId> ids, CancellationToken cancellationToken = default);
     public Task<(Uri ThinClient, Uri ThickClient)> ClientUris(VaultMasterId masterId, CancellationToken cancellationToken = default);
+    public Task<IEnumerable<VaultFolder>> FoldersByFileMasterIds(IEnumerable<VaultMasterId> masterIds, CancellationToken cancellationToken = default);
     public Task<VaultFile> LatestFileByMasterId(VaultMasterId id, CancellationToken cancellationToken = default);
     public Task<VaultItem> LatestItemByMasterId(VaultMasterId id, CancellationToken cancellationToken = default);
 }
