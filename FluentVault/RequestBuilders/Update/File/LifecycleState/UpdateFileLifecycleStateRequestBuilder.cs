@@ -1,10 +1,11 @@
 ﻿using FluentVault.Features;
+using FluentVault.RequestBuilders;
 
 using MediatR;
 
 namespace FluentVault.Requests.Update.File.LifecycleState;
 
-internal class UpdateFileLifecycleStateRequestBuilder : IUpdateFileLifecycleStateRequestBuilder, IWithFiles, IWithComment
+internal class UpdateFileLifecycleStateRequestBuilder : IRequestBuilder, IUpdateFileLifecycleStateRequestBuilder, IWithFiles, IWithComment
 {
     private readonly IMediator _mediator;
 

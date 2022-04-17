@@ -1,6 +1,7 @@
-﻿namespace FluentVault;
+﻿using FluentVault.RequestBuilders;
 
-public interface ISearchFilesRequestBuilder
+namespace FluentVault;
+public interface ISearchFilesRequestBuilder : IRequestBuilder
 {
     public ISearchFilesBooleanProperty ForValueEqualTo(bool value);
     public ISearchFilesBooleanProperty ForValueNotEqualTo(bool value);

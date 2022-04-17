@@ -3,13 +3,14 @@
 using MediatR;
 
 namespace FluentVault.RequestBuilders;
-
-internal class GetRequestBuilder : IGetRequestBuilder
+internal class GetRequestBuilder : IRequestBuilder, IGetRequestBuilder
 {
     private readonly IMediator _mediator;
 
     public GetRequestBuilder(IMediator mediator)
-        => _mediator = mediator;
+    {
+        _mediator = mediator;
+    }
 
     public async Task<IEnumerable<VaultCategory>> CategoryConfigurations(CancellationToken cancellationToken = default)
         => await _mediator.Send(new GetAllCategoryConfigurationsQuery(), cancellationToken);

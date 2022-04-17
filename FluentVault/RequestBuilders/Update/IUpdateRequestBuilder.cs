@@ -1,6 +1,7 @@
-﻿namespace FluentVault;
+﻿using FluentVault.RequestBuilders;
 
-public interface IUpdateRequestBuilder
+namespace FluentVault;
+public interface IUpdateRequestBuilder : IRequestBuilder
 {
     public IUpdateFileRequestBuilder File { get; }
 }

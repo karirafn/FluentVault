@@ -1,25 +1,19 @@
-﻿using FluentVault.Features;
-using FluentVault.RequestBuilders;
-using FluentVault.Requests.Search;
-using FluentVault.Requests.Update;
+﻿namespace FluentVault;
 
-using MediatR;
-
-namespace FluentVault;
-
-internal class VaultClient : IAsyncDisposable, IVaultClient
+internal class VaultClient : IVaultClient
 {
-    private readonly IMediator _mediator;
+    private readonly IGetRequestBuilder _get;
+    private readonly ISearchRequestBuilder _search;
+    private readonly IUpdateRequestBuilder _update;
 
-    public VaultClient(IMediator mediator) => _mediator = mediator;
-
-    public IGetRequestBuilder Get => new GetRequestBuilder(_mediator);
-    public ISearchRequestBuilder Search => new SearchRequestBuilder(_mediator);
-    public IUpdateRequestBuilder Update => new UpdateRequestBuilder(_mediator);
-
-    async ValueTask IAsyncDisposable.DisposeAsync()
+    public VaultClient(IGetRequestBuilder get, ISearchRequestBuilder search, IUpdateRequestBuilder update)
     {
-        await _mediator.Send(new SignOutCommand());
-        GC.SuppressFinalize(this);
+        _get = get;
+        _search = search;
+        _update = update;
     }
+
+    public IGetRequestBuilder Get => _get;
+    public ISearchRequestBuilder Search => _search;
+    public IUpdateRequestBuilder Update => _update;
 }

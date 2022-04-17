@@ -1,10 +1,11 @@
 ﻿using FluentVault.Features;
+using FluentVault.RequestBuilders;
 
 using MediatR;
 
 namespace FluentVault.Requests.Update.File.PropertyDefinitions;
 
-internal class UpdateFilePropertyDefinitionsRequestBuilder : IUpdateFilePropertyDefinitionsRequestBuilder, IUpdateFilePropertDefinitionsAction
+internal class UpdateFilePropertyDefinitionsRequestBuilder : IRequestBuilder, IUpdateFilePropertyDefinitionsRequestBuilder, IUpdateFilePropertDefinitionsAction
 {
     private readonly IMediator _mediator;
 

@@ -5,9 +5,6 @@ using System.Threading.Tasks;
 using FluentAssertions;
 
 using FluentVault.IntegrationTests.Fixtures;
-using FluentVault.RequestBuilders;
-
-using MediatR;
 
 using Xunit;
 
@@ -19,11 +16,10 @@ public class LifeCycleDefinitionsShould
     {
         // Arrange
         VaultServiceProvider provider = new();
-        IMediator mediator = provider.GetRequiredService<IMediator>();
-        GetRequestBuilder sut = new(mediator);
+        IVaultClient sut = provider.GetRequiredService<IVaultClient>();
 
         // Act
-        IEnumerable<VaultLifeCycleDefinition> result = await sut.LifeCycleDefinitions(CancellationToken.None);
+        IEnumerable<VaultLifeCycleDefinition> result = await sut.Get.LifeCycleDefinitions(CancellationToken.None);
 
         // Assert
         result.Should().NotBeEmpty();

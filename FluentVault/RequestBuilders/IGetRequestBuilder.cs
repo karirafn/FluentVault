@@ -1,4 +1,6 @@
-﻿namespace FluentVault;
+﻿using FluentVault.RequestBuilders;
+
+namespace FluentVault;
 
 public interface IGetRequestBuilder
 {

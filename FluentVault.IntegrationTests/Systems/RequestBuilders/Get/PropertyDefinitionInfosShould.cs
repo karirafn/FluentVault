@@ -5,9 +5,6 @@ using System.Threading.Tasks;
 using FluentAssertions;
 
 using FluentVault.IntegrationTests.Fixtures;
-using FluentVault.RequestBuilders;
-
-using MediatR;
 
 using Xunit;
 
@@ -19,11 +16,10 @@ public class PropertyDefinitionInfosShould
     {
         // Arrange
         VaultServiceProvider provider = new();
-        IMediator mediator = provider.GetRequiredService<IMediator>();
-        GetRequestBuilder sut = new(mediator);
+        IVaultClient sut = provider.GetRequiredService<IVaultClient>();
 
         // Act
-        IEnumerable<VaultProperty> result = await sut.PropertyDefinitionInfos(CancellationToken.None);
+        IEnumerable<VaultProperty> result = await sut.Get.PropertyDefinitionInfos(CancellationToken.None);
 
         // Assert
         result.Should().NotBeEmpty();

@@ -1,5 +1,6 @@
 ﻿
 using FluentVault.Common;
+using FluentVault.RequestBuilders;
 
 using MediatR;
 
@@ -22,6 +23,20 @@ public static class ConfigureServices
                 }).Services
             .AddMediatR(typeof(VaultClient).Assembly)
             .AddTransient<IVaultService, VaultService>()
+            .AddRequestBuilders()
             .AddSingleton<IVaultClient, VaultClient>();
+    }
+
+    private static IServiceCollection AddRequestBuilders(this IServiceCollection services)
+    {
+        typeof(VaultClient)
+            .Assembly
+            .GetTypes()
+            .Where(type => type.IsAssignableTo(typeof(IRequestBuilder)))
+            .Where(type => !type.IsInterface)
+            .ToList()
+            .ForEach(type => services.AddSingleton(type.GetInterface($"I{type.Name}")!, type));
+
+        return services;
     }
 }

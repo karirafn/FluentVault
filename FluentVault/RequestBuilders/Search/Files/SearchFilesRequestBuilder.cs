@@ -1,12 +1,14 @@
 ﻿using FluentVault.Domain.Search;
 using FluentVault.Domain.Search.Files;
 using FluentVault.Features;
+using FluentVault.RequestBuilders;
 
 using MediatR;
 
 namespace FluentVault.Requests.Search.Files;
 
-internal class SearchFilesRequestBuilder :
+internal class SearchFilesRequestBuilder : 
+    IRequestBuilder,
     ISearchFilesRequestBuilder,
     ISearchFilesBooleanProperty,
     ISearchFilesDateTimeProperty,
@@ -29,7 +31,9 @@ internal class SearchFilesRequestBuilder :
     private readonly List<SortCondition> _sortConditions = new();
 
     public SearchFilesRequestBuilder(IMediator mediator)
-        => _mediator = mediator;
+    {
+        _mediator = mediator;
+    }
 
     public async Task<IEnumerable<VaultFile>> WithoutPaging()
     {

@@ -5,9 +5,6 @@ using System.Threading.Tasks;
 using FluentAssertions;
 
 using FluentVault.IntegrationTests.Fixtures;
-using FluentVault.RequestBuilders;
-
-using MediatR;
 
 using Xunit;
 
@@ -19,11 +16,10 @@ public class CategoryConfigurationsShould
     {
         // Arrange
         VaultServiceProvider provider = new();
-        IMediator mediator = provider.GetRequiredService<IMediator>();
-        GetRequestBuilder sut = new(mediator);
+        IVaultClient sut = provider.GetRequiredService<IVaultClient>();
 
         // Act
-        IEnumerable<VaultCategory> result = await sut.CategoryConfigurations(CancellationToken.None);
+        IEnumerable<VaultCategory> result = await sut.Get.CategoryConfigurations(CancellationToken.None);
 
         // Assert
         result.Should().NotBeEmpty();

@@ -1,6 +1,7 @@
-﻿namespace FluentVault;
+﻿using FluentVault.RequestBuilders;
 
-public interface IUpdateFileLifecycleStateRequestBuilder
+namespace FluentVault;
+public interface IUpdateFileLifecycleStateRequestBuilder : IRequestBuilder
 {
     public IWithFiles ByMasterId(VaultMasterId masterId);
     public IWithFiles ByMasterIds(IEnumerable<VaultMasterId> masterId);

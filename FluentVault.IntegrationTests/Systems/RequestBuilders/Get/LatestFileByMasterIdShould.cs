@@ -4,9 +4,6 @@ using System.Threading.Tasks;
 using FluentAssertions;
 
 using FluentVault.IntegrationTests.Fixtures;
-using FluentVault.RequestBuilders;
-
-using MediatR;
 
 using Xunit;
 
@@ -20,11 +17,10 @@ public class LatestFileByMasterIdShould
     {
         // Arrange
         VaultServiceProvider provider = new();
-        IMediator mediator = provider.GetRequiredService<IMediator>();
-        GetRequestBuilder sut = new(mediator);
+        IVaultClient sut = provider.GetRequiredService<IVaultClient>();
 
         // Act
-        VaultFile result = await sut.LatestFileByMasterId(new(_testData.TestPartMasterId), CancellationToken.None);
+        VaultFile result = await sut.Get.LatestFileByMasterId(new(_testData.TestPartMasterId), CancellationToken.None);
 
         // Assert
         result.Should().NotBeNull();

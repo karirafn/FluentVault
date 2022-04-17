@@ -5,9 +5,6 @@ using System.Threading.Tasks;
 using FluentAssertions;
 
 using FluentVault.IntegrationTests.Fixtures;
-using FluentVault.RequestBuilders;
-
-using MediatR;
 
 using Xunit;
 
@@ -21,11 +18,10 @@ public class CluentUriShould
     {
         // Arrange
         VaultServiceProvider provider = new();
-        IMediator mediator = provider.GetRequiredService<IMediator>();
-        GetRequestBuilder sut = new(mediator);
+        IVaultClient sut = provider.GetRequiredService<IVaultClient>();
 
         // Act
-        (Uri ThinClient, Uri ThickClient) result = await sut.ClientUris(new(_testData.TestPartMasterId), CancellationToken.None);
+        (Uri ThinClient, Uri ThickClient) result = await sut.Get.ClientUris(new(_testData.TestPartMasterId), CancellationToken.None);
 
         // Assert
         result.Should().NotBeNull();

@@ -4,9 +4,6 @@ using System.Threading.Tasks;
 using FluentAssertions;
 
 using FluentVault.IntegrationTests.Fixtures;
-using FluentVault.Requests.Search.Files;
-
-using MediatR;
 
 using Xunit;
 
@@ -21,11 +18,10 @@ public class SearchFilesRequestBuilderShould
     {
         // Arrange
         VaultServiceProvider provider = new();
-        IMediator mediator = provider.GetRequiredService<IMediator>();
-        SearchFilesRequestBuilder sut = new(mediator);
+        IVaultClient sut = provider.GetRequiredService<IVaultClient>();
 
         // Act
-        IEnumerable<VaultFile> result = await sut
+        IEnumerable<VaultFile> result = await sut.Search.Files
             .ForValueContaining("ipt")
             .InSystemProperty(StringSearchProperty.FileExtension)
             .WithPaging();
@@ -40,11 +36,10 @@ public class SearchFilesRequestBuilderShould
     {
         // Arrange
         VaultServiceProvider provider = new();
-        IMediator mediator = provider.GetRequiredService<IMediator>();
-        SearchFilesRequestBuilder sut = new(mediator);
+        IVaultClient sut = provider.GetRequiredService<IVaultClient>();
 
         // Act
-        IEnumerable<VaultFile> result = await sut
+        IEnumerable<VaultFile> result = await sut.Search.Files
             .ForValueEqualTo(_testData.TestPartFilename)
             .InSystemProperty(StringSearchProperty.FileName)
             .GetAllVersions()
