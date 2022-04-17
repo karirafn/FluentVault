@@ -2,7 +2,7 @@
 
 using MediatR;
 
-namespace FluentVault.RequestBuilders;
+namespace FluentVault.RequestBuilders.Get;
 internal class GetRequestBuilder : IRequestBuilder, IGetRequestBuilder
 {
     private readonly IMediator _mediator;
