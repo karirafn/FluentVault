@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Xml.Linq;
 
-using AutoFixture;
-
 using FluentAssertions;
 
 using FluentVault.Domain.SecurityHeader;
@@ -15,7 +13,6 @@ namespace FluentVault.UnitTests.Systems.Extensions.XDocumentGeneratingExtensions
 public class AddRequestBodyShould
 {
     private static readonly XNamespace _ns = "http://namespace.com";
-    private static readonly Fixture _fixture = new();
 
     [Fact]
     public void AddRequestBodyWithoutHeader_WhenSecurityHeaderIsNull()

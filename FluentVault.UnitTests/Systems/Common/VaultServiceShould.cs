@@ -10,8 +10,6 @@ using FluentVault.Common;
 
 using MediatR;
 
-using Microsoft.Extensions.Options;
-
 using Moq;
 using Moq.Protected;
 
@@ -23,12 +21,6 @@ public class VaultServiceShould
 {
     private readonly Fixture _fixture = new();
     private readonly Mock<IHttpClientFactory> _httpClientFactory = new();
-    private readonly IOptions<VaultOptions> _options;
-
-    public VaultServiceShould()
-    {
-        _options = Options.Create(_fixture.Create<VaultOptions>());
-    }
 
     [Fact]
     public async Task ThrowHttpResponseException_WhenResponseStatusCodeIsNotOk()

@@ -1,6 +1,5 @@
 ﻿using System.Xml.Linq;
 
-using FluentVault.Common;
 using FluentVault.Domain.SecurityHeader;
 
 namespace FluentVault.Extensions;
@@ -10,7 +9,6 @@ internal static class XDocumentGeneratingExtensions
     private static readonly XNamespace _xsd = "http://www.w3.org/2001/XMLSchema";
     private static readonly XNamespace _xsi = "http://www.w3.org/2001/XMLSchema-instance";
     private static readonly XNamespace _envelope = "http://schemas.xmlsoap.org/soap/envelope/";
-    private static readonly XNamespace _autodesk = "http://AutodeskDM/Services";
 
     internal static XElement AddAttribute(this XElement element, XName name, object? value)
     {
@@ -167,22 +165,6 @@ internal static class XDocumentGeneratingExtensions
 
         return body;
     }
-
-    //internal static XElement AddSecurityHeader(this XElement element, VaultSecurityHeader session)
-    //{
-    //    XElement ticket = new(_autodesk + "Ticket", session.Ticket);
-    //    XElement userId = new(_autodesk + "UserId", session.UserId);
-
-    //    XElement securityHeader = new XElement(_autodesk + "SecurityHeader")
-    //        .AddXmlSchema();
-
-    //    securityHeader.Add(ticket);
-    //    securityHeader.Add(userId);
-
-    //    element.Add(securityHeader);
-
-    //    return element;
-    //}
 
     internal static XElement AddHeader(this XElement element)
     {
