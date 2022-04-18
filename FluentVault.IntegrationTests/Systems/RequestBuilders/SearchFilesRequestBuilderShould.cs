@@ -22,9 +22,9 @@ public class SearchFilesRequestBuilderShould
 
         // Act
         IEnumerable<VaultFile> result = await sut.Search.Files
-            .ForValueContaining("ipt")
-            .InSystemProperty(StringSearchProperty.FileExtension)
-            .WithPaging();
+            .BySystemProperty(VaultSearchProperty.FileExtension)
+            .Containing("ipt")
+            .GetPagedResultAsync();
 
         // Assert
         result.Should().NotBeNullOrEmpty();
@@ -40,14 +40,31 @@ public class SearchFilesRequestBuilderShould
 
         // Act
         IEnumerable<VaultFile> result = await sut.Search.Files
-            .ForValueEqualTo(_testData.TestPartFilename)
-            .InSystemProperty(StringSearchProperty.FileName)
-            .GetAllVersions()
-            .WithPaging();
+            .BySystemProperty(VaultSearchProperty.FileName)
+            .EqualTo(_testData.TestPartFilename)
+            .AllVersions
+            .GetPagedResultAsync();
 
         // Assert
         result.Should().NotBeNullOrEmpty();
         result.Should().HaveCountGreaterThan(1);
         result.Should().AllSatisfy(file => file.MasterId.Value.Should().Be(_testData.TestPartMasterId));
+    }
+
+    [Fact]
+    public async Task FindSingleFile()
+    {
+        // Arrange
+        VaultServiceProvider provider = new();
+        IVaultClient sut = provider.GetRequiredService<IVaultClient>();
+
+        // Act
+        VaultFile? result = await sut.Search.Files
+            .BySystemProperty(VaultSearchProperty.FileName)
+            .Containing(_testData.TestPartFilename)
+            .GetFirstResultAsync();
+
+        // Assert
+        result.Should().NotBeNull();
     }
 }

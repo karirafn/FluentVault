@@ -54,7 +54,7 @@ internal class UpdateFileLifeCycleStatesHandler : IRequestHandler<UpdateFileLife
     {
         List<VaultMasterId> masterIds = command.MasterIds.ToList();
         SearchCondition searchCondition = new(
-            StringSearchProperty.FileName.Value,
+            VaultSearchProperty.FileName.Value,
             SearchOperator.Contains,
             string.Join(" OR ", command.FileNames),
             SearchPropertyType.SingleProperty,

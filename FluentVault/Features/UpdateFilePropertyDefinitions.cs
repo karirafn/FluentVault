@@ -70,7 +70,7 @@ internal class UpdateFilePropertyDefinitionsHandler : IRequestHandler<UpdateFile
             return;
 
         SearchCondition searchCondition = new(
-            StringSearchProperty.FileName,
+            VaultSearchProperty.FileName,
             SearchOperator.Contains,
             string.Join(" OR ", command.Filenames),
             SearchPropertyType.SingleProperty,
