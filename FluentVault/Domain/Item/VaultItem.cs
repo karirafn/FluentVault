@@ -5,7 +5,7 @@ public record VaultItem(
     VaultRevisionId RevisionId,
     VaultLifeCycleStateId StateId,
     VaultNumberingSchemeId NumberingSchemeId,
-    VaultFileIterationId MaximumCommittedId,
+    VaultFileId MaximumCommittedId,
     VaultBomStructure BomStructure,
     VaultUserId LastModifiedUserId,
     string LastModifiedUserName,

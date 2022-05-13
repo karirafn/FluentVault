@@ -7,7 +7,7 @@ using MediatR;
 
 namespace FluentVault.Features;
 internal record GetRevisionFileAssociationsByIdsQuery(
-    IEnumerable<VaultFileIterationId> Ids,
+    IEnumerable<VaultFileId> Ids,
     VaultFileAssociationType ParentAssociationType,
     bool RecurseParents,
     VaultFileAssociationType ChildAssociationType,

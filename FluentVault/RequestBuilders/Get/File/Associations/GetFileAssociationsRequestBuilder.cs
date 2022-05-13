@@ -10,7 +10,7 @@ internal class GetFileAssociationsRequestBuilder : IRequestBuilder,
 {
     private readonly IMediator _mediator;
 
-    private IEnumerable<VaultFileIterationId> _ids = Enumerable.Empty<VaultFileIterationId>();
+    private IEnumerable<VaultFileId> _ids = Enumerable.Empty<VaultFileId>();
     private VaultFileAssociationType _parentAssociationType = VaultFileAssociationType.None;
     private VaultFileAssociationType _childAssociationType = VaultFileAssociationType.None;
     private bool _recurseParents = false;
@@ -24,10 +24,10 @@ internal class GetFileAssociationsRequestBuilder : IRequestBuilder,
         _mediator = mediator;
     }
 
-    public IGetFileAssociationsEndPoint ByFileIterationId(VaultFileIterationId id) =>
-        ByFileIterationIds(new VaultFileIterationId[] { id });
+    public IGetFileAssociationsEndPoint ByFileIterationId(VaultFileId id) =>
+        ByFileIterationIds(new VaultFileId[] { id });
 
-    public IGetFileAssociationsEndPoint ByFileIterationIds(IEnumerable<VaultFileIterationId> ids)
+    public IGetFileAssociationsEndPoint ByFileIterationIds(IEnumerable<VaultFileId> ids)
     {
         _ids = ids;
         return this;
@@ -109,8 +109,8 @@ internal class GetFileAssociationsRequestBuilder : IRequestBuilder,
 
 public interface IGetFileAssociationsRequestBuilder
 {
-    public IGetFileAssociationsEndPoint ByFileIterationId(VaultFileIterationId id);
-    public IGetFileAssociationsEndPoint ByFileIterationIds(IEnumerable<VaultFileIterationId> ids);
+    public IGetFileAssociationsEndPoint ByFileIterationId(VaultFileId id);
+    public IGetFileAssociationsEndPoint ByFileIterationIds(IEnumerable<VaultFileId> ids);
 }
 
 public interface IGetFileAssociationsEndPoint
