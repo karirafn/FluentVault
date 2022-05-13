@@ -11,7 +11,8 @@ public class VaultTestData
             .Build();
 
         TestPartMasterId = new VaultMasterId(configuration.GetValue<long>(nameof(TestPartMasterId)));
-        TestPartIterationId = new VaultFileIterationId(configuration.GetValue<long>(nameof(TestPartIterationId)));
+        TestPartIterationWithoutDrawingId = new VaultFileIterationId(configuration.GetValue<long>(nameof(TestPartIterationWithoutDrawingId)));
+        TestPartIterationWithDrawingId = new VaultFileIterationId(configuration.GetValue<long>(nameof(TestPartIterationWithDrawingId)));
         TestPartFilename = configuration.GetValue<string>(nameof(TestPartFilename));
         TestPartDescription = configuration.GetValue<string>(nameof(TestPartDescription));
         DefaultLifecycleStateId = configuration.GetValue<long>(nameof(DefaultLifecycleStateId));
@@ -19,7 +20,8 @@ public class VaultTestData
     }
 
     public VaultMasterId TestPartMasterId { get; set; }
-    public VaultFileIterationId TestPartIterationId { get; set; }
+    public VaultFileIterationId TestPartIterationWithoutDrawingId { get; set; }
+    public VaultFileIterationId TestPartIterationWithDrawingId { get; set; }
     public string TestPartFilename { get; set; }
     public string TestPartDescription { get; set; }
     public long DefaultLifecycleStateId { get; set; }

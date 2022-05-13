@@ -22,11 +22,27 @@ public class FileAssociationsShould
 
         // Act
         IEnumerable<VaultFileAssociation> result = await sut.Get.File.Associations
-            .ByFileIterationId(_testData.TestPartIterationId)
+            .ByFileIterationId(_testData.TestPartIterationWithoutDrawingId)
             .ExecuteAsync(CancellationToken.None);
 
         // Assert
-        result.Should().NotBeNull();
         result.Should().BeEmpty();
+    }
+
+    [Fact]
+    public async Task ReturnDrawing_WhenIterationHasDrawing()
+    {
+        // Arrange
+        VaultServiceProvider provider = new();
+        IVaultClient sut = provider.GetRequiredService<IVaultClient>();
+
+        // Act
+        IEnumerable<VaultFileAssociation> result = await sut.Get.File.Associations
+            .ByFileIterationId(_testData.TestPartIterationWithDrawingId)
+            .IncludeRelatedDocumentation
+            .ExecuteAsync(CancellationToken.None);
+
+        // Assert
+        result.Should().NotBeNullOrEmpty();
     }
 }
