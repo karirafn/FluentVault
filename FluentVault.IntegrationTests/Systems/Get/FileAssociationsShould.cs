@@ -9,12 +9,12 @@ using FluentVault.IntegrationTests.Fixtures;
 using Xunit;
 
 namespace FluentVault.IntegrationTests.Systems.Get;
-public class GetFileAssociationsShould
+public class FileAssociationsShould
 {
     private static readonly VaultTestData _testData = new();
 
     [Fact]
-    public async Task ReturnEmptyArray_WhenFileHasNoAssociations()
+    public async Task ReturnEmptyArray_WhenUsingDefaultArguments()
     {
         // Arrange
         VaultServiceProvider provider = new();

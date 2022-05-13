@@ -9,7 +9,7 @@ using FluentVault.IntegrationTests.Fixtures;
 using Xunit;
 
 namespace FluentVault.IntegrationTests.Systems.Get;
-public class GetClientUriShould
+public class ClientUriShould
 {
     private static readonly VaultTestData _testData = new();
 

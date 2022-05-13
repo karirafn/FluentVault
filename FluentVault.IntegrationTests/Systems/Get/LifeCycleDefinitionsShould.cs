@@ -9,19 +9,17 @@ using FluentVault.IntegrationTests.Fixtures;
 using Xunit;
 
 namespace FluentVault.IntegrationTests.Systems.Get;
-public class GetFoldersByFileMasterIdsShould
+public class LifeCycleDefinitionsShould
 {
-    private static readonly VaultTestData _testData = new();
-
     [Fact]
-    public async Task ReturnFile()
+    public async Task ReturnAllLifeCycleDefinitions()
     {
         // Arrange
         VaultServiceProvider provider = new();
         IVaultClient sut = provider.GetRequiredService<IVaultClient>();
 
         // Act
-        IEnumerable<VaultFolder> result = await sut.Get.FoldersByFileMasterIds(new VaultMasterId[] { _testData.TestPartMasterId }, CancellationToken.None);
+        IEnumerable<VaultLifeCycleDefinition> result = await sut.Get.LifeCycleDefinitions(CancellationToken.None);
 
         // Assert
         result.Should().NotBeEmpty();

@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 
 using FluentAssertions;
@@ -9,19 +8,21 @@ using FluentVault.IntegrationTests.Fixtures;
 using Xunit;
 
 namespace FluentVault.IntegrationTests.Systems.Get;
-public class GetPropertyDefinitionInfosShould
+public class LatestFileByMasterIdShould
 {
+    private static readonly VaultTestData _testData = new();
+
     [Fact]
-    public async Task ReturnAllLifeCycleDefinitions()
+    public async Task ReturnFile()
     {
         // Arrange
         VaultServiceProvider provider = new();
         IVaultClient sut = provider.GetRequiredService<IVaultClient>();
 
         // Act
-        IEnumerable<VaultProperty> result = await sut.Get.PropertyDefinitionInfos(CancellationToken.None);
+        VaultFile result = await sut.Get.LatestFileByMasterId(_testData.TestPartMasterId, CancellationToken.None);
 
         // Assert
-        result.Should().NotBeEmpty();
+        result.Should().NotBeNull();
     }
 }
