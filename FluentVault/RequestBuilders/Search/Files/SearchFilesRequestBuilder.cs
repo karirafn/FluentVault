@@ -83,9 +83,9 @@ internal class SearchFilesRequestBuilder :
         return files;
     }
 
-    public async Task<IEnumerable<VaultFile>> GetPagedResultAsync(int maxResultCount = 200)
+    public async Task<IEnumerable<VaultFile>> GetPagedResultAsync(int pagingLimit = 100)
     {
-        IEnumerable<VaultFile> files = await SearchAsync(maxResultCount);
+        IEnumerable<VaultFile> files = await SearchAsync(pagingLimit);
         return files;
     }
 
@@ -95,7 +95,7 @@ internal class SearchFilesRequestBuilder :
         return files.FirstOrDefault();
     }
 
-    private async Task<IEnumerable<VaultFile>> SearchAsync(int maxResultCount)
+    private async Task<IEnumerable<VaultFile>> SearchAsync(int pagingLimit)
     {
         _searchManager.AddSearchCondition();
 
@@ -113,7 +113,7 @@ internal class SearchFilesRequestBuilder :
             VaultSearchFilesResponse response = await _mediator.Send(query);
             files.AddRange(response.Result.Files);
             bookmark = response.Bookmark;
-        } while (files.Count <= maxResultCount && string.IsNullOrEmpty(bookmark) is false);
+        } while (files.Count <= pagingLimit && string.IsNullOrEmpty(bookmark) is false);
         return files;
     }
 

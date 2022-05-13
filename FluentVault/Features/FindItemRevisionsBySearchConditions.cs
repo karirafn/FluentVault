@@ -2,6 +2,7 @@
 using System.Xml.Linq;
 
 using FluentVault.Common;
+using FluentVault.Domain.Search;
 using FluentVault.Domain.Search.Items;
 using FluentVault.Extensions;
 
@@ -9,8 +10,8 @@ using MediatR;
 
 namespace FluentVault.Features;
 internal record FindItemRevisionsBySearchConditionsQuery(
-    IEnumerable<IDictionary<string, object>> SearchConditions,
-    IEnumerable<IDictionary<string, object>>? SortConditions = null,
+    IEnumerable<SearchCondition> SearchConditions,
+    IEnumerable<SortCondition>? SortConditions = null,
     IEnumerable<VaultFolderId>? FolderIds = null,
     bool RecurseFolders = true,
     bool LatestOnly = true,
@@ -22,9 +23,11 @@ internal class FindItemRevisionsBySearchConditionsHandler : IRequestHandler<Find
           version: "v26",
           service: "ItemService",
           command: "",
-          @namespace: "Services/Document/1/7/2020");
+          @namespace: "Services/Item/1/7/2020");
     private readonly IMediator _mediator;
     private readonly IVaultService _vaultService;
+    private readonly SearchConditionSerializer _searchConditionSerializer = new(_request.XNamespace);
+    private readonly SortConditionSerializer _sortConditionSerializer = new(_request.XNamespace);
 
     public FindItemRevisionsBySearchConditionsHandler(IMediator mediator, IVaultService vaultService)
     {
@@ -37,13 +40,11 @@ internal class FindItemRevisionsBySearchConditionsHandler : IRequestHandler<Find
 
     public async Task<VaultSearchItemsResponse> Handle(FindItemRevisionsBySearchConditionsQuery query, CancellationToken cancellationToken)
     {
-        void contentBuilder(XElement content, XNamespace ns) => content
-            .AddNestedElementsWithAttributes(ns, "conditions", "SrchCond", query.SearchConditions)
-            .AddNestedElementsWithAttributes(ns, "sortConditions", "SrchSort", query.SortConditions)
-            .AddNestedElements(ns, "folderIds", "long", query.FolderIds?.Select(id => id.ToString()))
-            .AddElement(ns, "recurseFolders", query.RecurseFolders)
-            .AddElement(ns, "latestOnly", query.LatestOnly)
-            .AddElement(ns, "bookmark", query.Bookmark);
+        void contentBuilder(XElement content, XNamespace @namespace) => content
+            .AddNestedElements(@namespace, "searchConditions", _searchConditionSerializer.Serialize(query.SearchConditions))
+            .AddNestedElements(@namespace, "sortConditions", _sortConditionSerializer.Serialize(query.SortConditions))
+            .AddElement(@namespace, "bRequestLatestOnly", query.LatestOnly)
+            .AddElement(@namespace, "bookmark", query.Bookmark);
 
         XDocument response = await _mediator.SendAuthenticatedRequest(_request, _vaultService, contentBuilder, cancellationToken);
         VaultSearchItemsResponse result = Serializer.Deserialize(response);

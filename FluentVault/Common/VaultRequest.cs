@@ -27,8 +27,9 @@ internal class VaultRequest
             .Append(version)
             .Append('/')
             .Append(service)
-            .Append(".svc")
-            .AppendRequestCommand(operation, command)
+            .Append(".svc?op=")
+            .Append(operation)
+            .AppendRequestCommand(command)
             .ToString();
     }
 

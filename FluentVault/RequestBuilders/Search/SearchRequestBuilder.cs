@@ -4,12 +4,12 @@ namespace FluentVault.Requests.Search;
 
 internal class SearchRequestBuilder : IRequestBuilder, ISearchRequestBuilder
 {
-    private readonly ISearchFilesRequestBuilder _files;
-
-    public SearchRequestBuilder(ISearchFilesRequestBuilder files)
+    public SearchRequestBuilder(ISearchFilesRequestBuilder files, ISearchItemsRequestBuilder items)
     {
-        _files = files;
+        Files = files;
+        Items = items;
     }
 
-    public ISearchFilesRequestBuilder Files => _files;
+    public ISearchFilesRequestBuilder Files { get; }
+    public ISearchItemsRequestBuilder Items { get; }
 }
