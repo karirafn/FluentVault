@@ -43,6 +43,6 @@ internal class VaultFileAssociationSerializer : XElementSerializer<VaultFileAsso
             element.GetAttributeValue(nameof(VaultFileAssociation.ExpectedVaultPath)),
             element.ParseAttributeValue(VaultPathChanged, bool.Parse),
             element.ParseAttributeValue(CorrectRev, bool.Parse),
-            _parentFileSerializer.Deserialize(element),
-            _childFileSerializer.Deserialize(element));
+            _parentFileSerializer.Deserialize(element.GetElement(ParFile)),
+            _childFileSerializer.Deserialize(element.GetElement(CldFile)));
 }
