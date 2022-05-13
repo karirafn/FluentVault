@@ -6,13 +6,13 @@ using FluentVault.Extensions;
 namespace FluentVault.Domain.Entity;
 internal class VaultEntityLifeCycleSerializer : XElementSerializer<VaultEntityLifeCycle>
 {
-    private const string FileLfCyc = nameof(FileLfCyc);
+    private const string LfCyc = nameof(LfCyc);
     private const string LfCycStateId = nameof(LfCycStateId);
     private const string LfCycDefId = nameof(LfCycDefId);
     private const string Consume = nameof(Consume);
     private const string Obsolete = nameof(Obsolete);
 
-    public VaultEntityLifeCycleSerializer(XNamespace @namespace) : base(FileLfCyc, @namespace) { }
+    public VaultEntityLifeCycleSerializer(XNamespace @namespace) : base(LfCyc, @namespace) { }
 
     internal override VaultEntityLifeCycle Deserialize(XElement element)
     {
