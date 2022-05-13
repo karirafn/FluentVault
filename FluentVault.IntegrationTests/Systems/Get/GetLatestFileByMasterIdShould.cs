@@ -8,7 +8,7 @@ using FluentVault.IntegrationTests.Fixtures;
 using Xunit;
 
 namespace FluentVault.IntegrationTests.Systems.Get;
-public class LatestFileByMasterIdShould
+public class GetLatestFileByMasterIdShould
 {
     private static readonly VaultTestData _testData = new();
 

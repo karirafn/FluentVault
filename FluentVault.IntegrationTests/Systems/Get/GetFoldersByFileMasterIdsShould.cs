@@ -9,7 +9,7 @@ using FluentVault.IntegrationTests.Fixtures;
 using Xunit;
 
 namespace FluentVault.IntegrationTests.Systems.Get;
-public class FoldersByFileMasterIdsShould
+public class GetFoldersByFileMasterIdsShould
 {
     private static readonly VaultTestData _testData = new();
 

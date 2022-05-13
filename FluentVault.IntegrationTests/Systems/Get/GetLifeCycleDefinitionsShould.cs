@@ -9,7 +9,7 @@ using FluentVault.IntegrationTests.Fixtures;
 using Xunit;
 
 namespace FluentVault.IntegrationTests.Systems.Get;
-public class PropertyDefinitionInfosShould
+public class GetLifeCycleDefinitionsShould
 {
     [Fact]
     public async Task ReturnAllLifeCycleDefinitions()
@@ -19,7 +19,7 @@ public class PropertyDefinitionInfosShould
         IVaultClient sut = provider.GetRequiredService<IVaultClient>();
 
         // Act
-        IEnumerable<VaultProperty> result = await sut.Get.PropertyDefinitionInfos(CancellationToken.None);
+        IEnumerable<VaultLifeCycleDefinition> result = await sut.Get.LifeCycleDefinitions(CancellationToken.None);
 
         // Assert
         result.Should().NotBeEmpty();

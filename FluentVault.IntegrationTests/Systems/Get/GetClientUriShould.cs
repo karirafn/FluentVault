@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -9,19 +9,21 @@ using FluentVault.IntegrationTests.Fixtures;
 using Xunit;
 
 namespace FluentVault.IntegrationTests.Systems.Get;
-public class LifeCycleDefinitionsShould
+public class GetClientUriShould
 {
+    private static readonly VaultTestData _testData = new();
+
     [Fact]
-    public async Task ReturnAllLifeCycleDefinitions()
+    public async Task ReturnFile()
     {
         // Arrange
         VaultServiceProvider provider = new();
         IVaultClient sut = provider.GetRequiredService<IVaultClient>();
 
         // Act
-        IEnumerable<VaultLifeCycleDefinition> result = await sut.Get.LifeCycleDefinitions(CancellationToken.None);
+        (Uri ThinClient, Uri ThickClient) result = await sut.Get.ClientUris(new(_testData.TestPartMasterId), CancellationToken.None);
 
         // Assert
-        result.Should().NotBeEmpty();
+        result.Should().NotBeNull();
     }
 }
