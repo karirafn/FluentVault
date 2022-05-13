@@ -70,7 +70,7 @@ internal class VaultItemSerializer : XElementSerializer<VaultItem>
             element.ParseAttributeValue(RevId, VaultRevisionId.Parse),
             element.ParseAttributeValue(LfCycStateId, VaultLifeCycleStateId.Parse),
             element.ParseAttributeValue(NumSchmId, VaultNumberingSchemeId.Parse),
-            element.ParseAttributeValue(MaxCommittedId, VaultFileIterationId.Parse),
+            element.ParseAttributeValue(MaxCommittedId, VaultFileId.Parse),
             element.ParseAttributeValue(CadBOMStruct, x => VaultBomStructure.FromName(x)),
             element.ParseAttributeValue(LastModUserId, VaultUserId.Parse),
             element.GetAttributeValue(LastModUserName),
