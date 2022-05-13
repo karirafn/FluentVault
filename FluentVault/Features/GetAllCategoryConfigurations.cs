@@ -1,6 +1,7 @@
 ﻿using System.Xml.Linq;
 
 using FluentVault.Common;
+using FluentVault.Extensions;
 
 using MediatR;
 
@@ -14,19 +15,20 @@ internal class GetAllCategoryConfigurationsHandler : IRequestHandler<GetAllCateg
           service: "CategoryService",
           command: "Connectivity.Explorer.Admin.AdminToolsCommand",
           @namespace: "Services/Category/1/7/2020");
+    private readonly IMediator _mediator;
     private readonly IVaultService _vaultService;
 
-    public GetAllCategoryConfigurationsHandler(IVaultService vaultService)
+    public GetAllCategoryConfigurationsHandler(IMediator mediator, IVaultService vaultService)
     {
+        _mediator = mediator;
         _vaultService = vaultService;
-        Serializer = new(_request);
     }
 
-    public GetCategoryConfigurationsByBehaviorNamesSerializer Serializer { get; }
+    public GetCategoryConfigurationsByBehaviorNamesSerializer Serializer { get; } = new(_request);
 
     public async Task<IEnumerable<VaultCategory>> Handle(GetAllCategoryConfigurationsQuery query, CancellationToken cancellationToken)
     {
-        XDocument response = await _vaultService.SendAuthenticatedAsync(_request, cancellationToken: cancellationToken);
+        XDocument response = await _mediator.SendAuthenticatedRequest(_request, _vaultService, null, cancellationToken);
         IEnumerable<VaultCategory> categories = Serializer.DeserializeMany(response);
 
         return categories;

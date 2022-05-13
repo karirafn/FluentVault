@@ -13,6 +13,8 @@ using FluentVault.Features;
 using FluentVault.TestFixtures;
 using FluentVault.UnitTests.Helpers;
 
+using MediatR;
+
 using Moq;
 
 using Xunit;
@@ -27,10 +29,11 @@ public class GetUserInfosByUserIdsHandlerShould
     {
         // Arrange
         VaultUserInfo expectation = _fixture.Create<VaultUserInfo>();
+        Mock<IMediator> mediator = new();
         Mock<IVaultService> vaultService = new();
 
         GetUserInfosByIserIdsQuery query = new(new[] { expectation.User.Id });
-        GetUserInfosByUserIdsHandler sut = new(vaultService.Object);
+        GetUserInfosByUserIdsHandler sut = new(mediator.Object, vaultService.Object);
 
         XDocument response = sut.Serializer.Serialize(expectation);
         vaultService.Setup(VaultServiceExpressions.SendAsync)

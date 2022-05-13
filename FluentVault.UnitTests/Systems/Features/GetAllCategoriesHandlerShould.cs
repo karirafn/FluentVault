@@ -12,6 +12,8 @@ using FluentVault.Features;
 using FluentVault.TestFixtures;
 using FluentVault.UnitTests.Helpers;
 
+using MediatR;
+
 using Moq;
 
 using Xunit;
@@ -26,10 +28,11 @@ public class GetAllCategoryConfigurationsHandlerShould
     {
         // Arrange
         IEnumerable<VaultCategory> expectation = _fixture.CreateMany<VaultCategory>();
+        Mock<IMediator> mediator = new();
         Mock<IVaultService> vaultService = new();
 
         GetAllCategoryConfigurationsQuery query = new();
-        GetAllCategoryConfigurationsHandler sut = new(vaultService.Object);
+        GetAllCategoryConfigurationsHandler sut = new(mediator.Object, vaultService.Object);
 
         XDocument response = sut.Serializer.Serialize(expectation);
         vaultService.Setup(VaultServiceExpressions.SendAsync)

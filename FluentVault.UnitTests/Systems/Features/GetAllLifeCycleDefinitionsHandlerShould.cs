@@ -12,6 +12,8 @@ using FluentVault.Features;
 using FluentVault.TestFixtures;
 using FluentVault.UnitTests.Helpers;
 
+using MediatR;
+
 using Moq;
 
 using Xunit;
@@ -26,10 +28,11 @@ public class GetAllLifeCycleDefinitionsHandlerShould
     {
         // Arrange
         IEnumerable<VaultLifeCycleDefinition> expectation = _fixture.CreateMany<VaultLifeCycleDefinition>();
+        Mock<IMediator> mediator = new();
         Mock<IVaultService> vaultService = new();
 
         GetAllLifeCycleDefinitionsQuery query = new();
-        GetAllLifeCycleDefinitionsHandler sut = new(vaultService.Object);
+        GetAllLifeCycleDefinitionsHandler sut = new(mediator.Object, vaultService.Object);
 
         XDocument response = sut.Serializer.Serialize(expectation);
         vaultService.Setup(VaultServiceExpressions.SendAsync)

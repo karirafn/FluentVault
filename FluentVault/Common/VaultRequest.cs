@@ -1,6 +1,5 @@
 ﻿using System.Text;
-
-using FluentValidation;
+using System.Xml.Linq;
 
 using FluentVault.Extensions;
 
@@ -13,6 +12,7 @@ internal class VaultRequest
         Operation = operation;
         StringBuilder namespaceBuilder = new StringBuilder().Append("http://AutodeskDM/").Append(@namespace);
         Namespace = namespaceBuilder.ToString();
+        XNamespace = $"{Namespace}/";
 
         SoapAction = new StringBuilder()
             .Append(namespaceBuilder)
@@ -36,4 +36,5 @@ internal class VaultRequest
     public string SoapAction { get; init; }
     public string Uri { get; init; }
     public string Namespace { get; init; }
+    public XNamespace XNamespace { get; init; }
 }

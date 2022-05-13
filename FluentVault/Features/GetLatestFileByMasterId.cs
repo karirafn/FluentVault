@@ -15,23 +15,24 @@ internal class GetLatestFileByMasterIdHandler : IRequestHandler<GetLatestFileByM
           service: "DocumentService",
           command: "Connectivity.Explorer.Document.FileSendUrlCommand",
           @namespace: "Services/Document/1/7/2020");
+    private readonly IMediator _mediator;
     private readonly IVaultService _vaultService;
 
-    public GetLatestFileByMasterIdHandler(IVaultService vaultService)
+    public GetLatestFileByMasterIdHandler(IMediator mediator, IVaultService vaultService)
     {
+        _mediator = mediator;
         _vaultService = vaultService;
-        Serializer = new(_request);
     }
 
-    public GetLatestFileByMasterIdSerializer Serializer { get; }
+    public GetLatestFileByMasterIdSerializer Serializer { get; } = new(_request);
 
     public async Task<VaultFile> Handle(GetLatestFileByMasterIdQuery query, CancellationToken cancellationToken)
     {
         void contentBuilder(XElement content, XNamespace ns) => content
             .AddElement(ns, "fileMasterId", query.MasterId.Value);
 
-        XDocument document = await _vaultService.SendAuthenticatedAsync(_request, contentBuilder, cancellationToken);
-        VaultFile file = Serializer.Deserialize(document);
+        XDocument response = await _mediator.SendAuthenticatedRequest(_request, _vaultService, contentBuilder, cancellationToken);
+        VaultFile file = Serializer.Deserialize(response);
 
         return file;
     }

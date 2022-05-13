@@ -12,8 +12,9 @@ namespace FluentVault.UnitTests.Helpers;
 internal static class VaultServiceExpressions
 {
     public static Expression<Func<IVaultService, Task<XDocument>>>
-        SendAsync = x => x.SendAuthenticatedAsync(
-            It.IsAny<VaultRequest>(),
-            It.IsAny<Action<XElement, XNamespace>?>(),
+        SendAsync = x => x.SendAsync(
+            It.IsAny<string>(),
+            It.IsAny<string>(),
+            It.IsAny<XDocument>(),
             It.IsAny<CancellationToken>());
 }

@@ -16,23 +16,24 @@ internal class GetLatestItemByItemMasterIdHandler : IRequestHandler<GetLatestIte
           service: "ItemService",
           command: "",
           @namespace: "Services/Document/1/7/2020");
+    private readonly IMediator _mediator;
     private readonly IVaultService _vaultService;
 
-    public GetLatestItemByItemMasterIdHandler(IVaultService vaultService)
+    public GetLatestItemByItemMasterIdHandler(IMediator mediator, IVaultService vaultService)
     {
+        _mediator = mediator;
         _vaultService = vaultService;
-        Serializer = new(_request);
     }
 
-    public GetLatestItemByItemMasterIdSerializer Serializer { get; }
+    public GetLatestItemByItemMasterIdSerializer Serializer { get; } = new(_request);
 
     public async Task<VaultItem> Handle(GetLatestItemByItemMasterIdQuery query, CancellationToken cancellationToken)
     {
         void contentBuilder(XElement content, XNamespace @namespace) => content
             .AddElement(@namespace, "itemMasterId", query.MasterId);
 
-        XDocument document = await _vaultService.SendAuthenticatedAsync(_request, contentBuilder, cancellationToken);
-        VaultItem item = Serializer.Deserialize(document);
+        XDocument response = await _mediator.SendAuthenticatedRequest(_request, _vaultService, contentBuilder, cancellationToken);
+        VaultItem item = Serializer.Deserialize(response);
 
         return item;
     }

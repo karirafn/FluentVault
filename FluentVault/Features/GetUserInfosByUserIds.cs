@@ -15,22 +15,23 @@ internal class GetUserInfosByUserIdsHandler : IRequestHandler<GetUserInfosByIser
           service: "AdminService",
           command: "Connectivity.Explorer.Admin.SecurityCommand",
           @namespace: "Services/Admin/1/7/2020");
+    private readonly IMediator _mediator;
     private readonly IVaultService _vaultService;
 
-    public GetUserInfosByUserIdsHandler(IVaultService vaultService)
+    public GetUserInfosByUserIdsHandler(IMediator mediator, IVaultService vaultService)
     {
+        _mediator = mediator;
         _vaultService = vaultService;
-        Serializer = new(_request);
     }
 
-    public GetUserInfosByUserIdsSerializer Serializer { get; }
+    public GetUserInfosByUserIdsSerializer Serializer { get; } = new(_request);
 
     public async Task<IEnumerable<VaultUserInfo>> Handle(GetUserInfosByIserIdsQuery query, CancellationToken cancellationToken)
     {
         void contentBuilder(XElement content, XNamespace ns) => content
             .AddNestedElements(ns, "userIdArray", "long", query.UserIds.Select(id => id.ToString()));
 
-        XDocument response = await _vaultService.SendAuthenticatedAsync(_request, contentBuilder, cancellationToken);
+        XDocument response = await _mediator.SendAuthenticatedRequest(_request, _vaultService, contentBuilder, cancellationToken);
         IEnumerable<VaultUserInfo> result = Serializer.DeserializeMany(response);
 
         return result;

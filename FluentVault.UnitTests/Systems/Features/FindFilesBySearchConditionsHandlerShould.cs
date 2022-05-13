@@ -12,6 +12,8 @@ using FluentVault.Features;
 using FluentVault.TestFixtures;
 using FluentVault.UnitTests.Helpers;
 
+using MediatR;
+
 using Moq;
 
 using Xunit;
@@ -27,9 +29,10 @@ public class FindFilesBySearchConditionsHandlerShould
         // Arrange
         VaultSearchFilesResponse expectation = _fixture.Create<VaultSearchFilesResponse>();
         Mock<IVaultService> vaultService = new();
+        Mock<IMediator> mediator = new();
 
         FindFilesBySearchConditionsQuery query = _fixture.Create<FindFilesBySearchConditionsQuery>();
-        FindFilesBySearchConditionsHandler sut = new(vaultService.Object);
+        FindFilesBySearchConditionsHandler sut = new(mediator.Object, vaultService.Object);
 
         XDocument response = sut.Serializer.Serialize(expectation);
         vaultService.Setup(VaultServiceExpressions.SendAsync)

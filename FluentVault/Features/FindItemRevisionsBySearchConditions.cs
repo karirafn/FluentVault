@@ -23,10 +23,12 @@ internal class FindItemRevisionsBySearchConditionsHandler : IRequestHandler<Find
           service: "ItemService",
           command: "",
           @namespace: "Services/Document/1/7/2020");
+    private readonly IMediator _mediator;
     private readonly IVaultService _vaultService;
 
-    public FindItemRevisionsBySearchConditionsHandler(IVaultService vaultService)
+    public FindItemRevisionsBySearchConditionsHandler(IMediator mediator, IVaultService vaultService)
     {
+        _mediator = mediator;
         _vaultService = vaultService;
         Serializer = new(_request);
     }
@@ -43,7 +45,7 @@ internal class FindItemRevisionsBySearchConditionsHandler : IRequestHandler<Find
             .AddElement(ns, "latestOnly", query.LatestOnly)
             .AddElement(ns, "bookmark", query.Bookmark);
 
-        XDocument response = await _vaultService.SendAuthenticatedAsync(_request, contentBuilder, cancellationToken);
+        XDocument response = await _mediator.SendAuthenticatedRequest(_request, _vaultService, contentBuilder, cancellationToken);
         VaultSearchItemsResponse result = Serializer.Deserialize(response);
 
         return result;

@@ -38,6 +38,16 @@ internal static class XDocumentGeneratingExtensions
         return element;
     }
 
+    internal static XDocument AddElement(this XDocument document, XElement? element)
+    {
+        document.Add(element);
+
+        return document;
+    }
+
+    internal static XElement AddElement(this XElement element, XNamespace @namespace, string name)
+        => element.AddElement(new XElement(@namespace + name));
+
     internal static XElement AddElement(this XElement element, XNamespace ns, string childName, object? childValue)
         => element.AddElement(new XElement(ns + childName, childValue));
 
@@ -78,6 +88,14 @@ internal static class XDocumentGeneratingExtensions
         element.Add(child);
 
         return element;
+    }
+
+    internal static XElement AddNestedElements(this XElement element, XNamespace ns, string parentName, IEnumerable<XElement> elements)
+    {
+        XElement parent = new XElement(ns + parentName)
+            .AddElements(elements);
+
+        return element.AddElement(parent);
     }
 
     internal static XElement AddElementWithAttributes(this XElement element, XNamespace ns, string childName, IDictionary<string, object>? attributes)
@@ -187,7 +205,7 @@ internal static class XDocumentGeneratingExtensions
 
     internal static XElement AddXmlSchema(this XElement element)
         => element.AddNamespace(XNamespace.Xmlns + "xsd", _xsd)
-            .AddNamespace(XNamespace.Xmlns + "xsi", _xsi);
+                  .AddNamespace(XNamespace.Xmlns + "xsi", _xsi);
 
     internal static XElement AddNamespace(this XElement element, XName name, XNamespace ns)
     {
