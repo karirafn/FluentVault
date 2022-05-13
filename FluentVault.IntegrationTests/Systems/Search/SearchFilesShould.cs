@@ -7,8 +7,8 @@ using FluentVault.IntegrationTests.Fixtures;
 
 using Xunit;
 
-namespace FluentVault.IntegrationTests.Systems.RequestBuilders;
-public class SearchFilesRequestBuilderShould
+namespace FluentVault.IntegrationTests.Systems.Search;
+public class SearchFilesShould
 {
     private static readonly VaultTestData _testData = new();
 

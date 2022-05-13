@@ -1,13 +1,13 @@
-﻿namespace FluentVault.Domain.Search;
+﻿using Ardalis.SmartEnum;
 
-internal class SearchRule
+namespace FluentVault.Domain.Search;
+
+internal class SearchRule : SmartEnum<SearchRule>
 {
-    public static readonly SearchRule Must = new(nameof(Must));
-    public static readonly SearchRule May = new(nameof(May));
+    public static readonly SearchRule Must = new(nameof(Must), 1);
+    public static readonly SearchRule May = new(nameof(May), 2);
 
-    private readonly string _value;
-
-    private SearchRule(string value) => _value = value;
-
-    public override string ToString() => _value;
+    public SearchRule(string name, int value) : base(name, value)
+    {
+    }
 }

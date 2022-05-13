@@ -1,6 +1,7 @@
 ﻿using System.Xml.Linq;
 
 using FluentVault.Common;
+using FluentVault.Extensions;
 
 using MediatR;
 
@@ -14,19 +15,20 @@ internal class GetAllLifeCycleDefinitionsHandler : IRequestHandler<GetAllLifeCyc
           service: "LifeCycleService",
           command: "Connectivity.Explorer.Admin.AdminToolsCommand",
           @namespace: "Services/LifeCycle/1/7/2020");
+    private readonly IMediator _mediator;
     private readonly IVaultService _vaultService;
 
-    public GetAllLifeCycleDefinitionsHandler(IVaultService vaultService)
+    public GetAllLifeCycleDefinitionsHandler(IMediator mediator, IVaultService vaultService)
     {
+        _mediator = mediator;
         _vaultService = vaultService;
-        Serializer = new(_request);
     }
 
-    public GetAllLifeCycleDefinitionsSerializer Serializer { get; }
+    public GetAllLifeCycleDefinitionsSerializer Serializer { get; } = new(_request);
 
     public async Task<IEnumerable<VaultLifeCycleDefinition>> Handle(GetAllLifeCycleDefinitionsQuery query, CancellationToken cancellationToken)
     {
-        XDocument response = await _vaultService.SendAuthenticatedAsync(_request, cancellationToken: cancellationToken);
+        XDocument response = await _mediator.SendAuthenticatedRequest(_request, _vaultService, null, cancellationToken);
         IEnumerable<VaultLifeCycleDefinition> lifeCycles = Serializer.DeserializeMany(response);
 
         return lifeCycles;

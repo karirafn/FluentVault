@@ -32,10 +32,9 @@ internal class UpdateFilePropertyDefinitionsHandler : IRequestHandler<UpdateFile
     {
         _mediator = mediator;
         _vaultService = vaultRequestService;
-        Serializer = new(_request);
     }
 
-    public UpdateFilePropertyDefinitionsSerializer Serializer { get; }
+    public UpdateFilePropertyDefinitionsSerializer Serializer { get; } = new(_request);
 
     public async Task<IEnumerable<VaultFile>> Handle(UpdateFilePropertyDefinitionsCommand command, CancellationToken cancellationToken)
     {
@@ -52,7 +51,7 @@ internal class UpdateFilePropertyDefinitionsHandler : IRequestHandler<UpdateFile
             .AddNestedElements(ns, "removedPropDefIds", "long", command.RemovedPropertyIds)
             .AddElement(ns, "comment", "Add/Remove properties");
 
-        XDocument response = await _vaultService.SendAuthenticatedAsync(_request, contentBuilder, cancellationToken);
+        XDocument response = await _mediator.SendAuthenticatedRequest(_request, _vaultService, contentBuilder, cancellationToken);
         IEnumerable<VaultFile> files = Serializer.DeserializeMany(response);
 
         return files;
@@ -75,7 +74,7 @@ internal class UpdateFilePropertyDefinitionsHandler : IRequestHandler<UpdateFile
             string.Join(" OR ", command.Filenames),
             SearchPropertyType.SingleProperty,
             SearchRule.Must);
-        FindFilesBySearchConditionsQuery query = new(new[] { searchCondition.Attributes });
+        FindFilesBySearchConditionsQuery query = new(new[] { searchCondition });
         VaultSearchFilesResponse response = await _mediator.Send(query);
         IEnumerable<VaultMasterId> masterIds = response.Result.Files
             .Select(file => file.MasterId)

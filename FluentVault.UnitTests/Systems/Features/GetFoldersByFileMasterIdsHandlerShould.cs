@@ -12,6 +12,8 @@ using FluentVault.Features;
 using FluentVault.TestFixtures;
 using FluentVault.UnitTests.Helpers;
 
+using MediatR;
+
 using Moq;
 
 using Xunit;
@@ -26,10 +28,11 @@ public class GetFoldersByFileMasterIdsHandlerShould
     {
         // Arrange
         IEnumerable<VaultFolder> expectation = _fixture.CreateMany<VaultFolder>();
+        Mock<IMediator> mediator = new();
         Mock<IVaultService> vaultService = new();
 
         GetFoldersByFileMasterIdsQuery query = _fixture.Create<GetFoldersByFileMasterIdsQuery>();
-        GetFoldersByFileMasterIdsHandler sut = new(vaultService.Object);
+        GetFoldersByFileMasterIdsHandler sut = new(mediator.Object, vaultService.Object);
 
         XDocument response = sut.Serializer.Serialize(expectation);
         vaultService.Setup(VaultServiceExpressions.SendAsync)

@@ -16,14 +16,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.editorconfig = .editorconfig
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FluentVault.UnitTests", "FluentVault.UnitTests\FluentVault.UnitTests.csproj", "{70B141DE-7B4A-4BAB-803D-7D3D1850ECA7}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{BD83EDA9-C2E3-47C3-ACA9-3EBB780134E2}"
 	ProjectSection(SolutionItems) = preProject
 		GetBuildVersion.psm1 = GetBuildVersion.psm1
 	EndProjectSection
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FluentVault.TestFixtures", "FluentVault.TestFixtures\FluentVault.TestFixtures.csproj", "{BBD7D889-FB62-4157-9143-82409C8877FE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,14 +35,6 @@ Global
 		{67F79700-EF6E-490C-B46F-E925C4EE9EFC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{67F79700-EF6E-490C-B46F-E925C4EE9EFC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{67F79700-EF6E-490C-B46F-E925C4EE9EFC}.Release|Any CPU.Build.0 = Release|Any CPU
-		{70B141DE-7B4A-4BAB-803D-7D3D1850ECA7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{70B141DE-7B4A-4BAB-803D-7D3D1850ECA7}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{70B141DE-7B4A-4BAB-803D-7D3D1850ECA7}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{70B141DE-7B4A-4BAB-803D-7D3D1850ECA7}.Release|Any CPU.Build.0 = Release|Any CPU
-		{BBD7D889-FB62-4157-9143-82409C8877FE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BBD7D889-FB62-4157-9143-82409C8877FE}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BBD7D889-FB62-4157-9143-82409C8877FE}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BBD7D889-FB62-4157-9143-82409C8877FE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -54,8 +42,6 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{013158F9-9190-4EEF-A168-0BD130518E0C} = {32BB7374-D6C7-492C-BAEB-0E041EFB22DD}
 		{67F79700-EF6E-490C-B46F-E925C4EE9EFC} = {8E49F24A-A6AB-476D-815F-40BC8683442E}
-		{70B141DE-7B4A-4BAB-803D-7D3D1850ECA7} = {8E49F24A-A6AB-476D-815F-40BC8683442E}
-		{BBD7D889-FB62-4157-9143-82409C8877FE} = {8E49F24A-A6AB-476D-815F-40BC8683442E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D9625C48-A150-4342-9618-6A551DA236DA}

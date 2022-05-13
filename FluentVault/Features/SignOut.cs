@@ -1,10 +1,13 @@
 ﻿
+using System.Xml.Linq;
+
 using FluentVault.Common;
+using FluentVault.Domain.SecurityHeader;
 
 using MediatR;
 
 namespace FluentVault.Features;
-internal record SignOutCommand() : IRequest;
+internal record SignOutCommand(VaultSecurityHeader SecurityHeader) : IRequest;
 internal class SignOutHandler : IRequestHandler<SignOutCommand>
 {
     private static readonly VaultRequest _request = new(
@@ -22,7 +25,8 @@ internal class SignOutHandler : IRequestHandler<SignOutCommand>
 
     public async Task<Unit> Handle(SignOutCommand command, CancellationToken cancellationToken)
     {
-        _ = await _vaultService.SendAuthenticatedAsync(_request, cancellationToken: cancellationToken);
+        XDocument requestBody = VaultRequestSerializer.Serialize(_request, command.SecurityHeader);
+        _ = await _vaultService.SendAsync(_request.Uri, _request.SoapAction, requestBody, cancellationToken);
 
         return Unit.Value;
     }

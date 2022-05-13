@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 
 using FluentAssertions;
@@ -8,8 +7,8 @@ using FluentVault.IntegrationTests.Fixtures;
 
 using Xunit;
 
-namespace FluentVault.IntegrationTests.Systems.RequestBuilders.Get;
-public class CluentUriShould
+namespace FluentVault.IntegrationTests.Systems.Get;
+public class LatestFileByMasterIdShould
 {
     private static readonly VaultTestData _testData = new();
 
@@ -21,7 +20,7 @@ public class CluentUriShould
         IVaultClient sut = provider.GetRequiredService<IVaultClient>();
 
         // Act
-        (Uri ThinClient, Uri ThickClient) result = await sut.Get.ClientUris(new(_testData.TestPartMasterId), CancellationToken.None);
+        VaultFile result = await sut.Get.LatestFileByMasterId(new(_testData.TestPartMasterId), CancellationToken.None);
 
         // Assert
         result.Should().NotBeNull();

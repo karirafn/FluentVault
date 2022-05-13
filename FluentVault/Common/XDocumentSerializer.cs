@@ -7,10 +7,10 @@ internal abstract class XDocumentSerializer<T>
 {
     private readonly string _operation;
 
-    public XDocumentSerializer(string operation, XElementSerializer<T> elementSerializer)
+    public XDocumentSerializer(string operation, XElementSerializer<T> entitySerializer)
     {
         _operation = operation;
-        ElementSerializer = elementSerializer;
+        ElementSerializer = entitySerializer;
     }
 
     public XElementSerializer<T> ElementSerializer { get; }

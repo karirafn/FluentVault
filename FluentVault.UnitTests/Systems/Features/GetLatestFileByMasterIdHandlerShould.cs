@@ -11,6 +11,8 @@ using FluentVault.Features;
 using FluentVault.TestFixtures;
 using FluentVault.UnitTests.Helpers;
 
+using MediatR;
+
 using Moq;
 
 using Xunit;
@@ -25,10 +27,11 @@ public class GetLatestFileByMasterIdHandlerShould
     {
         // Arrange
         VaultFile expectation = _fixture.Create<VaultFile>();
+        Mock<IMediator> mediator = new();
         Mock<IVaultService> vaultService = new();
 
         GetLatestFileByMasterIdQuery query = new(expectation.MasterId);
-        GetLatestFileByMasterIdHandler sut = new(vaultService.Object);
+        GetLatestFileByMasterIdHandler sut = new(mediator.Object, vaultService.Object);
 
         XDocument response = sut.Serializer.Serialize(expectation);
         vaultService.Setup(VaultServiceExpressions.SendAsync)

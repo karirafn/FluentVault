@@ -8,7 +8,7 @@ using FluentVault.IntegrationTests.Fixtures;
 
 using Xunit;
 
-namespace FluentVault.IntegrationTests.Systems.RequestBuilders.Get;
+namespace FluentVault.IntegrationTests.Systems.Get;
 public class PropertyDefinitionInfosShould
 {
     [Fact]

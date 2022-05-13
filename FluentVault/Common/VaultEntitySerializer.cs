@@ -3,13 +3,13 @@
 using FluentVault.Extensions;
 
 namespace FluentVault.Common;
-internal abstract class XElementSerializer<T>
+internal abstract class VaultEntitySerializer<T>
 {
     public string ElementName { get; }
     public XNamespace Namespace { get; }
     protected XElement BaseElement => new(Namespace + ElementName);
 
-    public XElementSerializer(string elementName, XNamespace @namespace)
+    public VaultEntitySerializer(string elementName, XNamespace @namespace)
     {
         ElementName = elementName;
         Namespace = @namespace;
@@ -20,18 +20,18 @@ internal abstract class XElementSerializer<T>
             ? element
             : element.GetElement(ElementName);
 
-    internal abstract XElement Serialize(T entity);
-    
-    internal IEnumerable<XElement> Serialize(IEnumerable<T>? entities)
+    public abstract XElement Serialize(T entity);
+
+    public IEnumerable<XElement> Serialize(IEnumerable<T>? entities)
         => entities?.Select(entity => Serialize(entity))
         ?? Enumerable.Empty<XElement>();
-    
-    internal XElement SerializeMany(string name, IEnumerable<T> entities)
+
+    public XElement SerializeMany(string name, IEnumerable<T> entities)
         => new XElement(Namespace + name)
             .AddElements(entities.Select(entity => Serialize(entity)));
 
-    internal abstract T Deserialize(XElement element);
-    
-    internal IEnumerable<T> DeserializeMany(XElement element)
+    public abstract T Deserialize(XElement element);
+
+    public IEnumerable<T> DeserializeMany(XElement element)
         => element.ParseAllElements(ElementName, Deserialize);
 }

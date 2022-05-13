@@ -1,6 +1,7 @@
 ﻿using System.Xml.Linq;
 
 using FluentVault.Common;
+using FluentVault.Extensions;
 
 using MediatR;
 
@@ -14,19 +15,20 @@ internal class GetAllPropertyDefinitionInfosHandler : IRequestHandler<GetAllProp
           service: "PropertyService",
           command: "Connectivity.Explorer.Admin.AdminToolsCommand",
           @namespace: "Services/Property/1/7/2020");
+    private readonly IMediator _mediator;
     private readonly IVaultService _vaultService;
 
-    public GetAllPropertyDefinitionInfosHandler(IVaultService vaultService)
+    public GetAllPropertyDefinitionInfosHandler(IMediator mediator, IVaultService vaultService)
     {
+        _mediator = mediator;
         _vaultService = vaultService;
-        Serializer = new(_request);
     }
 
-    public GetAllPropertyDefinitionInfosSerializer Serializer { get; }
+    public GetAllPropertyDefinitionInfosSerializer Serializer { get; } = new(_request);
 
     public async Task<IEnumerable<VaultProperty>> Handle(GetAllPropertyDefinitionInfosQuery query, CancellationToken cancellationToken)
     {
-        XDocument response = await _vaultService.SendAuthenticatedAsync(_request, cancellationToken: cancellationToken);
+        XDocument response = await _mediator.SendAuthenticatedRequest(_request, _vaultService, null, cancellationToken);
         IEnumerable<VaultProperty> properties = Serializer.DeserializeMany(response);
 
         return properties;

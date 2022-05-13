@@ -8,20 +8,18 @@ using FluentVault.IntegrationTests.Fixtures;
 
 using Xunit;
 
-namespace FluentVault.IntegrationTests.Systems.RequestBuilders.Get;
-public class FoldersByFileMasterIdsShould
+namespace FluentVault.IntegrationTests.Systems.Get;
+public class CategoryConfigurationsShould
 {
-    private static readonly VaultTestData _testData = new();
-
     [Fact]
-    public async Task ReturnFile()
+    public async Task ReturnAllCategoryConfigurations()
     {
         // Arrange
         VaultServiceProvider provider = new();
         IVaultClient sut = provider.GetRequiredService<IVaultClient>();
 
         // Act
-        IEnumerable<VaultFolder> result = await sut.Get.FoldersByFileMasterIds(new VaultMasterId[] { new(_testData.TestPartMasterId) }, CancellationToken.None);
+        IEnumerable<VaultCategory> result = await sut.Get.CategoryConfigurations(CancellationToken.None);
 
         // Assert
         result.Should().NotBeEmpty();

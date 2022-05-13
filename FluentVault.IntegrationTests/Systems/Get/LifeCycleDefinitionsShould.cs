@@ -8,18 +8,18 @@ using FluentVault.IntegrationTests.Fixtures;
 
 using Xunit;
 
-namespace FluentVault.IntegrationTests.Systems.RequestBuilders.Get;
-public class CategoryConfigurationsShould
+namespace FluentVault.IntegrationTests.Systems.Get;
+public class LifeCycleDefinitionsShould
 {
     [Fact]
-    public async Task ReturnAllCategoryConfigurations()
+    public async Task ReturnAllLifeCycleDefinitions()
     {
         // Arrange
         VaultServiceProvider provider = new();
         IVaultClient sut = provider.GetRequiredService<IVaultClient>();
 
         // Act
-        IEnumerable<VaultCategory> result = await sut.Get.CategoryConfigurations(CancellationToken.None);
+        IEnumerable<VaultLifeCycleDefinition> result = await sut.Get.LifeCycleDefinitions(CancellationToken.None);
 
         // Assert
         result.Should().NotBeEmpty();

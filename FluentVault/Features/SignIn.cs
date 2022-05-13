@@ -41,7 +41,8 @@ internal class SignInHandler : IRequestHandler<SignInCommand, VaultSecurityHeade
             .AddElement(ns, "userName", _options.Username)
             .AddElement(ns, "userPassword", _options.Password);
 
-        XDocument document = await _vaultService.SendUnauthenticatedAsync(_request, contentBuilder, cancellationToken: cancellationToken);
+        XDocument requestBody = VaultRequestSerializer.Serialize(_request, null, contentBuilder);
+        XDocument document = await _vaultService.SendAsync(_request.Uri, _request.SoapAction, requestBody, cancellationToken: cancellationToken);
         VaultSecurityHeader result = Serializer.Deserialize(document);
 
         return result;

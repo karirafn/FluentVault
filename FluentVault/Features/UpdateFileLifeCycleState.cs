@@ -28,10 +28,9 @@ internal class UpdateFileLifeCycleStatesHandler : IRequestHandler<UpdateFileLife
     {
         _mediator = mediator;
         _vaultService = vaultService;
-        Serializer = new(_request);
     }
 
-    public UpdateFileLifeCycleStatesSerializer Serializer { get; }
+    public UpdateFileLifeCycleStatesSerializer Serializer { get; } = new(_request);
 
     public async Task<IEnumerable<VaultFile>> Handle(UpdateFileLifeCycleStatesCommand command, CancellationToken cancellationToken)
     {
@@ -44,8 +43,8 @@ internal class UpdateFileLifeCycleStatesHandler : IRequestHandler<UpdateFileLife
             .AddNestedElements(ns, "toStateIds", "long", command.StateIds.Select(x => x.ToString()))
             .AddElement(ns, "comment", command.Comment);
 
-        XDocument document = await _vaultService.SendAuthenticatedAsync(_request, contentBuilder, cancellationToken);
-        IEnumerable<VaultFile> files = Serializer.DeserializeMany(document);
+        XDocument response = await _mediator.SendAuthenticatedRequest(_request, _vaultService, contentBuilder, cancellationToken);
+        IEnumerable<VaultFile> files = Serializer.DeserializeMany(response);
 
         return files;
     }
@@ -59,7 +58,7 @@ internal class UpdateFileLifeCycleStatesHandler : IRequestHandler<UpdateFileLife
             string.Join(" OR ", command.FileNames),
             SearchPropertyType.SingleProperty,
             SearchRule.Must);
-        FindFilesBySearchConditionsQuery query = new(new[] { searchCondition.Attributes });
+        FindFilesBySearchConditionsQuery query = new(new[] { searchCondition });
         VaultSearchFilesResponse response = await _mediator.Send(query, cancellationToken);
 
         masterIds.AddRange(response.Result.Files.Select(x => x.MasterId));

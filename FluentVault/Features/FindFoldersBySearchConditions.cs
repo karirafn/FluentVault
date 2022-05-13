@@ -22,15 +22,16 @@ internal class FindFoldersBySearchConditionsHandler : IRequestHandler<FindFolder
           service: "DocumentService",
           command: "",
           @namespace: "Services/Document/1/7/2020");
+    private readonly IMediator _mediator;
     private readonly IVaultService _vaultService;
 
-    public FindFoldersBySearchConditionsHandler(IVaultService vaultService)
+    public FindFoldersBySearchConditionsHandler(IMediator mediator, IVaultService vaultService)
     {
+        _mediator = mediator;
         _vaultService = vaultService;
-        Serializer = new(_request);
     }
 
-    public FindFoldersBySearchConditionsSerializer Serializer { get; }
+    public FindFoldersBySearchConditionsSerializer Serializer { get; } = new(_request);
 
     public async Task<VaultSearchFoldersResponse> Handle(FindFoldersBySearchConditionsQuery command, CancellationToken cancellationToken)
     {
@@ -42,7 +43,7 @@ internal class FindFoldersBySearchConditionsHandler : IRequestHandler<FindFolder
             .AddElement(ns, "latestOnly", command.LatestOnly)
             .AddElement(ns, "bookmark", command.Bookmark);
 
-        XDocument response = await _vaultService.SendAuthenticatedAsync(_request, contentBuilder, cancellationToken);
+        XDocument response = await _mediator.SendAuthenticatedRequest(_request, _vaultService, contentBuilder, cancellationToken);
         VaultSearchFoldersResponse result = Serializer.Deserialize(response);
 
         return result;

@@ -2,6 +2,7 @@
 using FluentVault.Domain.Search.Files;
 using FluentVault.Features;
 using FluentVault.RequestBuilders;
+using FluentVault.RequestBuilders.Search;
 
 using MediatR;
 
@@ -14,22 +15,12 @@ internal class SearchFilesRequestBuilder :
     ISearchFilesEndpoint
 {
     private readonly IMediator _mediator;
+    private readonly ISearchManager _searchManager;
 
-    private object? _value = new();
-    private VaultPropertyDefinitionId? _propertyId;
-    private string _propertyName = string.Empty;
-    private SearchPropertyType _propertyType = SearchPropertyType.SingleProperty;
-    private SearchOperator _operator = SearchOperator.Contains;
-    private IEnumerable<VaultProperty> _allProperties = new List<VaultProperty>();
-    private bool _recurseFolders = true;
-    private bool _latestOnly = true;
-    private readonly List<VaultFolderId> _folderIds = new();
-    private readonly List<SearchCondition> _searchConditions = new();
-    private readonly List<SortCondition> _sortConditions = new();
-
-    public SearchFilesRequestBuilder(IMediator mediator)
+    public SearchFilesRequestBuilder(IMediator mediator, ISearchManager searchManager)
     {
         _mediator = mediator;
+        _searchManager = searchManager;
     }
 
     public ISearchFilesEndpoint EqualTo(object? value) => SetValueAndOperator(value, SearchOperator.IsEqualTo);
@@ -40,27 +31,21 @@ internal class SearchFilesRequestBuilder :
     public ISearchFilesEndpoint GreaterThan(object? value) => SetValueAndOperator(value, SearchOperator.IsGreaterThan);
     public ISearchFilesEndpoint GreaterThanOrEqualTo(object? value) => SetValueAndOperator(value, SearchOperator.IsGreaterThanOrEqualTo);
     
+    public ISearchFilesOperatorSelector ByPropertyId(VaultPropertyDefinitionId id)
+    {
+        _searchManager.SearchConditionPropertyId = id;
+        _searchManager.PropertyType = SearchPropertyType.SingleProperty;
+        return this;
+    }
+
     public ISearchFilesOperatorSelector BySystemProperty(VaultSearchProperty property)
-    {
-        _propertyId = property;
-        _propertyType = SearchPropertyType.SingleProperty;
-
-        return this;
-    }
-
-    public ISearchFilesOperatorSelector ByUserProperty(string name)
-    {
-        _propertyName = name;
-
-        return this;
-    }
+        => ByPropertyId(property.Value);
 
     public ISearchFilesOperatorSelector ByAllProperties
     {
         get
         {
-            _propertyType = SearchPropertyType.AllProperties;
-
+            _searchManager.PropertyType = SearchPropertyType.AllProperties;
             return this;
         }
     }
@@ -69,8 +54,7 @@ internal class SearchFilesRequestBuilder :
     {
         get
         {
-            _propertyType = SearchPropertyType.AllPropertiesAndContent;
-
+            _searchManager.PropertyType = SearchPropertyType.AllPropertiesAndContent;
             return this;
         }
     }
@@ -79,8 +63,7 @@ internal class SearchFilesRequestBuilder :
     {
         get
         {
-            _latestOnly = false;
-
+            _searchManager.LatestOnly = false;
             return this;
         }
     }
@@ -89,82 +72,55 @@ internal class SearchFilesRequestBuilder :
     {
         get
         {
-            AddSearchCondition();
-
+            _searchManager.AddSearchCondition();
             return this;
         }
     }
 
     public async Task<IEnumerable<VaultFile>> GetAllResultsAsync()
     {
-        IEnumerable<VaultFile> files = await SearchAsync(int.MaxValue);
-
+        IEnumerable<VaultFile> files = await GetPagedResultAsync(int.MaxValue);
         return files;
     }
 
-    public async Task<IEnumerable<VaultFile>> GetPagedResultAsync(int maxResultCount = 200)
+    public async Task<IEnumerable<VaultFile>> GetPagedResultAsync(int pagingLimit = 100)
     {
-        IEnumerable<VaultFile> files = await SearchAsync(maxResultCount);
-
+        IEnumerable<VaultFile> files = await SearchAsync(pagingLimit);
         return files;
     }
 
     public async Task<VaultFile?> GetFirstResultAsync()
     {
         IEnumerable<VaultFile> files = await GetPagedResultAsync();
-
         return files.FirstOrDefault();
     }
 
-    private async Task SetPropertyValue(string property)
+    private async Task<IEnumerable<VaultFile>> SearchAsync(int pagingLimit)
     {
-        if (_allProperties.Any() is false)
-            _allProperties = await _mediator.Send(new GetAllPropertyDefinitionInfosQuery());
-
-        VaultProperty selectedProperty = _allProperties.FirstOrDefault(x => x.Definition.DisplayName.Equals(property))
-            ?? throw new KeyNotFoundException($@"Property ""{property}"" was not found");
-
-        _propertyId = selectedProperty.Definition.Id;
-    }
-
-    private async Task<IEnumerable<VaultFile>> SearchAsync(int maxResultCount)
-    {
-        if (string.IsNullOrEmpty(_propertyName) is false)
-            await SetPropertyValue(_propertyName);
-
-        AddSearchCondition();
+        _searchManager.AddSearchCondition();
 
         List<VaultFile> files = new();
         string bookmark = string.Empty;
-        IEnumerable<IDictionary<string, object>> searchConditionAttributes = _searchConditions.Select(x => x.Attributes);
-        IEnumerable<IDictionary<string, object>> sortConditionAttributes = _sortConditions.Select(x => x.Attributes);
-
         do
         {
-            FindFilesBySearchConditionsQuery command = new(searchConditionAttributes, sortConditionAttributes, _folderIds, _recurseFolders, _latestOnly, bookmark);
-            VaultSearchFilesResponse response = await _mediator.Send(command);
+            FindFilesBySearchConditionsQuery query = new(
+                _searchManager.SearchConditions,
+                _searchManager.SortConditions,
+                _searchManager.FolderIds,
+                _searchManager.RecurseFolders,
+                _searchManager.LatestOnly,
+                bookmark);
+            VaultSearchFilesResponse response = await _mediator.Send(query);
             files.AddRange(response.Result.Files);
             bookmark = response.Bookmark;
-        } while (files.Count <= maxResultCount && string.IsNullOrEmpty(bookmark) is false);
-
+        } while (files.Count <= pagingLimit && string.IsNullOrEmpty(bookmark) is false);
         return files;
-    }
-
-    private void AddSearchCondition()
-    {
-        if (_propertyId is not null)
-        {
-            SearchCondition searchCondition = new(_propertyId, _operator, _value, _propertyType, SearchRule.Must);
-            _searchConditions.Add(searchCondition);
-        }
-        _propertyType = SearchPropertyType.SingleProperty;
     }
 
     private ISearchFilesEndpoint SetValueAndOperator(object? value, SearchOperator @operator)
     {
-        _value = value;
-        _operator = @operator;
-
+        _searchManager.SearchValue = value;
+        _searchManager.SearchOperator = @operator;
         return this;
     }
 }

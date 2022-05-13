@@ -12,6 +12,8 @@ using FluentVault.Features;
 using FluentVault.TestFixtures;
 using FluentVault.UnitTests.Helpers;
 
+using MediatR;
+
 using Moq;
 
 using Xunit;
@@ -26,10 +28,11 @@ public class GetAllPropertyDefinitionInfosHandlerShould
     {
         // Arrange
         IEnumerable<VaultProperty> expectation = _fixture.CreateMany<VaultProperty>();
+        Mock<IMediator> mediator = new();
         Mock<IVaultService> vaultService = new();
 
         GetAllPropertyDefinitionInfosQuery query = new();
-        GetAllPropertyDefinitionInfosHandler sut = new(vaultService.Object);
+        GetAllPropertyDefinitionInfosHandler sut = new(mediator.Object, vaultService.Object);
 
         XDocument response = sut.Serializer.Serialize(expectation);
         vaultService.Setup(VaultServiceExpressions.SendAsync)

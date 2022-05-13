@@ -62,7 +62,7 @@ public class VaultSearchProperty : SmartEnum<VaultSearchProperty, VaultPropertyD
     public static readonly VaultSearchProperty Provider = new(nameof(Provider), new(27));
     public static readonly VaultSearchProperty iLogicRuleStatus = new(nameof(iLogicRuleStatus), new(28));
     public static readonly VaultSearchProperty FolderPath = new(nameof(FolderPath), new(29));
-    public static readonly VaultSearchProperty Name = new(nameof(Name), new(30));
+    public static new readonly VaultSearchProperty Name = new(nameof(Name), new(30));
     public static readonly VaultSearchProperty TargetEntityClass = new(nameof(TargetEntityClass), new(31));
     public static readonly VaultSearchProperty ParentEntityClass = new(nameof(ParentEntityClass), new(32));
     public static readonly VaultSearchProperty FileExtension = new(nameof(FileExtension), new(33));

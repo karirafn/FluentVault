@@ -3,6 +3,7 @@ using System.Reflection;
 
 using FluentVault.Common;
 using FluentVault.RequestBuilders;
+using FluentVault.RequestBuilders.Search;
 
 using MediatR;
 
@@ -25,6 +26,7 @@ public static class ConfigureServices
                     httpClient.BaseAddress = new Uri($@"http://{vaultOptions.Server}/");
                 }).Services
             .AddMediatR(assembly)
+            .AddSingleton<ISearchManager, SearchManager>()
             .AddTransient<IVaultService, VaultService>()
             .AddImplementations<IRequestBuilder>(assembly)
             .AddTransient<IVaultClient, VaultClient>();

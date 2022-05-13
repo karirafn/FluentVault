@@ -12,6 +12,8 @@ using FluentVault.Features;
 using FluentVault.TestFixtures;
 using FluentVault.UnitTests.Helpers;
 
+using MediatR;
+
 using Moq;
 
 using Xunit;
@@ -26,10 +28,11 @@ public class FindItemRevisionsBySearchConditionsHandlerShould
     {
         // Arrange
         VaultSearchItemsResponse expectation = _fixture.Create<VaultSearchItemsResponse>();
+        Mock<IMediator> mediator = new();
         Mock<IVaultService> vaultService = new();
 
         FindItemRevisionsBySearchConditionsQuery query = _fixture.Create<FindItemRevisionsBySearchConditionsQuery>();
-        FindItemRevisionsBySearchConditionsHandler sut = new(vaultService.Object);
+        FindItemRevisionsBySearchConditionsHandler sut = new(mediator.Object, vaultService.Object);
 
         XDocument response = sut.Serializer.Serialize(expectation);
         vaultService.Setup(VaultServiceExpressions.SendAsync)

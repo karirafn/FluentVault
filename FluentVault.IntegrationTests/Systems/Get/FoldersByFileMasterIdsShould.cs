@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 
 using FluentAssertions;
@@ -7,8 +8,8 @@ using FluentVault.IntegrationTests.Fixtures;
 
 using Xunit;
 
-namespace FluentVault.IntegrationTests.Systems.RequestBuilders.Get;
-public class LatestFileByMasterIdShould
+namespace FluentVault.IntegrationTests.Systems.Get;
+public class FoldersByFileMasterIdsShould
 {
     private static readonly VaultTestData _testData = new();
 
@@ -20,9 +21,9 @@ public class LatestFileByMasterIdShould
         IVaultClient sut = provider.GetRequiredService<IVaultClient>();
 
         // Act
-        VaultFile result = await sut.Get.LatestFileByMasterId(new(_testData.TestPartMasterId), CancellationToken.None);
+        IEnumerable<VaultFolder> result = await sut.Get.FoldersByFileMasterIds(new VaultMasterId[] { new(_testData.TestPartMasterId) }, CancellationToken.None);
 
         // Assert
-        result.Should().NotBeNull();
+        result.Should().NotBeEmpty();
     }
 }

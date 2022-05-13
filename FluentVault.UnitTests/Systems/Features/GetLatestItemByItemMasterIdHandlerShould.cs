@@ -11,6 +11,8 @@ using FluentVault.Features;
 using FluentVault.TestFixtures;
 using FluentVault.UnitTests.Helpers;
 
+using MediatR;
+
 using Moq;
 
 using Xunit;
@@ -25,10 +27,11 @@ public class GetLatestItemByItemMasterIdHandlerShould
     {
         // Arrange
         VaultItem expectation = _fixture.Create<VaultItem>();
+        Mock<IMediator> mediator = new();
         Mock<IVaultService> vaultService = new();
 
         GetLatestItemByItemMasterIdQuery query = new(expectation.MasterId);
-        GetLatestItemByItemMasterIdHandler sut = new(vaultService.Object);
+        GetLatestItemByItemMasterIdHandler sut = new(mediator.Object, vaultService.Object);
 
         XDocument response = sut.Serializer.Serialize(expectation);
         vaultService.Setup(VaultServiceExpressions.SendAsync)
