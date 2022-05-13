@@ -8,7 +8,7 @@ using FluentVault.IntegrationTests.Fixtures;
 using Xunit;
 
 namespace FluentVault.IntegrationTests.Systems.Get;
-public class GetLatestFileByMasterIdShould
+public class LatestFileByMasterIdShould
 {
     private static readonly VaultTestData _testData = new();
 
@@ -20,7 +20,7 @@ public class GetLatestFileByMasterIdShould
         IVaultClient sut = provider.GetRequiredService<IVaultClient>();
 
         // Act
-        VaultFile result = await sut.Get.LatestFileByMasterId(new(_testData.TestPartMasterId), CancellationToken.None);
+        VaultFile result = await sut.Get.LatestFileByMasterId(_testData.TestPartMasterId, CancellationToken.None);
 
         // Assert
         result.Should().NotBeNull();

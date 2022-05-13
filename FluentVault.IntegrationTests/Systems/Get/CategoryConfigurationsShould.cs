@@ -9,7 +9,7 @@ using FluentVault.IntegrationTests.Fixtures;
 using Xunit;
 
 namespace FluentVault.IntegrationTests.Systems.Get;
-public class GetCategoryConfigurationsShould
+public class CategoryConfigurationsShould
 {
     [Fact]
     public async Task ReturnAllCategoryConfigurations()
