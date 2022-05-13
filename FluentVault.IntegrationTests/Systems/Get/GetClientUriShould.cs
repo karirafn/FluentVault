@@ -21,7 +21,7 @@ public class GetClientUriShould
         IVaultClient sut = provider.GetRequiredService<IVaultClient>();
 
         // Act
-        (Uri ThinClient, Uri ThickClient) result = await sut.Get.ClientUris(new(_testData.TestPartMasterId), CancellationToken.None);
+        (Uri ThinClient, Uri ThickClient) result = await sut.Get.ClientUris(_testData.TestPartMasterId, CancellationToken.None);
 
         // Assert
         result.Should().NotBeNull();

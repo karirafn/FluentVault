@@ -20,7 +20,7 @@ public class GetLatestFileByMasterIdShould
         IVaultClient sut = provider.GetRequiredService<IVaultClient>();
 
         // Act
-        VaultFile result = await sut.Get.LatestFileByMasterId(new(_testData.TestPartMasterId), CancellationToken.None);
+        VaultFile result = await sut.Get.LatestFileByMasterId(_testData.TestPartMasterId, CancellationToken.None);
 
         // Assert
         result.Should().NotBeNull();

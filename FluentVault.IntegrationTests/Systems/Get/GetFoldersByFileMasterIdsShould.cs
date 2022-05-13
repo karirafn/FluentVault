@@ -21,7 +21,7 @@ public class GetFoldersByFileMasterIdsShould
         IVaultClient sut = provider.GetRequiredService<IVaultClient>();
 
         // Act
-        IEnumerable<VaultFolder> result = await sut.Get.FoldersByFileMasterIds(new VaultMasterId[] { new(_testData.TestPartMasterId) }, CancellationToken.None);
+        IEnumerable<VaultFolder> result = await sut.Get.FoldersByFileMasterIds(new VaultMasterId[] { _testData.TestPartMasterId }, CancellationToken.None);
 
         // Assert
         result.Should().NotBeEmpty();

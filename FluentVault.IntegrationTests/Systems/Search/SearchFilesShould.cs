@@ -48,7 +48,7 @@ public class SearchFilesShould
         // Assert
         result.Should().NotBeNullOrEmpty();
         result.Should().HaveCountGreaterThan(1);
-        result.Should().AllSatisfy(file => file.MasterId.Value.Should().Be(_testData.TestPartMasterId));
+        result.Should().AllSatisfy(file => file.MasterId.Should().Be(_testData.TestPartMasterId));
     }
 
     [Fact]
