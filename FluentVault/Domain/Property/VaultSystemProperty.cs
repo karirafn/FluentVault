@@ -92,4 +92,6 @@ public class VaultSystemProperty : SmartEnum<VaultSystemProperty, VaultPropertyD
     public static readonly VaultSystemProperty LatestApprover = new(nameof(LatestApprover), new(241));
 
     protected VaultSystemProperty(string name, VaultPropertyDefinitionId value) : base(name, value) { }
+
+    public static implicit operator VaultSystemProperty(VaultPropertyDefinitionId id) => id;
 }
