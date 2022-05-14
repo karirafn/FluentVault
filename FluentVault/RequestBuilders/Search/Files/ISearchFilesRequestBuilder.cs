@@ -2,7 +2,7 @@
 public interface ISearchFilesRequestBuilder
 {
     ISearchFilesOperatorSelector ByPropertyId(VaultPropertyDefinitionId id);
-    ISearchFilesOperatorSelector BySystemProperty(VaultSearchProperty property);
+    ISearchFilesOperatorSelector BySystemProperty(VaultSystemProperty property);
     ISearchFilesOperatorSelector ByAllProperties { get; }
     ISearchFilesOperatorSelector ByAllPropertiesAndContent { get; }
 }

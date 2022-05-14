@@ -38,7 +38,7 @@ internal class SearchFilesRequestBuilder :
         return this;
     }
 
-    public ISearchFilesOperatorSelector BySystemProperty(VaultSearchProperty property)
+    public ISearchFilesOperatorSelector BySystemProperty(VaultSystemProperty property)
         => ByPropertyId(property.Value);
 
     public ISearchFilesOperatorSelector ByAllProperties

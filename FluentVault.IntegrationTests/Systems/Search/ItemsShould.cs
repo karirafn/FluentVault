@@ -22,7 +22,7 @@ public class ItemsShould
 
         // Act
         VaultItem? result = await sut.Search.Items
-            .BySystemProperty(VaultSearchProperty.Number)
+            .BySystemProperty(VaultSystemProperty.Number)
             .Containing(Path.GetFileNameWithoutExtension(_testData.TestPartFilename))
             .GetFirstResultAsync();
 

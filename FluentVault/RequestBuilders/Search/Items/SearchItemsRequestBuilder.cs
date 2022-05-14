@@ -69,7 +69,7 @@ internal class SearchItemsRequestBuilder :
         return this;
     }
 
-    public ISearchItemsOperatorSelector BySystemProperty(VaultSearchProperty property)
+    public ISearchItemsOperatorSelector BySystemProperty(VaultSystemProperty property)
         => ByPropertyId(property.Value);
 
     public ISearchItemsEndpoint Containing(object? value) => SetValueAndOperator(value, SearchOperator.Contains);

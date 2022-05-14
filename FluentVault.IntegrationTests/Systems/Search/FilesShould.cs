@@ -22,7 +22,7 @@ public class FilesShould
 
         // Act
         IEnumerable<VaultFile> result = await sut.Search.Files
-            .BySystemProperty(VaultSearchProperty.FileExtension)
+            .BySystemProperty(VaultSystemProperty.FileExtension)
             .Containing("ipt")
             .GetPagedResultAsync();
 
@@ -40,7 +40,7 @@ public class FilesShould
 
         // Act
         IEnumerable<VaultFile> result = await sut.Search.Files
-            .BySystemProperty(VaultSearchProperty.FileName)
+            .BySystemProperty(VaultSystemProperty.FileName)
             .EqualTo(_testData.TestPartFilename)
             .AllVersions
             .GetPagedResultAsync();
@@ -60,7 +60,7 @@ public class FilesShould
 
         // Act
         VaultFile? result = await sut.Search.Files
-            .BySystemProperty(VaultSearchProperty.FileName)
+            .BySystemProperty(VaultSystemProperty.FileName)
             .Containing(_testData.TestPartFilename)
             .GetFirstResultAsync();
 
