@@ -1,4 +1,4 @@
-﻿namespace FluentVault.RequestBuilders.Get.File.Associations;
+﻿namespace FluentVault;
 
 public interface IGetFileAssociationsRequestBuilder
 {
