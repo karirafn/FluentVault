@@ -6,4 +6,5 @@ namespace FluentVault;
 public interface IGetFileRequestBuilder
 {
     IGetFileAssociationsRequestBuilder Associations { get; }
+    IGetFilePropertiesRequestBuilder Properties { get; }
 }
