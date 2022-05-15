@@ -21,7 +21,16 @@ internal class GetLatestFileAssociationsRequestBuilder : IRequestBuilder, IGetLa
         _mediator = mediator;
     }
 
-    public IGetLatestFileAssociationsRequestBuilder RecurseParents
+    public IGetLatestFileAssociationsEndpoint ByMasterId(VaultMasterId masterId) =>
+        ByMasterIds(new[] { masterId });
+
+    public IGetLatestFileAssociationsEndpoint ByMasterIds(IEnumerable<VaultMasterId> masterIds)
+    {
+        _masterIds = masterIds;
+        return this;
+    }
+
+    public IGetLatestFileAssociationsEndpoint RecurseParents
     {
         get
         {
@@ -30,7 +39,7 @@ internal class GetLatestFileAssociationsRequestBuilder : IRequestBuilder, IGetLa
         }
     }
 
-    public IGetLatestFileAssociationsRequestBuilder RecurseChildren
+    public IGetLatestFileAssociationsEndpoint RecurseChildren
     {
         get
         {
@@ -39,7 +48,7 @@ internal class GetLatestFileAssociationsRequestBuilder : IRequestBuilder, IGetLa
         }
     }
 
-    public IGetLatestFileAssociationsRequestBuilder IncludeRelatedDocumentation
+    public IGetLatestFileAssociationsEndpoint IncludeRelatedDocumentation
     {
         get
         {
@@ -48,7 +57,7 @@ internal class GetLatestFileAssociationsRequestBuilder : IRequestBuilder, IGetLa
         }
     }
 
-    public IGetLatestFileAssociationsRequestBuilder IncludeHidden
+    public IGetLatestFileAssociationsEndpoint IncludeHidden
     {
         get
         {
@@ -57,7 +66,7 @@ internal class GetLatestFileAssociationsRequestBuilder : IRequestBuilder, IGetLa
         }
     }
 
-    public IGetLatestFileAssociationsRequestBuilder ReleasedBiased
+    public IGetLatestFileAssociationsEndpoint ReleasedBiased
     {
         get
         {
@@ -66,12 +75,15 @@ internal class GetLatestFileAssociationsRequestBuilder : IRequestBuilder, IGetLa
         }
     }
 
-    public IGetLatestFileAssociationsEndpoint ByMasterId(VaultMasterId masterId) =>
-        ByMasterIds(new [] { masterId });
-
-    public IGetLatestFileAssociationsEndpoint ByMasterIds(IEnumerable<VaultMasterId> masterIds)
+    public IGetLatestFileAssociationsEndpoint WithChildAssociation(VaultFileAssociationType type)
     {
-        _masterIds = masterIds;
+        _childAssociationType = type;
+        return this;
+    }
+
+    public IGetLatestFileAssociationsEndpoint WithParentAssociation(VaultFileAssociationType type)
+    {
+        _parentAssociationType = type;
         return this;
     }
 
@@ -89,15 +101,5 @@ internal class GetLatestFileAssociationsRequestBuilder : IRequestBuilder, IGetLa
         IEnumerable<VaultFileAssociation> response = await _mediator.Send(query, cancellationToken);
 
         return response;
-    }
-
-    public IGetLatestFileAssociationsRequestBuilder WithChildAssociation(VaultFileAssociationType type)
-    {
-        throw new NotImplementedException();
-    }
-
-    public IGetLatestFileAssociationsRequestBuilder WithParentAssociation(VaultFileAssociationType type)
-    {
-        throw new NotImplementedException();
     }
 }

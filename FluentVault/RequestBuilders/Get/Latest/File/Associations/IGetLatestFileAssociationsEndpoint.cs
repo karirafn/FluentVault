@@ -2,12 +2,12 @@
 
 public interface IGetLatestFileAssociationsEndpoint
 {
-    public IGetLatestFileAssociationsRequestBuilder WithParentAssociation(VaultFileAssociationType type);
-    public IGetLatestFileAssociationsRequestBuilder WithChildAssociation(VaultFileAssociationType type);
-    public IGetLatestFileAssociationsRequestBuilder RecurseParents { get; }
-    public IGetLatestFileAssociationsRequestBuilder RecurseChildren { get; }
-    public IGetLatestFileAssociationsRequestBuilder IncludeRelatedDocumentation { get; }
-    public IGetLatestFileAssociationsRequestBuilder IncludeHidden { get; }
-    public IGetLatestFileAssociationsRequestBuilder ReleasedBiased { get; }
+    public IGetLatestFileAssociationsEndpoint WithParentAssociation(VaultFileAssociationType type);
+    public IGetLatestFileAssociationsEndpoint WithChildAssociation(VaultFileAssociationType type);
+    public IGetLatestFileAssociationsEndpoint RecurseParents { get; }
+    public IGetLatestFileAssociationsEndpoint RecurseChildren { get; }
+    public IGetLatestFileAssociationsEndpoint IncludeRelatedDocumentation { get; }
+    public IGetLatestFileAssociationsEndpoint IncludeHidden { get; }
+    public IGetLatestFileAssociationsEndpoint ReleasedBiased { get; }
     public Task<IEnumerable<VaultFileAssociation>> ExecuteAsync(CancellationToken cancellationToken = default);
 }
