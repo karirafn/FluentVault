@@ -7,13 +7,17 @@ internal class GetRequestBuilder : IRequestBuilder, IGetRequestBuilder
 {
     private readonly IMediator _mediator;
 
-    public GetRequestBuilder(IMediator mediator, IGetFileRequestBuilder file)
+    public GetRequestBuilder(IMediator mediator, IGetPropertiesRequestBuilder properties, IGetLatestRequestBuilder latest, IGetRevisionRequestBuilder revision)
     {
         _mediator = mediator;
-        File = file;
+        Properties = properties;
+        Latest = latest;
+        Revision = revision;
     }
 
-    public IGetFileRequestBuilder File { get; }
+    public IGetLatestRequestBuilder Latest { get; }
+    public IGetPropertiesRequestBuilder Properties { get; }
+    public IGetRevisionRequestBuilder Revision { get; }
 
     public async Task<IEnumerable<VaultCategory>> CategoryConfigurations(CancellationToken cancellationToken = default)
         => await _mediator.Send(new GetAllCategoryConfigurationsQuery(), cancellationToken);

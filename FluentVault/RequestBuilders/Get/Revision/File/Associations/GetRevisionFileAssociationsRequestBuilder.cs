@@ -1,12 +1,11 @@
-﻿
-using FluentVault.Features;
+﻿using FluentVault.Features;
 
 using MediatR;
 
-namespace FluentVault.RequestBuilders.Get.File.Associations;
-internal class GetFileAssociationsRequestBuilder : IRequestBuilder,
-    IGetFileAssociationsRequestBuilder,
-    IGetFileAssociationsEndPoint
+namespace FluentVault.RequestBuilders.Get.Revision.File.Associations;
+internal class GetRevisionFileAssociationsRequestBuilder : IRequestBuilder,
+    IGetRevisionFileAssociationsRequestBuilder,
+    IGetRevisionFileAssociationsEndPoint
 {
     private readonly IMediator _mediator;
 
@@ -19,21 +18,21 @@ internal class GetFileAssociationsRequestBuilder : IRequestBuilder,
     private bool _includeHidden = false;
     private bool _releasedBiased = false;
 
-    public GetFileAssociationsRequestBuilder(IMediator mediator)
+    public GetRevisionFileAssociationsRequestBuilder(IMediator mediator)
     {
         _mediator = mediator;
     }
 
-    public IGetFileAssociationsEndPoint ByFileIterationId(VaultFileId id) =>
+    public IGetRevisionFileAssociationsEndPoint ByFileIterationId(VaultFileId id) =>
         ByFileIterationIds(new VaultFileId[] { id });
 
-    public IGetFileAssociationsEndPoint ByFileIterationIds(IEnumerable<VaultFileId> ids)
+    public IGetRevisionFileAssociationsEndPoint ByFileIterationIds(IEnumerable<VaultFileId> ids)
     {
         _ids = ids;
         return this;
     }
 
-    public IGetFileAssociationsEndPoint RecurseParents
+    public IGetRevisionFileAssociationsEndPoint RecurseParents
     {
         get
         {
@@ -42,7 +41,7 @@ internal class GetFileAssociationsRequestBuilder : IRequestBuilder,
         }
     }
 
-    public IGetFileAssociationsEndPoint RecurseChildren
+    public IGetRevisionFileAssociationsEndPoint RecurseChildren
     {
         get
         {
@@ -51,7 +50,7 @@ internal class GetFileAssociationsRequestBuilder : IRequestBuilder,
         }
     }
 
-    public IGetFileAssociationsEndPoint IncludeRelatedDocumentation
+    public IGetRevisionFileAssociationsEndPoint IncludeRelatedDocumentation
     {
         get
         {
@@ -60,7 +59,7 @@ internal class GetFileAssociationsRequestBuilder : IRequestBuilder,
         }
     }
 
-    public IGetFileAssociationsEndPoint IncludeHidden
+    public IGetRevisionFileAssociationsEndPoint IncludeHidden
     {
         get
         {
@@ -69,7 +68,7 @@ internal class GetFileAssociationsRequestBuilder : IRequestBuilder,
         }
     }
 
-    public IGetFileAssociationsEndPoint ReleasedBiased
+    public IGetRevisionFileAssociationsEndPoint ReleasedBiased
     {
         get
         {
@@ -78,13 +77,13 @@ internal class GetFileAssociationsRequestBuilder : IRequestBuilder,
         }
     }
 
-    public IGetFileAssociationsEndPoint WithChildAssociation(VaultFileAssociationType type)
+    public IGetRevisionFileAssociationsEndPoint WithChildAssociation(VaultFileAssociationType type)
     {
         _childAssociationType = type;
         return this;
     }
 
-    public IGetFileAssociationsEndPoint WithParentAssociation(VaultFileAssociationType type)
+    public IGetRevisionFileAssociationsEndPoint WithParentAssociation(VaultFileAssociationType type)
     {
         _parentAssociationType = type;
         return this;

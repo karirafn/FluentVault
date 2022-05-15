@@ -1,6 +1,6 @@
 ﻿namespace FluentVault;
 
-public interface IGetFilePropertiesEndpoint
+public interface IGetPropertiesEndpoint
 {
     public Task<IEnumerable<VaultPropertyInstance>> ExecuteAsync(CancellationToken cancellationToken = default);
 }

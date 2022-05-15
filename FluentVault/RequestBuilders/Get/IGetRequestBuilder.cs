@@ -1,7 +1,9 @@
 ﻿namespace FluentVault;
 public interface IGetRequestBuilder
 {
-    public IGetFileRequestBuilder File { get; }
+    public IGetLatestRequestBuilder Latest { get; }
+    public IGetPropertiesRequestBuilder Properties { get; }
+    public IGetRevisionRequestBuilder Revision { get; }
     public Task<IEnumerable<VaultCategory>> CategoryConfigurations(CancellationToken cancellationToken = default);
     public Task<IEnumerable<VaultLifeCycleDefinition>> LifeCycleDefinitions(CancellationToken cancellationToken = default);
     public Task<IEnumerable<VaultProperty>> PropertyDefinitionInfos(CancellationToken cancellationToken = default);

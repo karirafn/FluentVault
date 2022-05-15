@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -12,7 +9,7 @@ using FluentVault.IntegrationTests.Fixtures;
 using Xunit;
 
 namespace FluentVault.IntegrationTests.Systems.Get;
-public class FilePropertiesShould
+public class LatestFileAssociationsByMasterIdsShould
 {
     private static readonly VaultTestData _testData = new();
 
@@ -24,14 +21,11 @@ public class FilePropertiesShould
         IVaultClient sut = provider.GetRequiredService<IVaultClient>();
 
         // Act
-        IEnumerable<VaultPropertyInstance> result = await sut.Get.Properties
-            .ForEntityClass(VaultEntityClass.File)
-            .WithId(_testData.TestPartIterationWithoutDrawingId)
-            .WithProperty(VaultSystemProperty.FileName)
+        IEnumerable<VaultFileAssociation> result = await sut.Get.Latest.File.Associations
+            .ByMasterId(_testData.TestPartMasterId)
             .ExecuteAsync(CancellationToken.None);
 
         // Assert
-        result.Should().NotBeEmpty();
-        result.First().Value.Should().Be(_testData.TestPartFilename);
+        result.Should().BeEmpty();
     }
 }

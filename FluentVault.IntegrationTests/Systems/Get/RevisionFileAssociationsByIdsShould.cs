@@ -9,7 +9,7 @@ using FluentVault.IntegrationTests.Fixtures;
 using Xunit;
 
 namespace FluentVault.IntegrationTests.Systems.Get;
-public class FileAssociationsShould
+public class RevisionFileAssociationsByIdsShould
 {
     private static readonly VaultTestData _testData = new();
 
@@ -21,7 +21,7 @@ public class FileAssociationsShould
         IVaultClient sut = provider.GetRequiredService<IVaultClient>();
 
         // Act
-        IEnumerable<VaultFileAssociation> result = await sut.Get.File.Associations
+        IEnumerable<VaultFileAssociation> result = await sut.Get.Revision.File.Associations
             .ByFileIterationId(_testData.TestPartIterationWithoutDrawingId)
             .ExecuteAsync(CancellationToken.None);
 
@@ -37,7 +37,7 @@ public class FileAssociationsShould
         IVaultClient sut = provider.GetRequiredService<IVaultClient>();
 
         // Act
-        IEnumerable<VaultFileAssociation> result = await sut.Get.File.Associations
+        IEnumerable<VaultFileAssociation> result = await sut.Get.Revision.File.Associations
             .ByFileIterationId(_testData.TestPartIterationWithDrawingId)
             .IncludeRelatedDocumentation
             .ExecuteAsync(CancellationToken.None);
