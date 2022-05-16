@@ -1,4 +1,5 @@
-﻿using FluentVault.Features;
+﻿using FluentVault.Domain.Client;
+using FluentVault.Features;
 
 using MediatR;
 
@@ -31,8 +32,11 @@ internal class GetRequestBuilder : IRequestBuilder, IGetRequestBuilder
     public async Task<IEnumerable<VaultUserInfo>> UserInfos(IEnumerable<VaultUserId> ids, CancellationToken cancellationToken = default)
         => await _mediator.Send(new GetUserInfosByIserIdsQuery(ids), cancellationToken);
 
-    public async Task<(Uri ThinClient, Uri ThickClient)> ClientUris(VaultMasterId masterId, CancellationToken cancellationToken = default)
-        => await _mediator.Send(new GetClientUrisQuery(masterId), cancellationToken);
+    public async Task<Uri> ThickClientUri(VaultMasterId masterId, CancellationToken cancellationToken = default)
+        => await _mediator.Send(new GetClientUriQuery(masterId, VaultClientType.Thick), cancellationToken);
+
+    public async Task<Uri> ThinClientUri(VaultMasterId masterId, CancellationToken cancellationToken = default)
+        => await _mediator.Send(new GetClientUriQuery(masterId, VaultClientType.Thin), cancellationToken);
 
     public async Task<VaultFile> LatestFileByMasterId(VaultMasterId id, CancellationToken cancellationToken = default)
         => await _mediator.Send(new GetLatestFileByMasterIdQuery(id), cancellationToken);

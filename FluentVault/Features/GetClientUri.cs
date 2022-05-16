@@ -1,23 +1,26 @@
 ﻿using System.Web;
 
+using FluentVault;
+using FluentVault.Domain.Client;
+using FluentVault.Features;
+
 using MediatR;
 
 using Microsoft.Extensions.Options;
 
-namespace FluentVault.Features;
-internal record GetClientUrisQuery(VaultMasterId MasterId) : IRequest<(Uri VaultClient, Uri ThinClient)>;
-internal class GetClientUrisHandler : IRequestHandler<GetClientUrisQuery, (Uri VaultClient, Uri ThinClient)>
+internal record GetClientUriQuery(VaultMasterId MasterId, VaultClientType Type) : IRequest<Uri>;
+internal class GetClientUriHandler : IRequestHandler<GetClientUriQuery, Uri>
 {
     private readonly VaultOptions _options;
     private readonly IMediator _mediator;
 
-    public GetClientUrisHandler(IMediator mediator, IOptions<VaultOptions> options)
+    public GetClientUriHandler(IMediator mediator, IOptions<VaultOptions> options)
     {
         _mediator = mediator;
         _options = options.Value;
     }
 
-    public async Task<(Uri VaultClient, Uri ThinClient)> Handle(GetClientUrisQuery query, CancellationToken cancellationToken)
+    public async Task<Uri> Handle(GetClientUriQuery query, CancellationToken cancellationToken)
     {
         string objectId;
         string objectType;
@@ -38,17 +41,8 @@ internal class GetClientUrisHandler : IRequestHandler<GetClientUrisQuery, (Uri V
             throw new ArgumentException(@$"No entity found with master id ""{query.MasterId}""");
         }
 
-        Uri vaultClient = GetVaultClientUri(objectId, objectType);
-        Uri thinClient = GetThinClientUri(objectType, query.MasterId);
-
-        return (vaultClient, thinClient);
+        return query.Type.GetUri(_options.Server, _options.Database, objectId, objectType);
     }
-
-    private Uri GetVaultClientUri(string objectId, string objectType)
-        => new($"http://{_options.Server}/AutodeskDM/Services/EntityDataCommandRequest.aspx?Vault={_options.Database}&ObjectId={objectId}&ObjectType={objectType}&Command=Select");
-
-    private Uri GetThinClientUri(string objectType, VaultMasterId masterId)
-        => new($"http://{_options.Server}/AutodeskTC/{_options.Database}/Explore/{objectType}/{masterId}");
 
     private async Task<bool> FileExists(VaultMasterId masterId, CancellationToken cancellationToken)
     {
