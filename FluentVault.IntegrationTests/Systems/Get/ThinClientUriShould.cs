@@ -9,7 +9,7 @@ using FluentVault.IntegrationTests.Fixtures;
 using Xunit;
 
 namespace FluentVault.IntegrationTests.Systems.Get;
-public class ClientUriShould
+public class ThinClientUriShould
 {
     private static readonly VaultTestData _testData = new();
 
@@ -21,7 +21,7 @@ public class ClientUriShould
         IVaultClient sut = provider.GetRequiredService<IVaultClient>();
 
         // Act
-        (Uri ThinClient, Uri ThickClient) result = await sut.Get.ClientUris(_testData.TestPartMasterId, CancellationToken.None);
+        Uri result = await sut.Get.ThinClientUri(_testData.TestPartMasterId, CancellationToken.None);
 
         // Assert
         result.Should().NotBeNull();
