@@ -32,11 +32,11 @@ internal class VaultPropertyInstanceSerializer : XElementSerializer<VaultPropert
         return element;
 }
 
-    internal override VaultPropertyInstance Deserialize(XElement element)
-        => new(element.ParseAttributeValue(nameof(VaultPropertyInstance.EntityId), VaultEntityId.Parse),
+    internal override VaultPropertyInstance Deserialize(XElement element) =>
+        new(element.ParseAttributeValue(nameof(VaultPropertyInstance.EntityId), VaultEntityId.Parse),
             element.ParseAttributeValue(PropDefId, VaultPropertyDefinitionId.Parse),
             element.ParseAttributeValue(ValTyp, x => VaultDataType.FromName(x)),
-            element.GetElementValue(Val));
+            element.HasElement(Val) ? element.GetElementValue(Val) : string.Empty);
 
     private static string GetXsiType(VaultDataType dataType)
     {

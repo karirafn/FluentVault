@@ -34,4 +34,23 @@ public class FilePropertiesShould
         result.Should().NotBeEmpty();
         result.First().Value.Should().Be(_testData.TestPartFilename);
     }
+
+    [Fact]
+    public async Task ReturnEmptyStringValue_WhenPropertyHasNoValue()
+    {
+        // Arrange
+        VaultServiceProvider provider = new();
+        IVaultClient sut = provider.GetRequiredService<IVaultClient>();
+
+        // Act
+        IEnumerable<VaultPropertyInstance> result = await sut.Get.Properties
+            .ForEntityClass(VaultEntityClass.File)
+            .WithId(_testData.TestPartIterationWithoutDrawingId)
+            .WithProperty(VaultSystemProperty.Revision)
+            .ExecuteAsync(CancellationToken.None);
+
+        // Assert
+        result.Should().NotBeEmpty();
+        result.First().Value.Should().BeEmpty();
+    }
 }

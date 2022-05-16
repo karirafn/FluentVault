@@ -30,6 +30,9 @@ internal static class XDocumentParsingExtensions
         => container.Descendants().FirstOrDefault(x => x.Name.LocalName.Equals(name))
         ?? throw new KeyNotFoundException($@"Element ""{name}"" was not found");
 
+    internal static bool HasElement(this XContainer container, string name)
+        => container.Descendants().Any(x => x.Name.LocalName.Equals(name));
+
     internal static IEnumerable<XElement> GetElements(this XContainer container, string name)
         => container.Descendants().Where(x => x.Name.LocalName.Equals(name));
 
