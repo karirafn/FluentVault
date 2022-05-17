@@ -1,5 +1,4 @@
-﻿using FluentVault.Domain.Client;
-using FluentVault.Features;
+﻿using FluentVault.Features;
 
 using MediatR;
 
@@ -8,14 +7,21 @@ internal class GetRequestBuilder : IRequestBuilder, IGetRequestBuilder
 {
     private readonly IMediator _mediator;
 
-    public GetRequestBuilder(IMediator mediator, IGetPropertiesRequestBuilder properties, IGetLatestRequestBuilder latest, IGetRevisionRequestBuilder revision)
+    public GetRequestBuilder(
+        IMediator mediator,
+        IGetPropertiesRequestBuilder properties,
+        IGetLatestRequestBuilder latest,
+        IGetRevisionRequestBuilder revision,
+        IGetClientShortcutsRequestBuilder clientShortcut)
     {
         _mediator = mediator;
         Properties = properties;
         Latest = latest;
         Revision = revision;
+        ClientShortcut = clientShortcut;
     }
 
+    public IGetClientShortcutsRequestBuilder ClientShortcut { get; }
     public IGetLatestRequestBuilder Latest { get; }
     public IGetPropertiesRequestBuilder Properties { get; }
     public IGetRevisionRequestBuilder Revision { get; }
@@ -31,12 +37,6 @@ internal class GetRequestBuilder : IRequestBuilder, IGetRequestBuilder
 
     public async Task<IEnumerable<VaultUserInfo>> UserInfos(IEnumerable<VaultUserId> ids, CancellationToken cancellationToken = default)
         => await _mediator.Send(new GetUserInfosByIserIdsQuery(ids), cancellationToken);
-
-    public async Task<Uri> ThickClientUri(VaultMasterId masterId, CancellationToken cancellationToken = default)
-        => await _mediator.Send(new GetClientUriQuery(masterId, VaultClientType.Thick), cancellationToken);
-
-    public async Task<Uri> ThinClientUri(VaultMasterId masterId, CancellationToken cancellationToken = default)
-        => await _mediator.Send(new GetClientUriQuery(masterId, VaultClientType.Thin), cancellationToken);
 
     public async Task<VaultFile> LatestFileByMasterId(VaultMasterId id, CancellationToken cancellationToken = default)
         => await _mediator.Send(new GetLatestFileByMasterIdQuery(id), cancellationToken);

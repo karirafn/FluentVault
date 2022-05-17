@@ -3,7 +3,7 @@
 using MediatR;
 
 namespace FluentVault.RequestBuilders.Get.Properties;
-internal class GetPropertiesRequestBuilder : IRequestBuilder, IGetPropertiesRequestBuilder, IEntitySelector, IPropertySelector, IGetPropertiesEndpoint
+internal class GetPropertiesRequestBuilder : IRequestBuilder, IGetPropertiesRequestBuilder, IGetPropertiesEntitySelector, IPropertySelector, IGetPropertiesEndpoint
 {
     public GetPropertiesRequestBuilder(IMediator mediator)
     {
@@ -15,7 +15,7 @@ internal class GetPropertiesRequestBuilder : IRequestBuilder, IGetPropertiesRequ
     private IEnumerable<VaultPropertyDefinitionId> _propertyIds = Enumerable.Empty<VaultPropertyDefinitionId>();
     private readonly IMediator _mediator;
 
-    public IEntitySelector ForEntityClass(VaultEntityClass entityClass)
+    public IGetPropertiesEntitySelector ForEntityClass(VaultEntityClass entityClass)
     {
         _entityClass = entityClass;
         return this;

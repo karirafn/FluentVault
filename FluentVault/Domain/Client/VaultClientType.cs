@@ -1,7 +1,7 @@
 ﻿using Ardalis.SmartEnum;
 
-namespace FluentVault.Domain.Client;
-internal abstract class VaultClientType : SmartEnum<VaultClientType>
+namespace FluentVault;
+public abstract class VaultClientType : SmartEnum<VaultClientType>
 {
     public static readonly VaultClientType Thick = new ThickClientType();
     public static readonly VaultClientType Thin = new ThinClientType();

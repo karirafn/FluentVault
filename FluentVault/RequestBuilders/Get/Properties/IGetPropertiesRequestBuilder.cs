@@ -2,5 +2,5 @@
 
 public interface IGetPropertiesRequestBuilder
 {
-    public IEntitySelector ForEntityClass(VaultEntityClass entityClass);
+    public IGetPropertiesEntitySelector ForEntityClass(VaultEntityClass entityClass);
 }
