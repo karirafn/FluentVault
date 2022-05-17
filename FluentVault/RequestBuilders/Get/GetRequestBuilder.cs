@@ -12,7 +12,7 @@ internal class GetRequestBuilder : IRequestBuilder, IGetRequestBuilder
         IGetPropertiesRequestBuilder properties,
         IGetLatestRequestBuilder latest,
         IGetRevisionRequestBuilder revision,
-        IGetClientShortcutsRequestBuilder clientShortcut)
+        IGetClientShortcutRequestBuilder clientShortcut)
     {
         _mediator = mediator;
         Properties = properties;
@@ -21,7 +21,7 @@ internal class GetRequestBuilder : IRequestBuilder, IGetRequestBuilder
         ClientShortcut = clientShortcut;
     }
 
-    public IGetClientShortcutsRequestBuilder ClientShortcut { get; }
+    public IGetClientShortcutRequestBuilder ClientShortcut { get; }
     public IGetLatestRequestBuilder Latest { get; }
     public IGetPropertiesRequestBuilder Properties { get; }
     public IGetRevisionRequestBuilder Revision { get; }

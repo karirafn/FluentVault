@@ -1,7 +1,7 @@
 ﻿namespace FluentVault;
 public interface IGetRequestBuilder
 {
-    public IGetClientShortcutsRequestBuilder ClientShortcut { get; }
+    public IGetClientShortcutRequestBuilder ClientShortcut { get; }
     public IGetLatestRequestBuilder Latest { get; }
     public IGetPropertiesRequestBuilder Properties { get; }
     public IGetRevisionRequestBuilder Revision { get; }

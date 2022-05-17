@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -22,13 +21,13 @@ public class ClientShortcutShould
         IVaultClient sut = provider.GetRequiredService<IVaultClient>();
 
         // Act
-        IEnumerable<Uri> result = await sut.Get.ClientShortcut
+        Uri result = await sut.Get.ClientShortcut
             .WithEntityClass(VaultEntityClass.File)
             .WithClientType(VaultClientType.Thick)
             .WithMasterId(_testData.TestPartMasterId)
             .ExecuteAsync(CancellationToken.None);
 
         // Assert
-        result.Should().NotBeEmpty();
+        result.AbsolutePath.Should().NotBeEmpty();
     }
 }

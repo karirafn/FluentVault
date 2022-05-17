@@ -7,34 +7,35 @@ using MediatR;
 
 using Microsoft.Extensions.Options;
 
-internal record GetClientShortcutsQuery(IEnumerable<VaultMasterId> MasterIds, VaultEntityClass EntityClass, VaultClientType Type) : IRequest<IEnumerable<Uri>>;
-internal class GetClientShortcutsHandler : IRequestHandler<GetClientShortcutsQuery, IEnumerable<Uri>>
+internal record GetClientShortcutQuery(VaultMasterId MasterId, VaultEntityClass EntityClass, VaultClientType Type) : IRequest<Uri>;
+internal class GetClientShortcutHandler : IRequestHandler<GetClientShortcutQuery, Uri>
 {
     private const string ItemRevision = nameof(ItemRevision);
 
     private readonly VaultOptions _options;
     private readonly IMediator _mediator;
 
-    public GetClientShortcutsHandler(IMediator mediator, IOptions<VaultOptions> options)
+    public GetClientShortcutHandler(IMediator mediator, IOptions<VaultOptions> options)
     {
         _mediator = mediator;
         _options = options.Value;
     }
 
-    public async Task<IEnumerable<Uri>> Handle(GetClientShortcutsQuery query, CancellationToken cancellationToken)
+    public async Task<Uri> Handle(GetClientShortcutQuery query, CancellationToken cancellationToken)
     {
-        IEnumerable<string> objectIds = Enumerable.Empty<string>();
+        string objectId;
         string objectType;
 
         if (query.EntityClass.Equals(VaultEntityClass.File))
         {
-            IEnumerable<VaultFolder> folders = await _mediator.Send(new GetFoldersByFileMasterIdsQuery(query.MasterIds), cancellationToken);
-            objectIds = folders.Select(folder => HttpUtility.UrlEncode(folder.Path));
+            VaultFile file = await _mediator.Send(new GetLatestFileByMasterIdQuery(query.MasterId), cancellationToken);
+            IEnumerable<VaultFolder> folders = await _mediator.Send(new GetFoldersByFileMasterIdsQuery(new [] { query.MasterId }), cancellationToken);
+            objectId = HttpUtility.UrlEncode($"{folders.Single().Path}/{file.Filename}");
             objectType = nameof(VaultEntityClass.File);
         }
         else if (query.EntityClass.Equals(VaultEntityClass.Item))
         {
-            objectIds = query.MasterIds.Select(id => id.Value.ToString());
+            objectId = query.MasterId.ToString();
             objectType = ItemRevision;
         }
         else
@@ -42,6 +43,6 @@ internal class GetClientShortcutsHandler : IRequestHandler<GetClientShortcutsQue
             throw new ArgumentException("Invalid entity");
         }
 
-        return objectIds.Select(objectId => query.Type.GetUri(_options.Server, _options.Database, objectId, objectType));
+        return query.Type.GetUri(_options.Server, _options.Database, objectId, objectType);
     }
 }
