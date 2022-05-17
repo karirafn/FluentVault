@@ -36,7 +36,7 @@ Example request
 
 ```c#
 var response = _vaultClient.Search.Files
-    .ForValueContaining("part.ipt")
-    .InSystemProperty(StringSearchProperty.FileName)
-    .WithPaging();
+    .BySystemProperty(StringSearchProperty.FileName)
+    .Containing("part.ipt")
+    .GetPagedResultAsync();
 ```
