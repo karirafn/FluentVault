@@ -39,7 +39,7 @@ public static class ConfigureServices
             .Where(type => type.IsAssignableTo(typeof(T)))
             .Where(type => !type.IsInterface)
             .ToList()
-            .ForEach(type => services.AddSingleton(type.GetInterface($"I{type.Name}")!, type));
+            .ForEach(type => services.AddTransient(type.GetInterface($"I{type.Name}")!, type));
 
         return services;
     }
