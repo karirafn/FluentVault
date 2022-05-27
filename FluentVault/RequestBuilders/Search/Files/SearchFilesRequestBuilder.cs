@@ -114,6 +114,9 @@ internal class SearchFilesRequestBuilder :
             files.AddRange(response.Result.Files);
             bookmark = response.Bookmark;
         } while (files.Count <= pagingLimit && string.IsNullOrEmpty(bookmark) is false);
+
+        _searchManager.Reset();
+
         return files;
     }
 

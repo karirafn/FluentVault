@@ -19,4 +19,5 @@ internal interface ISearchManager
     void AddFolderIds(IEnumerable<VaultFolderId> ids);
     void AddSearchCondition();
     void AddSortCondition();
+    void Reset();
 }

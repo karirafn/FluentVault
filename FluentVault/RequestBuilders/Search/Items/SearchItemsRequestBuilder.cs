@@ -117,6 +117,9 @@ internal class SearchItemsRequestBuilder :
             items.AddRange(response.Result.Items);
             bookmark = response.Bookmark;
         } while (items.Count <= pagingLimit && string.IsNullOrEmpty(bookmark) is false);
+
+        _searchManager.Reset();
+
         return items;
     }
 
