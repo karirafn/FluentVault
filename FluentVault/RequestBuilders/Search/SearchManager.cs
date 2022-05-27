@@ -47,6 +47,16 @@ internal class SearchManager : ISearchManager
         _sortConditions.Add(sortCondition);
     }
 
+    public void Reset()
+    {
+        _searchConditions.Clear();
+        _sortConditions.Clear();
+        _folderIds.Clear();
+        SearchValue = null;
+        RecurseFolders = true;
+        LatestOnly = true;
+    }
+
     public void AddFolderId(VaultFolderId id) => _folderIds.Add(id);
     public void AddFolderIds(IEnumerable<VaultFolderId> ids) => _folderIds.AddRange(ids);
 }
