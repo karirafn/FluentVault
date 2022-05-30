@@ -9,19 +9,23 @@ internal class GetRequestBuilder : IRequestBuilder, IGetRequestBuilder
 
     public GetRequestBuilder(
         IMediator mediator,
-        IGetPropertiesRequestBuilder properties,
+        IGetClientShortcutRequestBuilder clientShortcut,
+        IGetFilesRequestBuilder files,
         IGetLatestRequestBuilder latest,
-        IGetRevisionRequestBuilder revision,
-        IGetClientShortcutRequestBuilder clientShortcut)
+        IGetPropertiesRequestBuilder properties,
+        IGetRevisionRequestBuilder revision
+        )
     {
         _mediator = mediator;
         Properties = properties;
         Latest = latest;
         Revision = revision;
         ClientShortcut = clientShortcut;
+        Files = files;
     }
 
     public IGetClientShortcutRequestBuilder ClientShortcut { get; }
+    public IGetFilesRequestBuilder Files { get; }
     public IGetLatestRequestBuilder Latest { get; }
     public IGetPropertiesRequestBuilder Properties { get; }
     public IGetRevisionRequestBuilder Revision { get; }

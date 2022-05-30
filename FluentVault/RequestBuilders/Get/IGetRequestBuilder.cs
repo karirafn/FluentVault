@@ -2,6 +2,7 @@
 public interface IGetRequestBuilder
 {
     public IGetClientShortcutRequestBuilder ClientShortcut { get; }
+    public IGetFilesRequestBuilder Files { get; }
     public IGetLatestRequestBuilder Latest { get; }
     public IGetPropertiesRequestBuilder Properties { get; }
     public IGetRevisionRequestBuilder Revision { get; }
