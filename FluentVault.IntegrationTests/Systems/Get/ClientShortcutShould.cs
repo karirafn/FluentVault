@@ -48,4 +48,22 @@ public class ClientShortcutShould
         // Assert
         result.ToString().Should().EndWith(_testData.TestPartMasterId.ToString());
     }
+
+    [Fact]
+    public async Task ReturnThinClientUri()
+    {
+        // Arrange
+        VaultServiceProvider provider = new();
+        IVaultClient sut = provider.GetRequiredService<IVaultClient>();
+
+        // Act
+        Uri result = await sut.Get.ClientShortcut
+            .WithEntityClass(VaultEntityClass.File)
+            .WithClientType(VaultClientType.Thin)
+            .WithMasterId(_testData.TestPartMasterId)
+            .ExecuteAsync(CancellationToken.None);
+
+        // Assert
+        result.AbsolutePath.Should().EndWith(_testData.TestPartMasterId.ToString());
+    }
 }
