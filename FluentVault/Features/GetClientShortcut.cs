@@ -23,24 +23,20 @@ internal class GetClientShortcutHandler : IRequestHandler<GetClientShortcutQuery
 
     public async Task<Uri> Handle(GetClientShortcutQuery query, CancellationToken cancellationToken)
     {
-        string objectId;
-        string objectType;
+        string objectId = query.MasterId.ToString();
 
-        if (query.EntityClass.Equals(VaultEntityClass.File))
+        string objectType = query.EntityClass.Name switch
+        {
+            "FILE" => nameof(VaultEntityClass.File),
+            "ITEM" => ItemRevision,
+            _ => throw new ArgumentException("Invalid entity")
+        };
+
+        if (query.Type.Equals(VaultClientType.Thick) && query.EntityClass.Equals(VaultEntityClass.File))
         {
             VaultFile file = await _mediator.Send(new GetLatestFileByMasterIdQuery(query.MasterId), cancellationToken);
             IEnumerable<VaultFolder> folders = await _mediator.Send(new GetFoldersByFileMasterIdsQuery(new [] { query.MasterId }), cancellationToken);
             objectId = HttpUtility.UrlEncode($"{folders.Single().Path}/{file.Filename}");
-            objectType = nameof(VaultEntityClass.File);
-        }
-        else if (query.EntityClass.Equals(VaultEntityClass.Item))
-        {
-            objectId = query.MasterId.ToString();
-            objectType = ItemRevision;
-        }
-        else
-        {
-            throw new ArgumentException("Invalid entity");
         }
 
         return query.Type.GetUri(_options.Server, _options.Database, objectId, objectType);
