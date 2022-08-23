@@ -39,6 +39,10 @@ internal class GetClientShortcutHandler : IRequestHandler<GetClientShortcutQuery
             objectId = HttpUtility.UrlEncode($"{folders.Single().Path}/{file.Filename}");
         }
 
+        objectType = query.Type == VaultClientType.Thin
+            ? objectType
+            : objectType.ToLowerInvariant();
+
         return query.Type.GetUri(_options.Server, _options.Database, objectId, objectType);
     }
 }
