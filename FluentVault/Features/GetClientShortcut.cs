@@ -40,8 +40,8 @@ internal class GetClientShortcutHandler : IRequestHandler<GetClientShortcutQuery
         }
 
         objectType = query.Type == VaultClientType.Thin
-            ? objectType
-            : objectType.ToLowerInvariant();
+            ? objectType.ToLowerInvariant()
+            : objectType;
 
         return query.Type.GetUri(_options.Server, _options.Database, objectId, objectType);
     }
