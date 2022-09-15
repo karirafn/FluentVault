@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 
 using FluentAssertions;
@@ -28,5 +29,22 @@ public class ItemsShould
 
         // Assert
         result.Should().NotBeNull();
+    }
+
+    [Fact]
+    public async Task ReturnEmptyWhenNothingIsFound()
+    {
+        // Arrange
+        VaultServiceProvider provider = new();
+        IVaultClient sut = provider.GetRequiredService<IVaultClient>();
+
+        // Act
+        IEnumerable<VaultItem> result = await sut.Search.Items
+            .BySystemProperty(VaultSystemProperty.Name)
+            .Containing("this-definitely-does-not-exist")
+            .GetAllResultsAsync();
+
+        // Assert
+        result.Should().BeEmpty();
     }
 }

@@ -17,6 +17,11 @@ internal class VaultSearchFilesResultSerializer : XElementSerializer<VaultSearch
 
     internal override VaultSearchFilesResult Deserialize(XElement element)
     {
+        if (!element.HasElement(FindFilesBySearchConditionsResult))
+        {
+            return new(Enumerable.Empty<VaultFile>());
+        }
+
         element = GetSerializationElement(element);
 
         return new(_fileSerializer.DeserializeMany(element));

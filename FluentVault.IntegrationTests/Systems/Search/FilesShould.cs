@@ -67,4 +67,21 @@ public class FilesShould
         // Assert
         result.Should().NotBeNull();
     }
+
+    [Fact]
+    public async Task ReturnEmptyWhenNothingIsFound()
+    {
+        // Arrange
+        VaultServiceProvider provider = new();
+        IVaultClient sut = provider.GetRequiredService<IVaultClient>();
+
+        // Act
+        IEnumerable<VaultFile> result = await sut.Search.Files
+            .BySystemProperty(VaultSystemProperty.FileName)
+            .Containing("this-definitely-does-not-exist")
+            .GetAllResultsAsync();
+
+        // Assert
+        result.Should().BeEmpty();
+    }
 }

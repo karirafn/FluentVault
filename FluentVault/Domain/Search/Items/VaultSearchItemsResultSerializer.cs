@@ -18,6 +18,11 @@ internal class VaultSearchItemsResultSerializer : XElementSerializer<VaultSearch
 
     internal override VaultSearchItemsResult Deserialize(XElement element)
     {
+        if (!element.HasElement(FindItemRevisionsBySearchConditionsResult))
+        {
+            return new(Enumerable.Empty<VaultItem>());
+        }
+
         element = GetSerializationElement(element);
 
         return new(_itemSerializer.DeserializeMany(element));
